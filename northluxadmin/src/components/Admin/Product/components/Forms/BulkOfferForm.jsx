@@ -1,24 +1,66 @@
 import React, { useState } from "react";
+import { useFetch } from "../../../../../hooks/useFetch";
+import { toast } from "react-toastify";
 
 export const BulkOfferForm = ({ onClose, isProductSelected }) => {
-  const [offerType, setOfferType] = useState("Category");
+  const [offerType, setOfferType] = useState("category");
   const [category, setCategory] = useState("");
+  const [brand, setBrand] = useState("");
   const [offerMetric, setOfferMetric] = useState("");
   const [offerValue, setOfferValue] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
   const handleApplyOffer = () => {
-    // Handle offer application logic here
     console.log({
       offerType,
       category,
+      brand,
       offerMetric,
       offerValue,
       startDate,
       endDate,
     });
+    if (!offerType || !offerMetric || !offerValue || !startDate || !endDate) {
+      toast.error("Please fill all the fields");
+      return;
+    }
     onClose();
+    toast.success("Offer applied successfully");
+  };
+
+  const [brandAndCategoreis] = useFetch("/admin/getcategoriesbrands");
+
+  const categories = brandAndCategoreis?.categories || [];
+  const brands = brandAndCategoreis?.brands || [];
+
+  const handleOfferTypeChange = (e) => {
+    setOfferType(e.target.value);
+    setCategory("");
+    setBrand("");
+  };
+
+  const fieldsConfig = {
+    category: [
+      {
+        label: "Category",
+        value: category,
+        onChange: setCategory,
+        options: categories,
+      },
+    ],
+    brand: [
+      { label: "Brand", value: brand, onChange: setBrand, options: brands },
+    ],
+    brandCategory: [
+      { label: "Brand", value: brand, onChange: setBrand, options: brands },
+      {
+        label: "Category",
+        value: category,
+        onChange: setCategory,
+        options: categories,
+      },
+    ],
   };
 
   return (
@@ -36,32 +78,46 @@ export const BulkOfferForm = ({ onClose, isProductSelected }) => {
               Offer Type
             </label>
             <select
-              className="mt-1 block w-1/2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-1/2 min-w-fit border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               value={offerType}
-              onChange={(e) => setOfferType(e.target.value)}
+              onChange={handleOfferTypeChange}
             >
-              <option value="Category">Category</option>
-              {/* Add more options as needed */}
+              <option value="category">Category</option>
+              <option value="brand">Brand</option>
+              <option value="brandCategory">
+                Category of a Specific Brand
+              </option>
             </select>
           </div>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Category
-            </label>
-            <select
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="">Choose a Category</option>
-              {/* Add category options here */}
-            </select>
+          {/*----------- dynamic-fields----------- */}
+          <div className="flex flex-col md:flex-row md:gap-4">
+            {fieldsConfig[offerType].map(
+              ({ label, value, onChange, options }) => (
+                <div key={label} className="mb-4 w-full ">
+                  <label className="block text-sm font-medium text-gray-700">
+                    {label}
+                  </label>
+                  <select
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                  >
+                    <option value="">{`Choose a ${label}`}</option>
+                    {options?.map((option) => (
+                      <option key={option?._id} value={option?._id}>
+                        {option?.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )
+            )}
           </div>
         </>
       )}
 
-      <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row gap-4">
         <div className="mb-4 w-full">
           <label className="block text-sm font-medium text-gray-700">
             Offer Metric
@@ -72,6 +128,8 @@ export const BulkOfferForm = ({ onClose, isProductSelected }) => {
             onChange={(e) => setOfferMetric(e.target.value)}
           >
             <option value="">Choose Discount Type</option>
+            <option value="percentage">Percentage</option>
+            <option value="fixed">Fixed</option>
             {/* Add more options as needed */}
           </select>
         </div>
@@ -90,7 +148,7 @@ export const BulkOfferForm = ({ onClose, isProductSelected }) => {
         </div>
       </div>
 
-      <div className="flex gap-4 justify-between">
+      <div className="flex flex-col sm:flex-row gap-4 ">
         <div className="mb-4 w-full">
           <label className="block text-sm font-medium text-gray-700">
             Start Date

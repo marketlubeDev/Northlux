@@ -31,9 +31,12 @@ export const Modal = ({ children, ...props }) => {
     props?.isOpen && (
       <div
         onClick={handleBackdropClick}
-        className="fixed inset-0 z-10 min-w-screen backdrop-blur-sm drop-shadow-lg shadow-2xl px-8 bg-opacity-50 flex items-center justify-center"
+        className="fixed inset-0 z-10   backdrop-blur-sm drop-shadow-lg shadow-2xl px-8 bg-opacity-50 flex items-center justify-center"
+        style={{
+          background: "linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3))"
+        }}
       >
-        <div className="bg-white shadow-2xl max-h-[95vh] drop-shadow-2xl rounded-lg p-6 w-full max-w-lg overflow-y-auto">
+        <div className="transform md:translate-x-1/4  bg-white shadow-2xl max-h-[94vh] drop-shadow-2xl rounded-lg p-6 w-full max-w-lg overflow-y-auto">
           <button
             onClick={props?.onClose}
             className="absolute text-2xl top-0 right-0 mt-4 mr-4 text-gray-500 hover:text-gray-700"
