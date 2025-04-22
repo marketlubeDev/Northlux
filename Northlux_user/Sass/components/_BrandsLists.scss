@@ -1,0 +1,112 @@
+.brands-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+
+  &.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .brands-container {
+    // max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 200px;
+    gap: 2rem;
+  }
+
+  .brands-section {
+    h3 {
+      color: #31B19B;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+
+      li {
+        margin-bottom: 1rem;
+
+        h4 {
+          font-size: 1rem;
+          margin-bottom: 0.25rem;
+          color: #333;
+        }
+
+        p {
+          font-size: 0.875rem;
+          color: #666;
+        }
+      }
+    }
+  }
+
+  .shop-all {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+
+    h3 {
+      color: #333;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .shop-now-btn {
+      background-color: #31B19B;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: darken(#31B19B, 10%);
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 1024px) {
+  .brands-list {
+    .brands-container {
+      grid-template-columns: repeat(2, 1fr);
+      padding: 1.5rem;
+    }
+
+    .shop-all {
+      grid-column: span 2;
+      align-items: center;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .brands-list {
+    .brands-container {
+      grid-template-columns: 1fr;
+      padding: 1rem;
+    }
+
+    .shop-all {
+      grid-column: span 1;
+    }
+  }
+}
