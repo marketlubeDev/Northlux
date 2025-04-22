@@ -7,6 +7,7 @@ function AdminLayout() {
     { name: "Dashboard", path: "/admin" },
     { name: "Products", path: "product" },
     { name: "Orders", path: "order" },
+    { name: "Stores", path: "store" },
     { name: "Categories", path: "category" },
     { name: "Brands", path: "brand" },
     { name: "Labels", path: "label" },

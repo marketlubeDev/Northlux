@@ -14,8 +14,8 @@ axiosInstance.interceptors.request.use(
     // Select token based on the path
     if (path.startsWith("/admin")) {
       token = localStorage.getItem("adminToken");
-    } else if (path.startsWith("/seller")) {
-      token = localStorage.getItem("sellerToken");
+    } else if (path.startsWith("/store")) {
+      token = localStorage.getItem("storeToken");
     } else {
       token = localStorage.getItem("userToken");
     }

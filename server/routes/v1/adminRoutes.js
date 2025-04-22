@@ -9,9 +9,14 @@ const {
   checkAdmin,
 } = require("../../controllers/adminController");
 const autheticateToken = require("../../middlewares/authMiddleware");
-
+const {
+  getAllStores,
+  createStore,
+  editStore,
+} = require("../../controllers/storeController");
 const adminRouter = require("express").Router();
 
+adminRouter.get("/getstores", autheticateToken(["admin"]), getAllStores);
 adminRouter.get("/salesreport", autheticateToken(["admin"]), getSalesDetails);
 adminRouter.get("/monthlyreport", autheticateToken(["admin"]), monthlyReport);
 adminRouter.get("/dashboard", autheticateToken(["admin"]), AdminDashboard);
@@ -23,6 +28,8 @@ adminRouter.get(
 adminRouter.post("/register", adminRegister);
 adminRouter.post("/login", AdminLogin);
 adminRouter.post("/logout", adminLogout);
+adminRouter.post("/create-store", autheticateToken(["admin"]), createStore);
+adminRouter.patch("/edit-store/:id", autheticateToken(["admin"]), editStore);
 adminRouter.get("/checkadmin", autheticateToken(["admin"]), checkAdmin);
 
 //sales

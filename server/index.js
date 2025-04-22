@@ -16,7 +16,7 @@ connectDb();
 job.start();
 //middlewares
 app.use(cookieParser());
-app.use(express.json({ extended: false }));
+app.use(express.json());
 app.use(
   cors({
     origin: [
