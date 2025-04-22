@@ -8,6 +8,8 @@ import debounce from "lodash/debounce";
 import PageHeader from "../../components/Admin/PageHeader";
 import ProductTable from "../../components/Admin/Product/components/Table/ProductTable";
 import Pagination from "../../components/Admin/Product/components/Pagination/Pagination";
+import { Modal } from "../../components/shared/Modal";
+import { BulkOfferForm } from "../../components/Admin/Product/components/Forms/BulkOfferForm";
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -16,6 +18,9 @@ function Products() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchKeyword, setSearchKeyword] = useState("");
   const navigate = useNavigate();
+
+  const [showBulkOfferModal, setShowBulkOfferModal] = useState(false);
+  const [isProductSelected, setIsProductSelected] = useState(false);
 
   // Fetch products when page changes or on initial load
   useEffect(() => {
@@ -110,12 +115,7 @@ function Products() {
         <div className="relative overflow-hidden shadow-md sm:rounded-lg flex flex-col flex-1 bg-white">
           {/* Header section with Add Product button and Search */}
           <div className="flex items-center justify-between flex-wrap md:flex-row p-4 border-b">
-            <button
-              onClick={() => navigate("addproduct")}
-              className="bg-green-500 p-2 text-white rounded-md hover:bg-green-600 transition-colors"
-            >
-              Add New Product
-            </button>
+            {/* search-bar */}
             <div className="relative">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <svg
@@ -140,7 +140,29 @@ function Products() {
                 placeholder="Search products..."
               />
             </div>
+            {/* buttons */}
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowBulkOfferModal(true)}
+                className="border-2 border-green-500 text-green-500 p-2 rounded-md hover:bg-green-500 hover:text-white transition-colors"
+              >
+                + Add Bulk Offer
+              </button>
+              <button
+                onClick={() => navigate("addproduct")}
+                className="bg-green-500 p-2 text-white rounded-md hover:bg-green-600 transition-colors"
+              >
+                + Add Product
+              </button>
+            </div>
           </div>
+
+          <Modal
+            isOpen={showBulkOfferModal}
+            onClose={() => setShowBulkOfferModal(false)}
+          >
+            <BulkOfferForm isProductSelected={isProductSelected} />
+          </Modal>
 
           {/* Table section with loading state */}
           <div className="overflow-y-auto flex-1 relative">
