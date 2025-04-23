@@ -18,14 +18,16 @@ const createBrand = catchAsync(async (req, res, next) => {
 
   if (req.files && req.files.length > 0) {
     // Handle main brand image
-    const imageFile = req.files.find(file => file.fieldname === 'image');
+    const imageFile = req.files.find((file) => file.fieldname === "image");
     if (imageFile) {
       const uploadedImage = await uploadToCloudinary(imageFile.buffer);
       brandData.image = uploadedImage;
     }
 
     // Handle banner image
-    const bannerFile = req.files.find(file => file.fieldname === 'bannerImage');
+    const bannerFile = req.files.find(
+      (file) => file.fieldname === "bannerImage"
+    );
     if (bannerFile) {
       const uploadedBanner = await uploadToCloudinary(bannerFile.buffer);
       brandData.bannerImage = uploadedBanner;
@@ -44,7 +46,10 @@ const createBrand = catchAsync(async (req, res, next) => {
 
 // Get all brands
 const getAllBrands = catchAsync(async (req, res, next) => {
-  const brands = await Brand.find();
+  const { page = 1, limit = 10, search } = req.query;
+  const brands = await Brand.find({ name: { $regex: search, $options: "i" } })
+    .skip((page - 1) * limit)
+    .limit(limit);
 
   res.status(200).json({
     status: "success",
@@ -84,14 +89,16 @@ const updateBrand = catchAsync(async (req, res, next) => {
 
   if (req.files && req.files.length > 0) {
     // Handle main brand image
-    const imageFile = req.files.find(file => file.fieldname === 'image');
+    const imageFile = req.files.find((file) => file.fieldname === "image");
     if (imageFile) {
       const uploadedImage = await uploadToCloudinary(imageFile.buffer);
       brand.image = uploadedImage;
     }
 
     // Handle banner image
-    const bannerFile = req.files.find(file => file.fieldname === 'bannerImage');
+    const bannerFile = req.files.find(
+      (file) => file.fieldname === "bannerImage"
+    );
     if (bannerFile) {
       const uploadedBanner = await uploadToCloudinary(bannerFile.buffer);
       brand.bannerImage = uploadedBanner;

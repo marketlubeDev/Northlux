@@ -5903,5 +5903,111 @@ input[required]::placeholder::after {
     opacity: 1;
   }
 }
+.brand-listing-page {
+  padding-top: 2rem;
+  padding: 2rem 10%;
+}
+.brand-listing-page h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.brand-listing-page h2 span {
+  color: #2eb5af;
+}
+.brand-listing-page h2 .count {
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: #2eb5af;
+}
+.brand-listing-page .brand-listing-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid rgba(102, 102, 102, 0.2);
+}
+.brand-listing-page .brand-listing-header .brand-listing-search {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 400px;
+}
+.brand-listing-page .brand-listing-container {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 32px 16px;
+}
+.brand-listing-page .brand-listing-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+.brand-listing-page .brand-listing-item:hover {
+  transform: scale(1.02);
+}
+.brand-listing-page .brand-listing-item img {
+  border-radius: 8px;
+  width: 100%;
+  height: 80%;
+  object-fit: cover;
+  display: block;
+}
+.brand-listing-page .brand-listing-item p {
+  margin-top: 8px;
+  height: 20px;
+  overflow: hidden;
+}
+.brand-listing-page .brand-listing-item .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.brand-listing-page .brand-listing-item .overlay:hover {
+  opacity: 1;
+}
+.brand-listing-page .brand-listing-item .overlay .brand-name {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.brand-listing-page .brand-listing-item .overlay .explore-button {
+  background-color: #2eb5af;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 40px;
+  margin-bottom: 100px;
+}
+.brand-listing-page .brand-listing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.breadcrumb-component {
+  margin-bottom: 1rem;
+  color: #666;
+  font-size: 0.875rem;
+}
+.breadcrumb-component span:last-child {
+  color: #2eb5af;
+  margin-left: 0.2rem;
+}
 
 /*# sourceMappingURL=style.css.map */

@@ -7,13 +7,13 @@ import {
   MdOutlineHeadphones,
 } from "react-icons/md";
 import { BiLogOut } from "react-icons/bi";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { logout } from "../redux/features/user/userSlice";
 import { useDispatch } from "react-redux";
 import { useCategories } from "../hooks/queries/categories";
 import { useProducts } from "../hooks/queries/products";
-import BrandsList from './BrandsList/BrandsList';
+import BrandsList from "./BrandsList/BrandsList";
 
 export default function Header() {
   const dispatch = useDispatch();
@@ -303,10 +303,13 @@ export default function Header() {
           isOpen={isBrandsListOpen || selectedCategory !== null}
           category={selectedCategory}
         /> */}
-
       </header>
       {categories && (
-        <ul className="header-cat">
+        <ul className="header-cat ">
+          <li onClick={() => handleCategoryClick({ id: null, name: "All" })}>
+            All
+          </li>
+          <li onClick={() => navigate("/brands")}>Brands</li>
           {categories?.map((category) => (
             <li
               key={category?._id}

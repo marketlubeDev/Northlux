@@ -3,7 +3,7 @@ import { productService } from "../../api/services/productService";
 import apiClient from "../../api/client";
 
 export function useProducts(filters = {}) {
-console.log(filters);
+// console.log(filters);
   return useQuery({
     queryKey: ["products", filters],
     queryFn: () => getProducts(filters),
