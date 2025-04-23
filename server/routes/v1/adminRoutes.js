@@ -13,10 +13,16 @@ const {
   getAllStores,
   createStore,
   editStore,
+  getStoreAndProducts,
 } = require("../../controllers/storeController");
 const adminRouter = require("express").Router();
 
 adminRouter.get("/getstores", autheticateToken(["admin"]), getAllStores);
+adminRouter.get(
+  "/getstoreandproducts/:id",
+  autheticateToken(["admin"]),
+  getStoreAndProducts
+);
 adminRouter.get("/salesreport", autheticateToken(["admin"]), getSalesDetails);
 adminRouter.get("/monthlyreport", autheticateToken(["admin"]), monthlyReport);
 adminRouter.get("/dashboard", autheticateToken(["admin"]), AdminDashboard);

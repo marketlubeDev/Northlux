@@ -14,3 +14,8 @@ export const updateStore = async (data, id) => {
   const response = await axiosInstance.patch(`/admin/edit-store/${id}`, data);
   return response.data;
 };
+
+export const getStoreAndProducts = async (id) => {
+  const response = await axiosInstance.get(`/admin/getstoreandproducts/${id}`);
+  return response.data;
+};

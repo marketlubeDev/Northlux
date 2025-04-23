@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
 
 const addressSchema = new mongoose.Schema({
   area: {
@@ -56,21 +55,5 @@ const storeSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-// storeSchema.pre("save", async function (next) {
-//   if (!this.isModified("password")) return next();
-
-//   try {
-//     const salt = await bcrypt.genSalt(10);
-//     this.password = await bcrypt.hash(this.password, salt);
-//     next();
-//   } catch (err) {
-//     next(err);
-//   }
-// });
-
-// storeSchema.methods.comparePassword = async function (storePassword) {
-//   return await bcrypt.compare(storePassword, this.password);
-// };
 
 module.exports = mongoose.model("Store", storeSchema);

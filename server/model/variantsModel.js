@@ -32,6 +32,9 @@ const variantSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Product",
   },
+  grossPrice: {
+    type: Number,
+  },
 });
 
 const Variant = mongoose.model("Variant", variantSchema);

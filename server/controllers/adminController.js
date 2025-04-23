@@ -11,6 +11,7 @@ const createToken = require("../utilities/createToken");
 const AppError = require("../utilities/errorHandlings/appError");
 const catchAsync = require("../utilities/errorHandlings/catchAsync");
 const Label = require("../model/labelModel");
+const storeModel = require("../model/storeModel");
 
 const adminRegister = catchAsync(async (req, res, next) => {
   const { username, email, phonenumber, password } = req.body;
@@ -81,7 +82,10 @@ const fetchCategoriesAndBrands = catchAsync(async (req, res) => {
   // Fetch labels
   const labels = await Label.find({}, "_id name");
 
-  res.status(200).json({ categories, brands, labels });
+  // Fetch stores
+  const stores = await storeModel.find({}, "_id store_name");
+
+  res.status(200).json({ categories, brands, labels, stores });
 });
 
 //sales related controllers

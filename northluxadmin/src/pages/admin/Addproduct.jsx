@@ -109,6 +109,7 @@ function Addproduct() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        //in this function we are fetching the categories and brands also store (store is updated in the backend)
         const res = await getcategoriesbrands();
         setFormUtilites(res.data);
       } catch (err) {
@@ -285,6 +286,7 @@ function Addproduct() {
       offerPrice: currentVariant?.offerPrice || "",
       stock: currentVariant?.stock || "",
       stockStatus: currentVariant?.stockStatus || "",
+      grossPrice: currentVariant?.grossPrice || "",
       images: [...images],
     };
 
@@ -421,6 +423,7 @@ function Addproduct() {
     formData.append("brand", productData.brand);
     formData.append("category", productData.category);
     formData.append("label", productData.label);
+    formData.append("store", productData.store);
     // formData.append("units", productData.units);
 
     if (selectedVariant === "hasVariants") {
@@ -439,6 +442,7 @@ function Addproduct() {
           offerPrice: variant.offerPrice,
           stock: stockNumber, // Use the converted number
           stockStatus: variant.stockStatus.toLowerCase(), // Ensure correct enum case
+          grossPrice: variant.grossPrice,
         };
 
         if (variant._id) {
@@ -473,6 +477,10 @@ function Addproduct() {
           `variants[${variantIndex}][stockStatus]`,
           variant.stockStatus
         );
+        formData.append(
+          `variants[${variantIndex}][grossPrice]`,
+          variant.grossPrice
+        );
 
         // Handle images for this variant with indices
         if (productData.variants[variantIndex].images) {
@@ -499,6 +507,7 @@ function Addproduct() {
       formData.append("sku", productData.sku);
       formData.append("price", productData.price);
       formData.append("offerPrice", productData.offerPrice);
+      formData.append("grossPrice", productData.grossPrice);
       // Convert stock to number if it's a numeric string, otherwise use 0
       const stockNumber = productData.stock
         ? parseInt(productData.stock, 10)
@@ -601,6 +610,7 @@ function Addproduct() {
 
               <div className="flex gap-2">
                 <StoreSelect
+                  stores={formUtilites.stores}
                   handleChange={handleProductChange}
                   value={productData.store}
                   errors={errors}

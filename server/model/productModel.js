@@ -7,7 +7,13 @@ const productSchema = new Schema(
     brand: { type: Schema.Types.ObjectId, ref: "Brand" },
     category: { type: Schema.Types.ObjectId, ref: "Category" },
     description: { type: String },
-    variants: [{ type: Schema.Types.ObjectId, ref: "Variant" }], // References to Variant documents
+    variants: [{ type: Schema.Types.ObjectId, ref: "Variant" }],
+    store: {
+      type: Schema.Types.ObjectId,
+      ref: "Store",
+      required: true,
+    },
+    // References to Variant documents
     // Fields for non-variant products
     sku: { type: String, unique: true, sparse: true },
     price: { type: Number },
@@ -25,6 +31,7 @@ const productSchema = new Schema(
       enum: ["instock", "outofstock"],
       default: "instock",
     },
+    grossPrice: { type: Number },
   },
   { timestamps: true }
 );

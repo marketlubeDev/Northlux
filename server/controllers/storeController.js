@@ -1,7 +1,10 @@
 const storeModel = require("../model/storeModel");
+const productModel = require("../model/productModel");
 const createToken = require("../utilities/createToken");
 const AppError = require("../utilities/errorHandlings/appError");
 const catchAsync = require("../utilities/errorHandlings/catchAsync");
+const mongoose = require("mongoose");
+const formatProductResponse = require("../helpers/product/formatProducts");
 
 const createStore = catchAsync(async (req, res, next) => {
   const { store_name, email, address, store_number, login_number, password } =
@@ -103,4 +106,134 @@ const editStore = catchAsync(async (req, res, next) => {
   });
 });
 
-module.exports = { createStore, loginStore, getAllStores, editStore };
+// const getStoreById = catchAsync(async (req, res, next) => {
+//   const { id } = req.params;
+//   const store = await storeModel.findById(id);
+//   res.status(200).json({
+//     success: true,
+//     message: "Store fetched successfully",
+//     store,
+//   });
+// });
+
+const getStoreAndProducts = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  console.log(id, "id");
+  const { page = 1, limit = 10, search = "" } = req.query;
+
+  if (!id) {
+    return next(new AppError("Store ID is required", 400));
+  }
+
+  // Convert string values to numbers
+  const pageNum = parseInt(page);
+  const limitNum = parseInt(limit);
+  const skip = (pageNum - 1) * limitNum;
+
+  // Build search condition for products
+  const searchCondition = search
+    ? {
+        $or: [
+          { name: { $regex: search, $options: "i" } },
+          { sku: { $regex: search, $options: "i" } },
+        ],
+      }
+    : {};
+
+  const result = await productModel.aggregate([
+    // Match products for this store
+    {
+      $match: {
+        store: new mongoose.Types.ObjectId(id),
+        // isDeleted: false,
+        ...searchCondition,
+      },
+    },
+    // Facet to get both total count and paginated results in one query
+    {
+      $facet: {
+        // Get total count
+        totalCount: [{ $count: "count" }],
+        // Get paginated products
+        products: [
+          { $sort: { updatedAt: -1 } },
+          { $skip: skip },
+          { $limit: limitNum },
+          // Lookup brand details
+          {
+            $lookup: {
+              from: "brands",
+              localField: "brand",
+              foreignField: "_id",
+              as: "brand",
+            },
+          },
+          // Lookup category details
+          {
+            $lookup: {
+              from: "categories",
+              localField: "category",
+              foreignField: "_id",
+              as: "category",
+            },
+          },
+          // Unwind brand and category arrays to objects
+          {
+            $unwind: {
+              path: "$brand",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $unwind: {
+              path: "$category",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          // Project only needed fields
+          {
+            $project: {
+              _id: 1,
+              name: 1,
+              sku: 1,
+              price: 1,
+              offerPrice: 1,
+              stock: 1,
+              images: 1,
+              updatedAt: 1,
+              "brand._id": 1,
+              "brand.name": 1,
+              "category._id": 1,
+              "category.name": 1,
+            },
+          },
+        ],
+      },
+    },
+  ]);
+
+  console.log(result, "result");
+
+  const totalProducts = result[0].totalCount[0]?.count || 0;
+  const products = result[0].products.map(formatProductResponse);
+
+  res.status(200).json({
+    success: true,
+    message: "Store products fetched successfully",
+    data: {
+      products,
+      totalProducts,
+      currentPage: pageNum,
+      totalPages: Math.ceil(totalProducts / limitNum),
+    },
+  });
+});
+
+module.exports = {
+  createStore,
+  loginStore,
+  getAllStores,
+  editStore,
+  // getStoreById,
+  getStoreAndProducts,
+};

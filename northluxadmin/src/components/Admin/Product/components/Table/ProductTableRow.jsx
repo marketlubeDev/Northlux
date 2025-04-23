@@ -31,9 +31,6 @@ const ProductTableRow = ({ product }) => {
           : product?.name}
       </th>
       <td className="px-6 py-4">{product?.brand?.name}</td>
-      <td className="px-6 py-4">{product?.stock}</td>
-      <td className="px-6 py-4">₹{product?.price}</td>
-      <td className="px-6 py-4">₹{product?.offerPrice}</td>
       <td className="px-6 py-4">{product?.category?.name}</td>
       <td className="px-6 py-4">
         {new Date(product?.updatedAt).toLocaleDateString()}

@@ -1,10 +1,10 @@
 import React from "react";
 
-function PageHeader({ content }) {
+function PageHeader({ content, marginBottom = "mb-5" }) {
   return (
     <div
       style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.3)" }}
-      className="border border-base-300 p-3 bg-white mb-5"
+      className={`border border-base-300 p-3 bg-white ${marginBottom}`}
     >
       <p className="font-bold text-xl">{content}</p>
     </div>

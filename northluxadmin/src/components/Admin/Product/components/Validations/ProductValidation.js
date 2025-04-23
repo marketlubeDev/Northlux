@@ -6,7 +6,7 @@ export const validateProduct = (productData, selectedVariant, images) => {
   if (!productData.brand) errors.brand = "Brand is required";
   if (!productData.category) errors.category = "Category is required";
   if (!productData.label) errors.label = "Label is required";
-  // if (!productData.units) errors.units = "Units is required";
+  if (!productData.store) errors.store = "Store is required";
 
   // Validate variant selection
   if (!selectedVariant) {
@@ -27,11 +27,16 @@ export const validateProduct = (productData, selectedVariant, images) => {
     if (!productData.stock) errors.stock = "Stock is required";
     if (!productData.description?.trim())
       errors.description = "Description is required";
-
+    if (!productData.stockStatus)
+      errors.stockStatus = "Stock status is required";
     // Numeric validation
     if (isNaN(productData.price)) errors.price = "Price must be a number";
     if (isNaN(productData.offerPrice))
       errors.offerPrice = "Offer price must be a number";
+
+    if (isNaN(productData.grossPrice))
+      errors.grossPrice = "Gross price must be a number";
+
     if (isNaN(productData.stock)) errors.stock = "Stock must be a number";
 
     // Price logic

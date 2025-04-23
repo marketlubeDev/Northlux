@@ -15,6 +15,7 @@ const AppError = require("../utilities/errorHandlings/appError");
 const catchAsync = require("../utilities/errorHandlings/catchAsync");
 const Rating = require("../model/ratingModel");
 const mongoose = require("mongoose");
+const formatProductResponse = require("../helpers/product/formatProducts");
 
 const addProduct = catchAsync(async (req, res, next) => {
   const {
@@ -30,6 +31,8 @@ const addProduct = catchAsync(async (req, res, next) => {
     label,
     units,
     stockStatus,
+    store,
+    grossPrice,
   } = req.body;
 
   if (stockStatus === "outofstock" && stock > 0) {
@@ -136,6 +139,8 @@ const addProduct = catchAsync(async (req, res, next) => {
     label,
     units,
     stockStatus,
+    store,
+    grossPrice,
   };
 
   if (variantsArray && variantsArray.length > 0) {
@@ -199,63 +204,6 @@ const addProduct = catchAsync(async (req, res, next) => {
     product: newProduct,
   });
 });
-
-const formatProductResponse = (product) => {
-  let hasVariants = false;
-  const variants = product.variantsData || product.variants || [];
-  if (Array.isArray(variants) && variants.length > 0) {
-    hasVariants = true;
-  }
-
-  return {
-    _id: product._id,
-    name: product.name,
-    brand: product.brand
-      ? {
-          _id: product.brand._id,
-          name: product.brand.name,
-          createdAt: product.brand.createdAt,
-          updatedAt: product.brand.updatedAt,
-        }
-      : null,
-    category: product.category
-      ? {
-          _id: product.category._id,
-          name: product.category.name,
-          description: product.category.description,
-        }
-      : null,
-    description: hasVariants
-      ? variants[0]?.attributes?.description || product.description
-      : product.description,
-    hasVariants: hasVariants,
-    sku: hasVariants ? variants[0]?.sku : product.sku,
-    price: hasVariants ? variants[0]?.price : product.price,
-    offerPrice: hasVariants ? variants[0]?.offerPrice : product.offerPrice,
-    stock: hasVariants ? variants[0]?.stock : product.stock,
-    mainImage:
-      hasVariants &&
-      Array.isArray(variants[0]?.images) &&
-      variants[0]?.images.length > 0
-        ? variants[0].images[0]
-        : Array.isArray(product.images) && product.images.length > 0
-        ? product.images[0]
-        : null,
-    createdBy: product.createdBy
-      ? {
-          _id: product.createdBy._id,
-          username: product.createdBy.username,
-          email: product.createdBy.email,
-          role: product.createdBy.role,
-        }
-      : null,
-    label: product.label,
-    averageRating: product.averageRating,
-    totalRatings: product.totalRatings,
-    createdAt: product.createdAt,
-    updatedAt: product.updatedAt,
-  };
-};
 
 const listProducts = catchAsync(async (req, res, next) => {
   let {
@@ -528,18 +476,29 @@ const updateProduct = catchAsync(async (req, res, next) => {
     try {
       await Promise.all(
         updateData.variants.map(async (variant) => {
-          const skuExists =
-            (await Variant.findOne({
-              $or: [
-                { sku: variant.sku },
-                { "attributes.title": variant.attributes.title },
-              ],
-            })) ||
-            (await Product.findOne({
-              $or: [{ sku: variant.sku }],
-            }));
-          if (skuExists) {
-            if (skuExists.sku === variant.sku) {
+          const queryConditions = [
+            { sku: variant.sku },
+            { "attributes.title": variant.attributes.title },
+          ];
+
+          // Exclude the current variant from the check
+          const skuExists = await Variant.findOne({
+            $or: queryConditions,
+            _id: { $ne: variant._id }, // Exclude the current variant
+          });
+
+          console.log(skuExists, "skuExists");
+
+          const productSkuExists = await Product.findOne({
+            sku: variant.sku,
+            _id: { $ne: productId }, // Exclude the current variant
+          });
+
+          if (skuExists || productSkuExists) {
+            if (
+              skuExists?.sku === variant.sku ||
+              productSkuExists?.sku === variant.sku
+            ) {
               return Promise.reject(
                 `${variant?.attributes?.title}'s SKU ${variant.sku} already exists`
               );

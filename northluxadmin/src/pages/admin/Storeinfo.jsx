@@ -1,10 +1,50 @@
 import React, { useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaEdit } from "react-icons/fa";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import PageHeader from "../../components/Admin/PageHeader";
+import { useEffect } from "react";
+import { getStoreAndProducts } from "../../sevices/storeApis";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
+import LoadingSpinner from "../../components/spinner/LoadingSpinner";
 
 function Storeinfo() {
-  const [selectedStore, setSelectedStore] = useState("Sample store, Calicut");
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { store, stores } = useLocation().state;
+  console.log(store?.store_name, "Storename");
+  const [selectedStore, setSelectedStore] = useState(id);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    setSelectedStore(id);
+  }, []);
+
+  const fetchStoreAndProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await getStoreAndProducts(selectedStore);
+      console.log(response);
+      setProducts(response?.data?.products);
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchStoreAndProducts();
+    fetchStoreAndProducts();
+  }, [id, selectedStore]);
+
+  const handleStoreChange = (e) => {
+    const newStoreId = e.target.value;
+    setSelectedStore(newStoreId);
+  };
+
+  const handleEdit = (id) => {
+    navigate(`/admin/product/addproduct`, { state: { productId: id } });
+  };
 
   // Sample data for statistics
   const statistics = {
@@ -14,216 +54,148 @@ function Storeinfo() {
     totalItemValue: 56780,
   };
 
-  // Sample data for products
-  const products = Array(8).fill({
-    image: "/placeholder-product.jpg",
-    name: "Sample product name",
-    brand: "Brand Name",
-    stock: "150 left",
-    grossPrice: "₹480",
-    sellingPrice: "₹640",
-    offerPrice: "₹680",
-    lastUpdated: "25 Mar 2025",
-  });
-
   return (
     <>
-      <PageHeader content="Store Information" />
-      <div className="bg-gray-50 min-h-screen p-6">
+      <PageHeader content="Store Information" marginBottom="mb-0" />
+
+      <div className="bg-white p-4  shadow flex justify-between ">
+        <div className="text-sm text-gray-600 space-y-1">
+          <select
+            className="border border-gray-300 rounded-md px-4 py-2 w-full"
+            onChange={handleStoreChange}
+            value={selectedStore}
+          >
+            {stores?.map((store) => (
+              <option key={store._id} value={store._id}>
+                {store?.store_name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <div className="p-2 space-y-6">
         {/* Store Info Header */}
-        {/* Store Selection Card */}
-        <div className="bg-white rounded-lg mb-4">
-          <div className="px-4 py-3">
-            <select
-              value={selectedStore}
-              onChange={(e) => setSelectedStore(e.target.value)}
-              className="w-64 p-2 border border-gray-200 rounded text-sm focus:outline-none"
-            >
-              <option>Sample store, Calicut</option>
-            </select>
+        <div className="flex justify-between items-center">
+          <div className="text-sm text-gray-600 space-y-1 cursor-pointer">
+            <p>
+              Store Name: <span className="font-bold">{store?.store_name}</span>
+            </p>
+            <p>
+              Email address:{" "}
+              <span className="text-green-600 font-bold">{store?.email}</span>
+            </p>
+            <p>
+              Contact: <span className="font-bold">{store?.store_number}</span>
+            </p>
+            <p>
+              Created on:{" "}
+              <span className="font-bold">
+                {new Date(store?.createdAt).toLocaleDateString()}
+              </span>
+            </p>
           </div>
-        </div>
 
-        {/* Store Details Card */}
-        <div className="bg-white rounded-lg mb-4">
-          <div className="px-4 py-3">
-            {/* Store Information */}
-            <div className="space-y-2">
-              <div className="flex items-center text-sm">
-                <span className="text-gray-500 w-20">Store Name</span>
-                <span className="text-gray-500 mx-2">:</span>
-                <span>Sample store, Calicut</span>
-              </div>
-              <div className="flex items-center text-sm">
-                <span className="text-gray-500 w-20">Email address</span>
-                <span className="text-gray-500 mx-2">:</span>
-                <span>storesample@gmail.com</span>
-              </div>
-              <div className="flex items-center text-sm">
-                <span className="text-gray-500 w-20">Contact</span>
-                <span className="text-gray-500 mx-2">:</span>
-                <span>9856 9569 999</span>
-              </div>
-              <div className="flex items-center text-sm">
-                <span className="text-gray-500 w-20">Created on</span>
-                <span className="text-gray-500 mx-2">:</span>
-                <span>Mar 24,2024</span>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {/* Metric Card */}
+            <div className="bg-white flex items-center gap-3 p-4 rounded-xl cursor-pointer">
+              <div className="w-4 h-4 bg-green-700 rounded-sm"></div>
+              <div>
+                <p className="text-xs text-gray-500 font-medium">Total Sales</p>
+                <p className="font-bold text-lg">
+                  1280 <span className="text-green-600 text-sm">+10</span>
+                </p>
               </div>
             </div>
-
-            {/* Statistics Cards */}
-            <div className="grid grid-cols-4 gap-4 mt-4">
-              <div className="bg-emerald-50/40 p-3 rounded">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Total Sales</span>
-                  <IoMdInformationCircleOutline className="text-gray-400 text-lg" />
-                </div>
-                <div className="mt-1.5">
-                  <span className="text-lg font-medium">
-                    {statistics.totalSales}
-                  </span>
-                  <span className="text-emerald-500 text-xs ml-1">+5%</span>
-                </div>
+            <div className="bg-white flex items-center gap-3 p-4 rounded-xl cursor-pointer">
+              <div className="w-4 h-4 bg-yellow-400 rounded-sm"></div>
+              <div>
+                <p className="text-xs text-gray-500 font-medium">
+                  Monthly Revenue
+                </p>
+                <p className="font-bold text-lg">
+                  ₹34,351 <span className="text-red-500 text-sm">-4%</span>
+                </p>
               </div>
-              <div className="bg-amber-50/40 p-3 rounded">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Monthly Revenue</span>
-                  <IoMdInformationCircleOutline className="text-gray-400 text-lg" />
-                </div>
-                <div className="mt-1.5">
-                  <span className="text-lg font-medium">
-                    ₹{statistics.monthlyRevenue}
-                  </span>
-                  <span className="text-amber-500 text-xs ml-1">+5%</span>
-                </div>
+            </div>
+            <div className="bg-white flex items-center gap-3 p-4 rounded-xl cursor-pointer">
+              <div className="w-4 h-4 bg-purple-600 rounded-sm"></div>
+              <div>
+                <p className="text-xs text-gray-500 font-medium">Profit</p>
+                <p className="font-bold text-lg">
+                  ₹20,351 <span className="text-red-500 text-sm">-6%</span>
+                </p>
               </div>
-              <div className="bg-purple-50/40 p-3 rounded">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Profit</span>
-                  <IoMdInformationCircleOutline className="text-gray-400 text-lg" />
-                </div>
-                <div className="mt-1.5">
-                  <span className="text-lg font-medium">
-                    ₹{statistics.profit}
-                  </span>
-                  <span className="text-purple-500 text-xs ml-1">+5%</span>
-                </div>
-              </div>
-              <div className="bg-red-50/40 p-3 rounded">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">
-                    Total item value
-                  </span>
-                  <IoMdInformationCircleOutline className="text-gray-400 text-lg" />
-                </div>
-                <div className="mt-1.5">
-                  <span className="text-lg font-medium">
-                    ₹{statistics.totalItemValue}
-                  </span>
-                </div>
+            </div>
+            <div className="bg-white  flex items-center gap-3 p-4 rounded-xl cursor-pointer">
+              <div className="w-4 h-4 bg-red-300 rounded-sm"></div>
+              <div>
+                <p className="text-xs text-gray-500 font-medium">
+                  Total store value
+                </p>
+                <p className="font-bold text-lg">₹ 56,780</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Products Section */}
-        <div className="bg-white rounded-lg">
-          <div className="p-4">
-            {/* Search and Add */}
-            <div className="flex justify-between items-center mb-4">
-              <div className="relative">
-                <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
-                <input
-                  type="text"
-                  placeholder="Search by product name, SKU..."
-                  className="pl-9 pr-4 py-2 w-64 border border-gray-200 rounded text-sm focus:outline-none"
-                />
-              </div>
-              <button className="px-3 py-2 bg-emerald-500 text-white rounded text-sm">
-                + Add Product
-              </button>
-            </div>
-
-            {/* Products Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-emerald-50/30">
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">
-                      Product Name
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">
-                      Brand
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">
-                      Stock
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">
-                      Gross Price
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">
-                      Selling Price
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">
-                      Offer Price
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-600">
-                      Last Updated on
-                    </th>
-                    <th className="w-10"></th>
-                  </tr>
-                </thead>
+        {/* Product Table */}
+        <div className="bg-white rounded-xl shadow p-4">
+          <div className="flex justify-between items-center mb-4">
+            <input
+              type="text"
+              placeholder="Search by product name, SKU..."
+              className="w-1/5 border border-gray-300 rounded-md px-4 py-2"
+            />
+            <button className=" text-green-600 px-4 py-2 rounded-md border border-green-600">
+              + Add Product
+            </button>
+          </div>
+          <div className="overflow-auto">
+            <table className="w-full text-left border-t">
+              <thead className="bg-green-100">
+                <tr>
+                  <th className="p-2">Product Name</th>
+                  <th className="p-2">Brand</th>
+                  <th className="p-2">Category</th>
+                  <th className="p-2">Last Updated on</th>
+                  <th className="p-2">Action</th>
+                </tr>
+              </thead>
+              {loading ? (
+                <div className="flex justify-center items-center h-full w-full">
+                  <LoadingSpinner size="sm" />
+                </div>
+              ) : (
                 <tbody>
-                  {products.map((product, index) => (
-                    <tr key={index} className="border-b border-gray-100">
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded bg-gray-100 flex items-center justify-center">
-                            <img
-                              src={product.image}
-                              alt={product.name}
-                              className="w-6 h-6 rounded object-cover"
-                            />
-                          </div>
-                          <span className="text-sm">{product.name}</span>
-                        </div>
+                  {products?.map((product) => (
+                    <tr
+                      key={product?._id}
+                      className="border-b hover:bg-gray-50"
+                    >
+                      <td className="p-2 flex items-center gap-2 ">
+                        <img
+                          src={product?.mainImage}
+                          alt="product"
+                          className=" w-10 h-10 rounded-full"
+                        />
+                        {product?.name}
                       </td>
-                      <td className="py-3 px-4 text-sm">{product.brand}</td>
-                      <td className="py-3 px-4 text-sm">{product.stock}</td>
-                      <td className="py-3 px-4 text-sm">
-                        {product.grossPrice}
+                      <td className="p-2">{product?.brand?.name}</td>
+                      <td className="p-2">{product?.category?.name}</td>
+                      <td className="p-2">
+                        {new Date(product?.updatedAt).toLocaleDateString()}
                       </td>
-                      <td className="py-3 px-4 text-sm">
-                        {product.sellingPrice}
-                      </td>
-                      <td className="py-3 px-4 text-sm">
-                        {product.offerPrice}
-                      </td>
-                      <td className="py-3 px-4 text-sm">
-                        {product.lastUpdated}
-                      </td>
-                      <td className="py-3 px-4">
-                        <button className="text-gray-400 hover:text-gray-600">
-                          <svg
-                            className="w-4 h-4"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                          >
-                            <path
-                              d="M2 4h12M6 4V2h4v2M4 4l1 10h6l1-10"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </button>
+                      <td className="p-2">
+                        <FaEdit
+                          className="text-green-600 cursor-pointer"
+                          onClick={() => handleEdit(product?._id)}
+                        />
                       </td>
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            </div>
+              )}
+            </table>
           </div>
         </div>
       </div>
