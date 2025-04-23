@@ -1,6 +1,9 @@
+@import "./style/global.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 * {
     margin: 0;

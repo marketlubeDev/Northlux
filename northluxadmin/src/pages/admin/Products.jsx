@@ -8,14 +8,35 @@ import debounce from "lodash/debounce";
 import PageHeader from "../../components/Admin/PageHeader";
 import ProductTable from "../../components/Admin/Product/components/Table/ProductTable";
 import Pagination from "../../components/Admin/Product/components/Pagination/Pagination";
+import { Modal } from "../../components/shared/Modal";
+import { BulkOfferForm } from "../../components/Admin/Product/components/Forms/BulkOfferForm";
 
 function Products() {
   const [products, setProducts] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(5);
   const [isLoading, setIsLoading] = useState(true);
   const [searchKeyword, setSearchKeyword] = useState("");
   const navigate = useNavigate();
+
+  const [showBulkOfferModal, setShowBulkOfferModal] = useState(false);
+  const [isProductSelected, setIsProductSelected] = useState(false);
+  const selectedProductsCount = selectedProducts?.length;
+
+  // console.log("selectedProducts==========", selectedProducts);
+
+  // handleIsProductSelected
+  useEffect(() => {
+    const handleIsProductSelected = () => {
+      if (selectedProducts.length > 0) {
+        setIsProductSelected(true);
+      } else {
+        setIsProductSelected(false);
+      }
+    };
+    handleIsProductSelected();
+  }, [selectedProducts]);
 
   // Fetch products when page changes or on initial load
   useEffect(() => {
@@ -55,6 +76,8 @@ function Products() {
           limit: 10,
         });
         setProducts(res?.data?.data?.products);
+        setIsProductSelected(false);
+        setSelectedProducts([]);
         setTotalPages(res?.data?.data?.totalPages);
       } catch (err) {
         toast.error("Failed to search products");
@@ -93,6 +116,19 @@ function Products() {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+    setSelectedProducts([]);
+    setIsProductSelected(false);
+  };
+
+  // Handle All products checkbox selection
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedProducts(products.map((product) => product._id));
+      setIsProductSelected(true);
+    } else {
+      setSelectedProducts([]);
+      setIsProductSelected(false);
+    }
   };
 
   // Cleanup debounce on component unmount
@@ -103,19 +139,14 @@ function Products() {
   }, [debouncedSearch]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen bg-gray-100 relative">
       <PageHeader content="Products" />
 
       <div className="flex flex-col  m-4">
         <div className="relative overflow-hidden shadow-md sm:rounded-lg flex flex-col flex-1 bg-white">
           {/* Header section with Add Product button and Search */}
           <div className="flex items-center justify-between flex-wrap md:flex-row p-4 border-b">
-            <button
-              onClick={() => navigate("addproduct")}
-              className="bg-green-500 p-2 text-white rounded-md hover:bg-green-600 transition-colors"
-            >
-              Add New Product
-            </button>
+            {/* search-bar */}
             <div className="relative">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <svg
@@ -140,7 +171,36 @@ function Products() {
                 placeholder="Search products..."
               />
             </div>
+            {/* buttons */}
+            <div className="flex gap-2">
+              {isProductSelected && (
+                <button className="font-semibold text-red-500 p-2 rounded-md hover:bg-red-500 hover:text-white transition-colors">
+                  x Remove Offer
+                </button>
+              )}
+              <button
+                onClick={() => setShowBulkOfferModal(true)}
+                className="border-2 border-green-500 text-green-500 p-2 rounded-md hover:bg-green-500 hover:text-white transition-colors"
+              >
+                + Add Bulk Offer
+              </button>
+              {!isProductSelected && (
+                <button
+                  onClick={() => navigate("addproduct")}
+                  className="bg-green-500 p-2 text-white rounded-md hover:bg-green-600 transition-colors"
+                >
+                  + Add Product
+                </button>
+              )}
+            </div>
           </div>
+
+          <Modal
+            isOpen={showBulkOfferModal}
+            onClose={() => setShowBulkOfferModal(false)}
+          >
+            <BulkOfferForm isProductSelected={isProductSelected} />
+          </Modal>
 
           {/* Table section with loading state */}
           <div className="overflow-y-auto flex-1 relative">
@@ -154,7 +214,14 @@ function Products() {
                 No products found
               </div>
             ) : (
-              <ProductTable products={products} />
+              <ProductTable
+                products={products}
+                onSelectAll={handleSelectAll}
+                selectedProducts={selectedProducts}
+                setSelectedProducts={setSelectedProducts}
+                isProductSelected={isProductSelected}
+                selectedProductsCount={selectedProductsCount}
+              />
             )}
           </div>
 

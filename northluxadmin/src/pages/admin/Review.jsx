@@ -264,10 +264,10 @@ const ReviewList = () => {
                       <td className="px-6 py-4">
                         <div>
                           <p className="font-semibold text-gray-900">
-                            {review?.userId?.username}
+                            {review.userId?.username}
                           </p>
                           <p className="text-sm text-gray-500">
-                            {review?.userId?.email}
+                            {review.userId?.email}
                           </p>
                         </div>
                       </td>
@@ -316,7 +316,7 @@ const ReviewList = () => {
                       </td>
                       <td className="px-6 py-4">
                         <p className="text-sm font-semibold text-gray-900">
-                          {review?.productId?.name}
+                          {review.productId?.name}
                         </p>
                       </td>
                       <td className="px-6 py-4">
