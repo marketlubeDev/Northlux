@@ -11,6 +11,7 @@ export const BrandListing = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  // const [brands, setBrands] = useState([]);
   const inputRef = useRef(null);
   const navigate = useNavigate();
 
@@ -51,6 +52,9 @@ export const BrandListing = () => {
   } = useBrands({ search: searchQuery, page: currentPage, limit });
 
   const brands = brandsData?.data?.brands || [];
+  // useEffect(() => {
+  //   setBrands(brandsData?.data?.brands);
+  // }, [brandsData]);
 
   //handle loading states
   if (brandsLoading) {
@@ -87,13 +91,14 @@ export const BrandListing = () => {
                 onChange={handleInputChange}
                 className="search-input"
                 ref={inputRef}
+                autoFocus={true}
               />
             </div>
           </div>
         </div>
       </div>
       <div className="brand-listing-container">
-        {brands.map((brand, index) => (
+        {brands?.map((brand, index) => (
           <div key={index} className="brand-listing-item">
             <img src={brand?.image} alt={brand?.name} />
             <div className="overlay">

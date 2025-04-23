@@ -8,13 +8,13 @@ const path = require("path");
 
 // Create a new brand
 const createBrand = catchAsync(async (req, res, next) => {
-  const { name, description } = req.body;
+  const { name, description, isPriority } = req.body;
 
   if (!name) {
     return next(new AppError("Brand name is required", 400));
   }
 
-  const brandData = { name, description };
+  const brandData = { name, description, isPriority };
 
   if (req.files && req.files.length > 0) {
     // Handle main brand image
@@ -44,21 +44,48 @@ const createBrand = catchAsync(async (req, res, next) => {
   });
 });
 
+
 // Get all brands
 const getAllBrands = catchAsync(async (req, res, next) => {
   const { page = 1, limit = 10, search } = req.query;
-  const brands = await Brand.find({ name: { $regex: search, $options: "i" } })
-    .skip((page - 1) * limit)
-    .limit(limit);
+  console.log(page, limit, search);
+
+  let matchStage = {$match:{}};
+
+  if (search) {
+    matchStage = {
+      $match: { name: { $regex: search, $options: "i" } },
+    };
+  }
+
+  const facetStage = {
+    $facet: {
+      brands: [
+        { $skip: (page - 1) * limit },
+        { $limit: limit },
+      ],
+      priorityBrandCount: [
+        { $match: { isPriority: true } },
+        { $count: "count" },
+      ],
+    },
+  };
+
+  const aggregation = await Brand.aggregate([matchStage, facetStage]);
+
+  const brands = aggregation[0].brands;
+  const priorityBrandCount = aggregation[0].priorityBrandCount[0]?.count || 0;
 
   res.status(200).json({
     status: "success",
     results: brands.length,
+    priorityBrandCount,
     data: {
       brands,
     },
   });
 });
+
 
 // Get a single brand by ID
 const getBrandById = catchAsync(async (req, res, next) => {
