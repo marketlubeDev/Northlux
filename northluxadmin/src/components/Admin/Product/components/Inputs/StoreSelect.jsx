@@ -1,9 +1,9 @@
 import ErrorMessage from "../../../../common/ErrorMessage";
 
-const UnitsSelect = ({ handleChange, value, errors }) => (
+const StoreSelect = ({ handleChange, value, errors }) => (
   <div className="flex flex-col w-1/2">
     <label className="block mb-2 text-sm font-medium text-gray-900">
-      Units
+      Store
     </label>
     <select
       name="units"
@@ -13,12 +13,12 @@ const UnitsSelect = ({ handleChange, value, errors }) => (
       onChange={handleChange}
       value={value}
     >
-      <option value="">Select Unit</option>
-      <option value="peices">Peices</option>
-      <option value="kg">Kg</option>
+      <option value="">Select Store</option>
+      <option value="peices">Calicut</option>
+      <option value="kg">Kannur</option>
     </select>
     <ErrorMessage error={errors?.units} />
   </div>
 );
 
-export default UnitsSelect;
+export default StoreSelect;

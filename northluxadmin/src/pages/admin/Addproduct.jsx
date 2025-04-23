@@ -7,7 +7,7 @@ import PageHeader from "../../components/Admin/PageHeader";
 import ProductNameInput from "../../components/Admin/Product/components/Inputs/ProductNameInput";
 import BrandSelect from "../../components/Admin/Product/components/Inputs/BrandSelect";
 import CategorySelect from "../../components/Admin/Product/components/Inputs/CategrorySelect";
-import UnitsSelect from "../../components/Admin/Product/components/Inputs/UnitsSelects";
+import StoreSelect from "../../components/Admin/Product/components/Inputs/StoreSelect";
 import LabelSelect from "../../components/Admin/Product/components/Inputs/LabelSelect";
 import VariantRadioButtons from "../../components/Admin/Product/components/Variants/VariantRadioButtons";
 import VariantCard from "../../components/Admin/Product/components/Variants/VariantsCard";
@@ -62,12 +62,11 @@ function Addproduct() {
         const res = await getProductById(productId);
         let hasVariants = false;
         let variants = [];
-        console.log(res.data);
-
+        setImages(res.data.images);
         if (res.data.variants.length > 0) {
           hasVariants = true;
           setSelectedVariant("hasVariants");
-          setShowVariantForm(true);
+          // setShowVariantForm(true);
           variants = res.data.variants.map((variant) => ({
             ...variant,
             _id: variant._id,
@@ -75,27 +74,27 @@ function Addproduct() {
           setCurrentVariant(variants[0]);
           setImages(variants[0].images);
           setSelectedVariantIndex(0);
-        } else {
-          setImages(res.data.images);
         }
 
         const productData = {
-          name: res.data.name,
-          brand: res.data.brand._id,
-          category: res.data.category._id,
-          label: res.data.label._id,
+          name: res?.data?.name,
+          brand: res?.data?.brand?._id,
+          category: res?.data?.category?._id,
+          label: res?.data?.label?._id,
           variants: variants,
-          sku: !hasVariants ? res.data.sku : "",
-          description: !hasVariants ? res.data.description : "",
+          sku: !hasVariants ? res?.data?.sku : "",
+          description: !hasVariants ? res?.data?.description : "",
           // units: res.data.units,
           price: !hasVariants ? res.data.price : "",
           offerPrice: !hasVariants ? res.data.offerPrice : "",
           stock: !hasVariants ? res.data.stock : "",
+          stockStatus: !hasVariants ? res.data.stockStatus : "",
           images: !hasVariants ? res.data.images : [],
         };
 
         setProductData(productData);
       } catch (err) {
+        console.log(err, "err");
         toast.error("Failed to fetch product");
       } finally {
         setIsLoadingData(false);
@@ -160,6 +159,23 @@ function Addproduct() {
     }
   };
 
+  // const handleRadioChange = (event) => {
+  //   const value = event.target.value;
+  //   setSelectedVariant(value);
+
+  //   // Reset product data structure based on variant selection
+  //   if (value === "noVariants") {
+  //     setProductData((prev) => ({
+  //       ...prev,
+  //       variants: [],
+  //     }));
+  //   }
+
+  //   // Clear all errors when switching variant types
+  //   setErrors({});
+  //   setVariantErrors({});
+  // };
+
   const handleRadioChange = (event) => {
     const value = event.target.value;
     setSelectedVariant(value);
@@ -168,43 +184,46 @@ function Addproduct() {
       setProductData((prev) => ({
         ...prev,
         variants: [],
+        // stockStatus: "instock",
       }));
       setImages(productData.images);
     } else if (value === "hasVariants") {
       // Create first variant from existing product data
 
-      const firstVariant = {
-        sku: productData.sku || "",
-        attributes: {
-          title: "",
-          description: productData.description || "",
-        },
-        price: productData.price || "",
-        offerPrice: productData.offerPrice || "",
-        stock: productData.stock
-          ? productData.stock.toString().toLowerCase()
-          : "",
-        stockStatus: "inStock",
-        images: productData.images || [],
-      };
+      if (editMode) {
+        const firstVariant = {
+          sku: productData.sku || "",
+          attributes: {
+            title: "",
+            description: productData.description || "",
+          },
+          price: productData.price || "",
+          offerPrice: productData.offerPrice || "",
+          stock: productData.stock
+            ? productData.stock.toString().toLowerCase()
+            : "",
+          stockStatus: productData.stockStatus || "",
+          images: productData.images || [],
+        };
 
-      // Update product data with the new variant
-      setProductData((prev) => ({
-        ...prev,
-        variants: [firstVariant],
-        // Clear single product fields
-        sku: "",
-        description: "",
-        price: "",
-        offerPrice: "",
-        stock: "",
-        images: [],
-      }));
+        // Update product data with the new variant
+        setProductData((prev) => ({
+          ...prev,
+          variants: [firstVariant],
+          // Clear single product fields
+          sku: "",
+          description: "",
+          price: "",
+          offerPrice: "",
+          stock: "",
+          images: [],
+        }));
 
-      // Set the current variant and show form
-      setCurrentVariant(firstVariant);
-      setImages(firstVariant.images);
-      setSelectedVariantIndex(0);
+        // Set the current variant and show form
+        setCurrentVariant(firstVariant);
+        setImages(firstVariant.images);
+        setSelectedVariantIndex(0);
+      }
       setShowVariantForm(true);
     }
 
@@ -254,27 +273,28 @@ function Addproduct() {
     }
   };
 
-
-const handleSaveVariant = () => {
-
-    console.log(productData, "productData");
-    console.log(images, "images");
+  const handleSaveVariant = () => {
     const variantData = {
-      _id: currentVariant._id,
-      sku: currentVariant.sku,
+      _id: currentVariant?._id || "",
+      sku: currentVariant?.sku || "",
       attributes: {
-        title: currentVariant.attributes.title,
-        description: currentVariant.attributes.description,
+        title: currentVariant?.attributes?.title || "",
+        description: currentVariant?.attributes?.description || "",
       },
-      price: currentVariant.price,
-      offerPrice: currentVariant.offerPrice,
-      stock: currentVariant.stock,
-      stockStatus: currentVariant.stockStatus,
+      price: currentVariant?.price || "",
+      offerPrice: currentVariant?.offerPrice || "",
+      stock: currentVariant?.stock || "",
+      stockStatus: currentVariant?.stockStatus || "",
       images: [...images],
     };
-    console.log(variantData.stockStatus, "variantData");
-    if(variantData.stockStatus === "outofstock" && variantData.stock > 0){
-      toast.error("Stock cannot be greater than 0 when stock status is out of stock");
+
+    if (
+      variantData.stockStatus === "outofstock" &&
+      parseInt(variantData.stock) > 0
+    ) {
+      toast.error(
+        "Variant stock status cannot be out of stock when stock quantity is greater than 0"
+      );
       return;
     }
 
@@ -301,9 +321,14 @@ const handleSaveVariant = () => {
         variants: [...prev.variants, variantData],
       }));
       toast.success("Variant added successfully");
+      setShowVariantForm(false);
+      setSelectedVariantIndex(null);
     }
 
-    // Keep the form open and current variant selected when saving the first variant
+    // resetVariantForm();
+    // setShowVariantForm(false);
+    // setVariantErrors({});
+    // setSelectedVariantIndex(null);
     if (productData.variants.length === 0) {
       setSelectedVariantIndex(0);
     } else {
@@ -318,6 +343,7 @@ const handleSaveVariant = () => {
   const resetVariantForm = () => {
     setCurrentVariant(initialVariantState);
     setImages([]);
+    setSelectedVariantIndex(null);
   };
 
   const handleDeleteVariant = (index) => {
@@ -346,10 +372,10 @@ const handleSaveVariant = () => {
     }
   };
 
-  console.log(selectedVariant === "hasVariants", "selectedVariant");
-
   const handlePublish = async () => {
     // Check if variants are required but none are added
+    console.log(productData, "productData>>>");
+    console.log(selectedVariant, "selectedVariant>>>");
     if (
       selectedVariant === "hasVariants" &&
       productData.variants.length === 0
@@ -398,7 +424,6 @@ const handleSaveVariant = () => {
     // formData.append("units", productData.units);
 
     if (selectedVariant === "hasVariants") {
-      console.log(productData.variants, "productData.variants");
       // For products with variants
       const formattedVariants = productData.variants.map((variant) => {
         // Convert stock to number if it's a numeric string, otherwise use 0
@@ -467,9 +492,7 @@ const handleSaveVariant = () => {
             }
           );
         }
-
       });
-
     } else {
       // For products without variants
       formData.append("description", productData.description);
@@ -481,6 +504,7 @@ const handleSaveVariant = () => {
         ? parseInt(productData.stock, 10)
         : 0;
       formData.append("stock", stockNumber);
+      formData.append("stockStatus", productData.stockStatus.toLowerCase());
 
       // Handle product images with indices
       images.forEach((image, index) => {
@@ -576,11 +600,11 @@ const handleSaveVariant = () => {
               </div>
 
               <div className="flex gap-2">
-                {/* <UnitsSelect
+                <StoreSelect
                   handleChange={handleProductChange}
-                  value={productData.units}
+                  value={productData.store}
                   errors={errors}
-                /> */}
+                />
                 <LabelSelect
                   labels={formUtilites.labels}
                   handleChange={handleProductChange}
@@ -595,47 +619,56 @@ const handleSaveVariant = () => {
               />
               <ErrorMessage error={errors?.variantSelection} />
 
-              {productData.variants.length > 0 && (
-                <div className="mt-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-medium">Saved Variants</h3>
-                    {!showVariantForm && !isPublishing && (
-                      <button
-                        onClick={() => setShowVariantForm(true)}
-                        className="btn bg-blue-600 text-white p-2 px-4 rounded-3xl flex items-center gap-2"
-                      >
-                        <span>+ Add Variant</span>
-                      </button>
-                    )}
-                  </div>
-                  <div
-                    className={`${
-                      showVariantForm ? "max-h-80" : ""
-                    } overflow-auto pr-2`}
-                  >
-                    <div className="flex  flex-wrap gap-3">
-                      {productData.variants.map((variant, index) => (
-                        <VariantCard
-                          key={index}
-                          variant={{
-                            ...variant,
-                            variantNumber: index + 1,
-                            title: variant.attributes.title,
-                            // width: showVariantForm ? "max-w-64" : "w-full",
+              {productData.variants?.length > 0 &&
+                productData.variants.some((variant) => variant.sku) && (
+                  <div className="mt-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <h3 className="font-medium">Saved Variants</h3>
+                      {!showVariantForm && !isPublishing && (
+                        <button
+                          onClick={() => {
+                            setShowVariantForm(true);
+                            setSelectedVariantIndex(null);
+                            setCurrentVariant({});
+                            setImages([]);
+                            setVariantErrors({});
                           }}
-                          editMode={editMode}
-                          isSelected={selectedVariantIndex === index}
-                          setCurrentVariant={() =>
-                            handleCurrentVariant(variant, index)
-                          }
-                          handleDeleteVariant={() => handleDeleteVariant(index)}
-                          currentVariant={currentVariant}
-                        />
-                      ))}
+                          className="btn bg-blue-600 text-white p-2 px-4 rounded-3xl flex items-center gap-2"
+                        >
+                          <span>+ Add Variant</span>
+                        </button>
+                      )}
+                    </div>
+                    <div
+                      className={`${
+                        showVariantForm ? "max-h-80" : ""
+                      } overflow-auto pr-2`}
+                    >
+                      <div className="flex  flex-wrap gap-3">
+                        {productData.variants.map((variant, index) => (
+                          <VariantCard
+                            key={index}
+                            variant={{
+                              ...variant,
+                              variantNumber: index + 1,
+                              title: variant.attributes.title,
+                              // width: showVariantForm ? "max-w-64" : "w-full",
+                            }}
+                            editMode={editMode}
+                            isSelected={selectedVariantIndex === index}
+                            setCurrentVariant={() =>
+                              handleCurrentVariant(variant, index)
+                            }
+                            handleDeleteVariant={() =>
+                              handleDeleteVariant(index)
+                            }
+                            currentVariant={currentVariant}
+                          />
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
           </div>
 
@@ -652,6 +685,7 @@ const handleSaveVariant = () => {
                       name="sku"
                       value={productData.sku}
                       onChange={handleProductChange}
+                      placeholder="Enter product SKU"
                       className={`bg-gray-50 border ${
                         errors?.sku ? "border-red-500" : "border-gray-300"
                       } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
@@ -669,6 +703,7 @@ const handleSaveVariant = () => {
                       name="price"
                       value={productData.price}
                       onChange={handleProductChange}
+                      placeholder="Enter product price"
                       className={`bg-gray-50 border ${
                         errors?.price ? "border-red-500" : "border-gray-300"
                       } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
@@ -684,6 +719,7 @@ const handleSaveVariant = () => {
                       name="offerPrice"
                       value={productData.offerPrice}
                       onChange={handleProductChange}
+                      placeholder="Enter offer price"
                       className={`bg-gray-50 border ${
                         errors?.offerPrice
                           ? "border-red-500"
@@ -692,9 +728,27 @@ const handleSaveVariant = () => {
                     />
                     <ErrorMessage error={errors?.offerPrice} />
                   </div>
+                  <div className="flex flex-col w-1/2">
+                    <label className="block mb-2 text-sm font-medium text-gray-900">
+                      Gross Price <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="grossPrice"
+                      value={productData.grossPrice}
+                      onChange={handleProductChange}
+                      placeholder="Enter gross price"
+                      className={`bg-gray-50 border ${
+                        errors?.grossPrice
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
+                    />
+                    <ErrorMessage error={errors?.grossPrice} />
+                  </div>
                 </div>
                 <div className="flex gap-2 px-3">
-                  <div className="flex flex-col w-full">
+                  <div className="flex flex-col w-1/2">
                     <label className="block mb-2 text-sm font-medium text-gray-900">
                       Stock <span className="text-red-500">*</span>
                     </label>
@@ -703,11 +757,32 @@ const handleSaveVariant = () => {
                       name="stock"
                       value={productData.stock}
                       onChange={handleProductChange}
+                      placeholder="Enter stock quantity"
                       className={`bg-gray-50 border ${
                         errors?.stock ? "border-red-500" : "border-gray-300"
                       } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
                     />
                     <ErrorMessage error={errors?.stock} />
+                  </div>
+                  <div className="flex flex-col w-1/2">
+                    <label className="block mb-2 text-sm font-medium text-gray-900">
+                      Stock Status <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      name="stockStatus"
+                      className={`bg-gray-50 border ${
+                        errors?.stockStatus
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
+                      onChange={handleProductChange}
+                      value={productData.stockStatus}
+                    >
+                      <option value="">Select Status</option>
+                      <option value="instock">In stock</option>
+                      <option value="outofstock">Out of stock</option>
+                    </select>
+                    <ErrorMessage error={errors?.stockStatus} />
                   </div>
                 </div>
                 <div className="px-3">
@@ -718,6 +793,7 @@ const handleSaveVariant = () => {
                     name="description"
                     value={productData.description}
                     onChange={handleProductChange}
+                    placeholder="Enter product description"
                     rows={6}
                     className={`block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border ${
                       errors?.description ? "border-red-500" : "border-gray-300"
@@ -745,7 +821,13 @@ const handleSaveVariant = () => {
                     <div className="relative">
                       <div className="absolute top-0 right-3 z-10">
                         <button
-                          onClick={() => closeVariantForm()}
+                          onClick={() => {
+                            closeVariantForm();
+                            setSelectedVariantIndex(null);
+                            setCurrentVariant({});
+                            setImages([]);
+                            setVariantErrors({});
+                          }}
                           className="text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-100"
                         >
                           <svg
@@ -777,6 +859,7 @@ const handleSaveVariant = () => {
                         name="sku"
                         value={currentVariant.sku}
                         onChange={handleVariantChange}
+                        placeholder="Enter variant SKU"
                         className={`bg-gray-50 border ${
                           variantErrors?.sku
                             ? "border-red-500"
@@ -792,9 +875,9 @@ const handleSaveVariant = () => {
                       <input
                         type="text"
                         name="title"
-                        value={currentVariant.attributes.title}
-                        onChange={handleVariantChange}
+                        value={currentVariant?.attributes?.title}
                         placeholder="Please enter variant title"
+                        onChange={handleVariantChange}
                         className={`bg-gray-50 border ${
                           variantErrors?.title
                             ? "border-red-500"
@@ -828,7 +911,7 @@ const handleSaveVariant = () => {
                       onClick={handleSaveVariant}
                       className="btn bg-blue-600 text-white p-1 px-3 rounded-3xl"
                     >
-                      {editMode && currentVariant._id
+                      {editMode && Object.keys(currentVariant).length > 0
                         ? "Update Variant"
                         : !editMode && selectedVariantIndex !== null
                         ? "Update Variant"

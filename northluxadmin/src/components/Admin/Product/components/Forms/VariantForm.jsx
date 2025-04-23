@@ -33,6 +33,21 @@ const VariantForm = ({ handleVariantChange, currentVariantData, errors }) => (
         />
         <ErrorMessage error={errors?.offerPrice} />
       </div>
+      <div className="flex flex-col w-1/2">
+        <label className="block mb-2 text-sm font-medium text-gray-900">
+          Gross Price <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          name="grossPrice"
+          className={`bg-gray-50 border ${
+            errors?.grossPrice ? "border-red-500" : "border-gray-300"
+          } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
+          onChange={handleVariantChange}
+          value={currentVariantData.grossPrice}
+        />
+        <ErrorMessage error={errors?.grossPrice} />
+      </div>
     </div>
     <div className="flex gap-2 px-3">
       <div className="flex flex-col w-1/2">
