@@ -3,16 +3,15 @@ import { useFetch } from "../../../../../hooks/useFetch";
 import { toast } from "react-toastify";
 import { FaCamera } from "react-icons/fa";
 
-export const BulkOfferForm = ({ onClose, isProductSelected }) => {
+export const BulkOfferForm = ({
+  onClose,
+  isProductSelected,
+  selectedProducts,
+}) => {
   // const [offerType, setOfferType] = useState(isProductSelected ? "group" : "category");
   const [category, setCategory] = useState("");
   const [brand, setBrand] = useState("");
-  // const [offerMetric, setOfferMetric] = useState("");
-  // const [offerValue, setOfferValue] = useState("");
-  // const [startDate, setStartDate] = useState("");
-  // const [endDate, setEndDate] = useState("");
-  // const [offerName, setOfferName] = useState("");
-  // const [bannerImage, setBannerImage] = useState("");
+
 
   const [formData, setFormData] = useState({
     offerType: isProductSelected ? "group" : "category",
@@ -26,10 +25,11 @@ export const BulkOfferForm = ({ onClose, isProductSelected }) => {
     bannerImage: "",
   });
 
-  console.log(formData, "================formData");
-
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
+
+  //fetching categories and brands
+  const [brandsAndCategories] = useFetch("/admin/getcategoriesbrands");
 
   // handle input change
   const handleInputChange = (e) => {
@@ -39,31 +39,18 @@ export const BulkOfferForm = ({ onClose, isProductSelected }) => {
 
   // handle apply offer
   const handleApplyOffer = () => {
-    // if (!offerType || !offerMetric || !offerValue || !startDate || !endDate) {
-    //   toast.error("Please fill all the fields");
-    //   return;
-    // }
     onClose();
     toast.success("Offer applied successfully");
   };
 
-  const [brandAndCategoreis] = useFetch("/admin/getcategoriesbrands");
-
-  const categories = brandAndCategoreis?.categories || [];
-  const brands = brandAndCategoreis?.brands || [];
-
-  // const handleOfferTypeChange = (e) => {
-  //   setOfferType(e.target.value);
-  //   setCategory("");
-  //   setBrand("");
-  // };
+  const categories = brandsAndCategories?.categories || [];
+  const brands = brandsAndCategories?.brands || [];
 
   const fieldsConfig = {
     category: [
       {
         label: "Category",
         value: category,
-        // onChange: setCategory,
         options: categories,
       },
     ],
@@ -172,7 +159,6 @@ export const BulkOfferForm = ({ onClose, isProductSelected }) => {
         </div>
       )}
 
-
       {/* ----------- offerMetric and offerValue----------- */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="mb-4 w-full">
@@ -192,10 +178,10 @@ export const BulkOfferForm = ({ onClose, isProductSelected }) => {
           </select>
         </div>
 
-      {/* ----------- offerValue----------- */}
-      <div className="mb-4 w-full">
-        <label className="block text-sm font-medium text-gray-700">
-          Offer Value
+        {/* ----------- offerValue----------- */}
+        <div className="mb-4 w-full">
+          <label className="block text-sm font-medium text-gray-700">
+            Offer Value
           </label>
           <input
             type="number"
@@ -237,7 +223,6 @@ export const BulkOfferForm = ({ onClose, isProductSelected }) => {
           />
         </div>
       </div>
-
 
       {/* ----------- bannerImage----------- */}
       <div className="mb-4">

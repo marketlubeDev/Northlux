@@ -14,6 +14,7 @@ import Brand from "../pages/admin/Brand";
 import Label from "../pages/admin/Label";
 import Banner from "../pages/admin/Banner";
 import OfferBanner from "../pages/admin/OfferBanner";
+import { ActiveOffers } from "../pages/admin/ActiveOffers";
 export const router = createBrowserRouter([
   {
     path: "/admin/login",
@@ -75,6 +76,10 @@ export const router = createBrowserRouter([
       {
         path: "offer-banner",
         element: <OfferBanner />,
+      },
+      {
+        path: "active-offer",
+        element: <ActiveOffers/>,
       },
     ],
   },

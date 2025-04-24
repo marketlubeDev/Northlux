@@ -199,7 +199,7 @@ function Products() {
             isOpen={showBulkOfferModal}
             onClose={() => setShowBulkOfferModal(false)}
           >
-            <BulkOfferForm isProductSelected={isProductSelected} />
+            <BulkOfferForm isProductSelected={isProductSelected} selectedProducts={selectedProducts} />
           </Modal>
 
           {/* Table section with loading state */}
