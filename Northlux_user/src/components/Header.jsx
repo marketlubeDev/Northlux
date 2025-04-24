@@ -14,12 +14,13 @@ import { useDispatch } from "react-redux";
 import { useCategories } from "../hooks/queries/categories";
 import { useProducts } from "../hooks/queries/products";
 import BrandsList from "./BrandsList/BrandsList";
+import { NavBar } from "./NavBar";
 
 export default function Header() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
@@ -30,11 +31,7 @@ export default function Header() {
   const [isBrandsListOpen, setIsBrandsListOpen] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState(null);
 
-  const {
-    data,
-    isLoading: categoriesLoading,
-    error: categoriesError,
-  } = useCategories();
+
 
   const { data: products, isLoading } = useProducts();
 
@@ -86,24 +83,24 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const categories = data?.envelop?.data || [];
+  // const categories = data?.envelop?.data || [];
 
-  const handleCategoryClick = (category) => {
-    if (selectedCategory?._id === category._id) {
-      setSelectedCategory(null);
-    } else {
-      setSelectedCategory(category);
-    }
+  // const handleCategoryClick = (category) => {
+  //   if (selectedCategory?._id === category._id) {
+  //     setSelectedCategory(null);
+  //   } else {
+  //     setSelectedCategory(category);
+  //   }
 
-    navigate("/products", {
-      state: {
-        selectedCategory: {
-          id: category._id,
-          name: category.name,
-        },
-      },
-    });
-  };
+  //   navigate("/products", {
+  //     state: {
+  //       selectedCategory: {
+  //         id: category._id,
+  //         name: category.name,
+  //       },
+  //     },
+  //   });
+  // };
 
   const handleProductClick = (productId) => {
     navigate(`/products/${productId}`);
@@ -304,23 +301,7 @@ export default function Header() {
           category={selectedCategory}
         /> */}
       </header>
-      {categories && (
-        <ul className="header-cat ">
-          <li onClick={() => handleCategoryClick({ id: null, name: "All" })}>
-            All
-          </li>
-          <li onClick={() => navigate("/brands")}>Brands</li>
-          {categories?.map((category) => (
-            <li
-              key={category?._id}
-              onClick={() => handleCategoryClick(category)}
-              style={{ cursor: "pointer" }}
-            >
-              {category?.name}
-            </li>
-          ))}
-        </ul>
-      )}
+      <NavBar />
     </>
   );
 }

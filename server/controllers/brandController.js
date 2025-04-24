@@ -54,7 +54,6 @@ const getAllBrands = catchAsync(async (req, res, next) => {
   const pageNumber = parseInt(page, 10);
   const limitNumber = parseInt(limit, 10);
 
-  console.log(pageNumber, limitNumber, search);
 
   let matchStage = { $match: {} };
 

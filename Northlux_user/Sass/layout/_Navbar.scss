@@ -1,0 +1,123 @@
+@use "../abstract/variables" as var;
+
+.nav-bar-container {
+  color: white;
+  background: #1e1e1e;
+  height: 48px;
+  padding-inline: 10%;
+
+  position: relative;
+}
+.nav-bar-list {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 100px;
+  align-items: center;
+
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
+  letter-spacing: 0px;
+  text-align: left;
+
+  li {
+    cursor: pointer;
+    // opacity: 0.6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &:hover {
+      opacity: 1;
+
+      .arrow-icon {
+        transform: rotate(220deg);
+      }
+
+      .dropdown-content {
+        // display: block;
+      }
+    }
+
+    .arrow-icon {
+      margin-left: 8px;
+      transition: transform 0.3s ease;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      display: inline-block;
+      padding: 3px;
+      transform: rotate(45deg);
+    }
+
+    .dropdown-content {
+      // display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      margin-inline: 2%;
+      background-color: #fff;
+      color: #000;
+      min-width: 200px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      padding: 10px;
+
+      display: flex;
+      // flex-direction: column;
+      justify-content: stretch;
+      // align-items: center;
+      gap: 10px;
+
+      .dropdown-content-list {
+        flex: 5;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: minmax(50px, auto);
+        // place-items: center;
+        gap: 10px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .dropdown-content-list-item {
+        padding: 8px 12px;
+        cursor: pointer;
+        opacity: 1;
+        // text-align: center;
+        p {
+          font-size: 14px;
+          color: #6d6d6d;
+        }
+        &:hover {
+          background-color: #f1f1f1;
+        }
+      }
+      .view-all-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        p {
+          font-size: 16px;
+          font-weight: 600;
+          opacity: 0.8;
+          // color: #6d6d6d;
+        }
+      }
+      .view-all-container-button {
+        background-color: var.$color-primary;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        height: 40px;
+        margin-bottom: 100px;
+      }
+    }
+  }
+}
