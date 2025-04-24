@@ -3,10 +3,15 @@ import Logo from "../Logo";
 import { useNavigate } from "react-router-dom";
 import { adminLogin } from "../../sevices/adminApis";
 import { toast } from "react-toastify";
+import { storeLogin } from "../../sevices/storeApis";
+import { useDispatch } from "react-redux";
+import { setStore } from "../../redux/features";
 
 function LoginComponent({ role }) {
-  const [values, setValues] = useState({ email: "", password: "" });
+  const dispatch = useDispatch();
+  const [values, setValues] = useState({ email: "", password: "", phone: "" });
   const [isLoading, setIsLoading] = useState(false);
+  const [loginType, setLoginType] = useState(role); // default to admin login
   const navigate = useNavigate();
 
   const onChange = (e) => {
@@ -14,23 +19,42 @@ function LoginComponent({ role }) {
   };
 
   const onlogin = async () => {
-    const { email, password } = values;
-    if (!email || !password) {
+    const { email, password, phone } = values;
+    if (loginType === "admin" && (!email || !password)) {
+      return toast.error("All fields are required");
+    }
+    if (loginType === "store" && (!phone || !password)) {
       return toast.error("All fields are required");
     }
 
     setIsLoading(true);
     try {
-      const res = await adminLogin(values);
-      toast.success(res.data.message);
-      localStorage.setItem("adminToken", res.data.token);
-      navigate("/admin");
+      if (loginType === "admin") {
+        const res = await adminLogin(values);
+        console.log(res);
+        toast.success(res?.data?.message);
+        localStorage.setItem("adminToken", res?.data?.token);
+        navigate("/admin");
+      } else {
+        // TODO: Implement store login
+        const res = await storeLogin(values);
+        console.log(res);
+        toast.success(res?.message);
+        localStorage.setItem("storeToken", res?.token);
+        dispatch(setStore(res?.store));
+        navigate("/admin");
+      }
     } catch (err) {
       console.log(err);
       toast.error(err?.response?.data?.message || "Something went wrong");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleLoginTypeChange = (e) => {
+    setLoginType(e.target.value);
+    setValues({ email: "", password: "", phone: "" });
   };
 
   return (
@@ -50,15 +74,19 @@ function LoginComponent({ role }) {
                   htmlFor="email"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Your email
+                  {loginType === "admin" ? "Your email" : "Phone number"}
                 </label>
                 <input
                   required
-                  type="email"
-                  name="email"
-                  id="email"
+                  type={loginType === "admin" ? "email" : "tel"}
+                  name={loginType === "admin" ? "email" : "phone"}
+                  id={loginType === "admin" ? "email" : "phone"}
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="name@company.com"
+                  placeholder={
+                    loginType === "admin"
+                      ? "name@company.com"
+                      : "Enter phone number"
+                  }
                   onChange={onChange}
                   disabled={isLoading}
                 />

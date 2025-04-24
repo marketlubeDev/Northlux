@@ -5,13 +5,14 @@ import Logo from "../../components/Logo";
 import TopProductCards from "../../components/Admin/dashboard/TopProductCards";
 import { adminDashdoard } from "../../sevices/adminApis";
 import LoadingSpinner from "../../components/spinner/LoadingSpinner";
+import { useSelector } from "react-redux";
 
 function DashBoard() {
+  const store = useSelector((state) => state.store.store);
+  console.log(store);
   const [cardsData, setCardsData] = useState([]);
   const [topProudcts, setTopProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
-
 
   useEffect(() => {
     fetchDashboardData();
@@ -21,8 +22,8 @@ function DashBoard() {
     try {
       setIsLoading(true);
       const res = await adminDashdoard();
-      setCardsData(res.data.summary);
-      setTopProducts(res.data.topProducts);
+      setCardsData(res?.data?.summary);
+      setTopProducts(res?.data?.topProducts);
     } catch (err) {
       console.log(err);
     } finally {
@@ -47,7 +48,11 @@ function DashBoard() {
       {/* quick analysis */}
       <div className="flex flex-col lg:flex-row items-center justify-evenly  py-3 bg-white md:p-4">
         <div>
-          <img src="/images/logo.png" alt="logo image" className="w-[20rem] md:w-[22rem] md:p-4" />
+          <img
+            src="/images/logo.png"
+            alt="logo image"
+            className="w-[20rem] md:w-[22rem] md:p-4"
+          />
         </div>
         <div>
           <p className="text-lg font-bold">September 2024</p>

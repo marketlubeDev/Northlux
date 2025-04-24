@@ -56,6 +56,14 @@ function Addproduct() {
   const productId = location.state?.productId;
 
   useEffect(() => {
+    if (location.state?.storeId) {
+      setProductData((prev) => ({
+        ...prev,
+        store: location.state.storeId,
+      }));
+    }
+  }, [location.state?.storeId]);
+  useEffect(() => {
     const fetchProduct = async () => {
       setIsLoadingData(true);
       try {
@@ -81,6 +89,7 @@ function Addproduct() {
           brand: res?.data?.brand?._id,
           category: res?.data?.category?._id,
           label: res?.data?.label?._id,
+          store: res?.data?.store,
           variants: variants,
           sku: !hasVariants ? res?.data?.sku : "",
           description: !hasVariants ? res?.data?.description : "",

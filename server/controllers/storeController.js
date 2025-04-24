@@ -57,9 +57,9 @@ const loginStore = catchAsync(async (req, res, next) => {
 
   //   const isPasswordCorrect = await store.comparePassword(password);
 
-  if (!isPasswordCorrect) {
-    return next(new AppError("Invalid phone or password", 401));
-  }
+  // if (!isPasswordCorrect) {
+  //   return next(new AppError("Invalid phone or password", 401));
+  // }
 
   const token = createToken(store._id, "store");
 

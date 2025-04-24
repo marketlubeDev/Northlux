@@ -6,14 +6,12 @@ import {
 } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { useProducts } from "../../../hooks/queries/products";
-import { useAddToCart } from "../../../hooks/queries/cart";
 import ButtonLoadingSpinner from "../../../components/ButtonLoadingSpinners";
 
 function Bestseller() {
   const navigate = useNavigate();
   const [currentProduct, setCurrentProduct] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const { mutate: addToCart, isPending: isAddingToCart } = useAddToCart();
 
   // Local state to track which button is loading
   const [loadingAction, setLoadingAction] = useState(null); // "buy" or "add"
@@ -87,7 +85,7 @@ function Bestseller() {
               alt={currentProduct?.name}
               className="fade-image"
               onClick={() => {
-                console.log('Product ID:', currentProduct?._id);
+                console.log("Product ID:", currentProduct?._id);
                 navigate(`/products/${currentProduct?._id}`);
               }}
             />
@@ -109,7 +107,12 @@ function Bestseller() {
             </button>
           </div>
           <h2 className="fade-text">{currentProduct?.name}</h2>
-          <p className="fade-text">{currentProduct?.description.split("").length > 500 ? currentProduct?.description.split("").slice(0, 500).join("") + "..." : currentProduct?.description}</p>
+          <p className="fade-text">
+            {currentProduct?.description.split("").length > 500
+              ? currentProduct?.description.split("").slice(0, 500).join("") +
+                "..."
+              : currentProduct?.description}
+          </p>
           <div className="buttons">
             <button
               className="add-to-cart"

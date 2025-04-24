@@ -13,7 +13,7 @@ import { logout } from "../redux/features/user/userSlice";
 import { useDispatch } from "react-redux";
 import { useCategories } from "../hooks/queries/categories";
 import { useProducts } from "../hooks/queries/products";
-import BrandsList from './BrandsList/BrandsList';
+import BrandsList from "./BrandsList/BrandsList";
 
 export default function Header() {
   const dispatch = useDispatch();
@@ -303,7 +303,6 @@ export default function Header() {
           isOpen={isBrandsListOpen || selectedCategory !== null}
           category={selectedCategory}
         /> */}
-
       </header>
       {categories && (
         <ul className="header-cat">

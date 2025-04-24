@@ -7,7 +7,7 @@ const autheticateToken = (allowedRoles) => {
       // Define token names for each role
       const roleTokenMap = {
         admin: "admin-auth-token",
-        seller: "seller-auth-token",
+        store: "store-auth-token",
         user: "user-auth-token",
       };
 
@@ -20,17 +20,17 @@ const autheticateToken = (allowedRoles) => {
         token = authHeader.split(" ")[1];
       }
 
-      // If no Bearer token, check cookies
-      if (!token) {
-        // Loop through allowed roles and find the correct token in cookies
-        for (const role of allowedRoles) {
-          if (req.cookies[roleTokenMap[role]]) {
-            token = req.cookies[roleTokenMap[role]];
-            userRole = role;
-            break;
-          }
-        }
-      }
+      // // If no Bearer token, check cookies
+      // if (!token) {
+      //   // Loop through allowed roles and find the correct token in cookies
+      //   for (const role of allowedRoles) {
+      //     if (req.cookies[roleTokenMap[role]]) {
+      //       token = req.cookies[roleTokenMap[role]];
+      //       userRole = role;
+      //       break;
+      //     }
+      //   }
+      // }
 
       if (!token) {
         return next(new AppError("Authentication token not found", 401));
@@ -41,7 +41,7 @@ const autheticateToken = (allowedRoles) => {
       if (!verifiedToken) {
         return next(new AppError("Invalid token", 401));
       }
-
+      console.log(verifiedToken, "verifiedToken");
       // Ensure the token role matches one of the allowed roles
       if (!allowedRoles.includes(verifiedToken.role)) {
         return next(

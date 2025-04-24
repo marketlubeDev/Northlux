@@ -6,7 +6,6 @@ const {
   deleteProduct,
   getProductsByLabel,
   getGroupedProductsByLabel,
-  getGroupedProductsByRating,
   searchProducts,
   softDeleteProduct,
 } = require("../../controllers/productController");
@@ -19,7 +18,7 @@ productRouter.get("/get-products", listProducts);
 productRouter.get("/get-product/:productId", getProductDetails);
 productRouter.get("/get-product-bylabel/:labelId", getProductsByLabel);
 productRouter.get("/get-grouped-products-label", getGroupedProductsByLabel);
-productRouter.get("/get-grouped-products-rating", getGroupedProductsByRating);
+// productRouter.get("/get-grouped-products-rating", getGroupedProductsByRating);
 
 productRouter.get("/search", searchProducts);
 

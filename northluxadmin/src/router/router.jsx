@@ -19,7 +19,11 @@ import Storeinfo from "../pages/admin/Storeinfo";
 export const router = createBrowserRouter([
   {
     path: "/admin/login",
-    element: <LoginComponent role={"Admin"} />,
+    element: <LoginComponent role={"admin"} />,
+  },
+  {
+    path: "/store/login",
+    element: <LoginComponent role={"store"} />,
   },
   {
     path: "/admin",

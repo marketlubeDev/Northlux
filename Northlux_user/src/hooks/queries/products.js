@@ -3,7 +3,6 @@ import { productService } from "../../api/services/productService";
 import apiClient from "../../api/client";
 
 export function useProducts(filters = {}) {
-console.log(filters);
   return useQuery({
     queryKey: ["products", filters],
     queryFn: () => getProducts(filters),
@@ -19,7 +18,7 @@ async function getProducts(filters) {
   if (filters.page) params.append("page", filters.page);
   if (filters.limit) params.append("limit", filters.limit);
 
-console.log(filters);
+  console.log(filters);
 
   if (filters.categoryId) params.append("categoryId", filters.categoryId);
   if (filters.subcategoryId)

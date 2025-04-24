@@ -1,15 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import Card from "../../components/Card";
-import { FiChevronLeft, FiChevronRight, FiShare2 } from "react-icons/fi";
+import {
+  FiChevronLeft,
+  FiChevronRight,
+  FiShare2,
+  FiHeart,
+} from "react-icons/fi";
+import { FaWhatsapp } from "react-icons/fa";
+import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
+
 import { useProductById, useProducts } from "../../hooks/queries/products";
 import { useParams, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "../../components/error/ErrorFallback";
-import { useAddToCart } from "../../hooks/queries/cart";
 import ButtonLoadingSpinner from "../../components/ButtonLoadingSpinners";
-import { reviewService } from "../../api/services/reviewService";
-import RatingModal from "./RatingModal";
+import { usePlaceOrder } from "../../hooks/queries/order";
+
 const CalculateDiscount = (price, offerPrice) => {
   const discount = ((price - offerPrice) / price) * 100;
   return Number.isInteger(discount) ? discount : discount.toFixed(2);
@@ -18,13 +25,7 @@ const CalculateDiscount = (price, offerPrice) => {
 function ProductDetailsContent() {
   const navigate = useNavigate();
   const sliderRef = useRef(null);
-  const [showAllReviews, setShowAllReviews] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState(null);
-  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState(null);
-  const [showFullDescription, setShowFullDescription] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-
   const { id } = useParams();
   //api calls
   const { data: product, isLoading, error, refetch } = useProductById(id);
@@ -34,11 +35,11 @@ function ProductDetailsContent() {
     error: errorProducts,
   } = useProducts();
 
-  const { mutate: addToCart, isLoading: isAddingToCart } = useAddToCart();
+  const { mutate: placeOrder, isPending: isPlacingOrder } = usePlaceOrder();
 
-  // Local state to track which button is loading
-  const [loadingAction, setLoadingAction] = useState(null); // "buy" or "cart"
-
+  const [showFullDescription, setShowFullDescription] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [quantity, setQuantity] = useState(1);
   useEffect(() => {
     setSelectedVariant(null);
     setSelectedImage(null);
@@ -69,62 +70,69 @@ function ProductDetailsContent() {
     }
   };
 
-  const reviews = product.ratings;
-  const visibleReviews = showAllReviews ? reviews : reviews?.slice(0, 2);
-
-  const handleAddToCart = (type) => {
-    const productToAdd = {
-      productId: product._id,
-      variantId: selectedVariant?._id || null,
-      quantity: 1,
-    };
-
-    setLoadingAction(type);
-    addToCart(productToAdd, {
-      onSuccess: () => {
-        if (type === "buy") {
-          navigate("/cart");
-        }
-      },
-      onSettled: () => {
-        setLoadingAction(null);
-      },
-    });
-  };
-
-  const handleSubmitReview = async (reviewData) => {
-    const formData = new FormData();
-    formData.append("rating", reviewData.rating);
-    formData.append("review", reviewData.review);
-    formData.append("image", reviewData.media);
-    formData.append("productId", reviewData.productId);
+  const handleConnectToWhatsapp = async () => {
     try {
-      const response = await reviewService.createReview(formData);
-      console.log(response);
-      setIsRatingModalOpen(false);
-      refetch();
-      toast.success("Review submitted successfully");
+      const productToAdd = {
+        productId: product._id,
+        variantId: selectedVariant?._id || null,
+        quantity: quantity,
+        from: location.pathname,
+      };
+
+      placeOrder(productToAdd, {
+        onSuccess: (data) => {
+          console.log(data);
+          const orderDetails = data?.data?.order;
+          const message =
+            `*NEW ORDER DETAILS*%0a%0a` +
+            `🛍️ *Order ID:* ${orderDetails?.orderId}%0a%0a` +
+            `📦 *Product Details*%0a` +
+            `• Name: ${orderDetails?.productName}%0a` +
+            `${
+              orderDetails?.variantName
+                ? `• Variant: ${orderDetails?.variantName}%0a`
+                : ""
+            }` +
+            `• Quantity: ${orderDetails?.quantity}%0a` +
+            `• Price: ₹${orderDetails?.pricePerUnit}%0a` +
+            `• Total: ₹${orderDetails?.totalAmount}%0a%0a` +
+            `🏪 *Store Details*%0a` +
+            `• ${orderDetails?.storeName}%0a` +
+            `• Contact: ${orderDetails?.storeNumber}%0a%0a` +
+            `🖼️ *Product Image*%0a` +
+            `${orderDetails?.productImage}%0a%0a` +
+            `Thank you for choosing ${orderDetails?.storeName}! We'll process your order shortly.`;
+
+          const whatsappUrl = `https://wa.me/${orderDetails?.storeNumber}?text=${message}`;
+          window.open(whatsappUrl, "_blank");
+        },
+        onError: (error) => {
+          console.log(error);
+        },
+      });
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleImageClick = (imageUrl) => {
-    setPreviewImage(imageUrl);
+  const truncateDescription = (text) => {
+    if (!text) return "";
+    const words = text.split(" ");
+    if (words.length <= 100) return text;
+    return showFullDescription ? text : words?.slice(0, 100).join(" ") + "...";
   };
 
-  const handleClosePreview = () => {
-    setPreviewImage(null);
-  };
-
-  const toggleDescription = () => {
-    setShowFullDescription(!showFullDescription);
+  const handleShare = () => {
+    const currentUrl = window.location.href;
+    const message = `Check out this product: ${product?.name}\n${currentUrl}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, "_blank");
   };
 
   return (
     <div className="product-details">
       <div className="breadcrumb">
-        <span>All products</span>
+        <span onClick={() => navigate("/products")}>All products</span>
         <span>/</span>
         <span className="category-name"> {product?.category?.name} </span>
       </div>
@@ -132,11 +140,13 @@ function ProductDetailsContent() {
       <div className="product-container">
         <div className="product-images">
           <div className="main-image">
-            {/* <button className="wishlist-btn">
-              <FiHeart />
-            </button> */}
             <img
-              src={selectedImage || (selectedVariant ? selectedVariant.images[0] : product?.images[0])}
+              src={
+                selectedImage ||
+                (selectedVariant
+                  ? selectedVariant.images[0]
+                  : product?.images[0])
+              }
               alt={product?.name}
             />
           </div>
@@ -148,8 +158,8 @@ function ProductDetailsContent() {
                     src={image}
                     alt={`${product?.name} ${index + 1}`}
                     onClick={() => setSelectedImage(image)}
-                    className={selectedImage === image ? 'selected' : ''}
-                    style={{ cursor: 'pointer' }}
+                    className={selectedImage === image ? "selected" : ""}
+                    style={{ cursor: "pointer" }}
                   />
                 ))
               : selectedVariant?.images.map((image, index) => (
@@ -158,15 +168,15 @@ function ProductDetailsContent() {
                     src={image}
                     alt={`${product?.name} ${index + 1}`}
                     onClick={() => setSelectedImage(image)}
-                    className={selectedImage === image ? 'selected' : ''}
-                    style={{ cursor: 'pointer' }}
+                    className={selectedImage === image ? "selected" : ""}
+                    style={{ cursor: "pointer" }}
                   />
                 ))}
           </div>
         </div>
 
         <div className="product-info">
-          <div className="header">
+          <div className="product-info-header">
             <div className="brand">
               <img
                 src={product?.brand?.image}
@@ -176,8 +186,8 @@ function ProductDetailsContent() {
               <span>{product?.brand?.name}</span>
             </div>
             <div className="actions">
-              <span className="product-id"># {product?._id}</span>
-              <button className="share-btn">
+              {/* <span className="product-id"># {product?._id}</span> */}
+              <button className="share-btn" onClick={handleShare}>
                 <FiShare2 />
               </button>
             </div>
@@ -187,47 +197,31 @@ function ProductDetailsContent() {
             {/* {selectedVariant
               ? selectedVariant?.attributes?.title
               : product?.name} */}
-            {product?.name}
+            {selectedVariant
+              ? `${product?.name} (${selectedVariant?.attributes?.title})`
+              : product?.name}
           </h1>
-
-          <div className="rating-summary">
-            <div className="stars">
-              {"★".repeat(Math.floor(product?.averageRating))}
-              {"☆".repeat(5 - Math.floor(product?.averageRating))}
-            </div>
-            <span className="rating">{product?.averageRating}</span>
-            <span className="reviews">({product?.totalRatings} reviews)</span>
-          </div>
 
           <div className="section description">
             <h3>Description</h3>
             <p>
-              {showFullDescription
-                ? selectedVariant
+              {truncateDescription(
+                selectedVariant
                   ? selectedVariant?.attributes?.description
                   : product?.description
-                : selectedVariant
-                ? selectedVariant?.attributes?.description?.slice(0, 150)
-                : product?.description?.slice(0, 150)}
-              {(selectedVariant
-                ? selectedVariant?.attributes?.description?.length > 150
-                : product?.description?.length > 150) && (
-                <button className="read-more" onClick={toggleDescription}>
-                  {showFullDescription ? "Show Less" : "Read More"}
+              )}
+              {(selectedVariant?.attributes?.description?.split(" ").length >
+                100 ||
+                product?.description?.split(" ").length > 100) && (
+                <button
+                  className="read-more"
+                  onClick={() => setShowFullDescription(!showFullDescription)}
+                >
+                  {showFullDescription ? "Show less" : "Read more"}
                 </button>
               )}
             </p>
           </div>
-
-          {/* <div className="section material">
-            <h3>Material</h3>
-            <div className="color-options">
-              <button className="color-btn black"></button>
-              <button className="color-btn brown"></button>
-              <button className="color-btn beige"></button>
-            </div>
-          </div> */}
-
           {product?.variants.length > 0 && (
             <div className="section variants">
               <h3>Variants</h3>
@@ -283,211 +277,63 @@ function ProductDetailsContent() {
             <div className="buy-buttons">
               <button
                 className="buy-now"
-                onClick={() => handleAddToCart("buy")}
-                disabled={loadingAction !== null}
+                onClick={() => handleConnectToWhatsapp()}
+                disabled={isPlacingOrder}
               >
-                {loadingAction === "buy" ? <ButtonLoadingSpinner /> : "Buy Now"}
-              </button>
-              <button
-                className="add-cart"
-                onClick={() => handleAddToCart("cart")}
-                disabled={loadingAction !== null}
-              >
-                {loadingAction === "cart" ? (
+                {isPlacingOrder ? (
                   <ButtonLoadingSpinner />
                 ) : (
-                  "Add To Cart"
+                  <div className="buy-now-button">
+                    <FaWhatsapp
+                      style={{ color: "white", fontSize: "1.5rem" }}
+                    />
+                    Buy Now
+                  </div>
                 )}
               </button>
-            </div>
-          </div>
-
-          {/* <div className="section specifications">
-            <h3>Product Specification</h3>
-            <ul>
-              <li>Uses only 10W power</li>
-              <li>Brightness of 800 lumens</li>
-              <li>Adjustable color temperature (3000K-6500K)</li>
-              <li>Long lifespan of up to 50,000 hours</li>
-              <li>Fits E27 base sockets</li>
-            </ul>
-          </div> */}
-
-          <div className="section reviews">
-            <div className="reviews-header">
-              <h3>Ratings & Reviews</h3>
-              <button
-                className="rate-btn"
-                onClick={() => setIsRatingModalOpen(true)}
-              >
-                Rate Product
-              </button>
-            </div>
-
-            <div className="rating-container">
-              {product?.totalRatings > 0 && (
-                <div className="average-rating">
-                  <div className="rating-value">
-                    <span className="number">{product?.averageRating}</span>
-                    <div className="stars">
-                      {"★".repeat(Math.floor(product?.averageRating))}
-                    </div>
-                  </div>
-                  <span className="total-reviews">
-                    Based on {product?.totalRatings} reviews
-                  </span>
+              <div className="quantity-container">
+                <span>Qty:</span>
+                <input
+                  type="text"
+                  className="quantity-input"
+                  value={quantity.toString()}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === "") {
+                      setQuantity("");
+                    } else {
+                      const parsed = parseInt(value);
+                      if (!isNaN(parsed) && parsed >= 0) {
+                        setQuantity(parsed);
+                      }
+                    }
+                  }}
+                  onBlur={() => {
+                    if (quantity === "" || quantity < 1) {
+                      setQuantity(1);
+                    }
+                  }}
+                />
+                <div className="quantity-buttons">
+                  <IoIosArrowUp
+                    size={30}
+                    onClick={() => setQuantity((prev) => prev + 1)}
+                  />
+                  <IoIosArrowDown
+                    size={30}
+                    onClick={() =>
+                      quantity > 1 && setQuantity((prev) => prev - 1)
+                    }
+                  />
                 </div>
-              )}
-
-              {product?.totalRatings > 0 && (
-                <div className="rating-stats">
-                  <div className="rating-bar">
-                    <span>5★</span>
-                    <div className="bar">
-                      <div
-                        className="fill"
-                        style={{
-                          width: `${
-                            (product?.ratingDistribution[5] /
-                              product?.totalRatings) *
-                              100 || 0
-                          }%`,
-                        }}
-                      ></div>
-                    </div>
-                    <span>({product?.ratingDistribution[5]})</span>
-                  </div>
-                  <div className="rating-bar">
-                    <span>4★</span>
-                    <div className="bar">
-                      <div
-                        className="fill"
-                        style={{
-                          width: `${
-                            (product?.ratingDistribution[4] /
-                              product?.totalRatings) *
-                            100
-                          }%`,
-                        }}
-                      ></div>
-                    </div>
-                    <span>({product?.ratingDistribution[4]})</span>
-                  </div>
-                  <div className="rating-bar">
-                    <span>3★</span>
-                    <div className="bar">
-                      <div
-                        className="fill"
-                        style={{
-                          width: `${
-                            (product?.ratingDistribution[3] /
-                              product?.totalRatings) *
-                            100
-                          }%`,
-                        }}
-                      ></div>
-                    </div>
-                    <span>({product?.ratingDistribution[3]})</span>
-                  </div>
-                  <div className="rating-bar">
-                    <span>2★</span>
-                    <div className="bar">
-                      <div
-                        className="fill"
-                        style={{
-                          width: `${
-                            (product?.ratingDistribution[2] /
-                              product?.totalRatings) *
-                            100
-                          }%`,
-                        }}
-                      ></div>
-                    </div>
-                    <span>({product?.ratingDistribution[2]})</span>
-                  </div>
-                  <div className="rating-bar">
-                    <span>1★</span>
-                    <div className="bar">
-                      <div
-                        className="fill"
-                        style={{
-                          width: `${
-                            (product?.ratingDistribution[1] /
-                              product?.totalRatings) *
-                            100
-                          }%`,
-                        }}
-                      ></div>
-                    </div>
-                    <span>({product?.ratingDistribution[1]})</span>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {product?.totalRatings > 0 && (
-              <div className="reviews-list">
-                {visibleReviews.map((review) => (
-                  <div key={review?._id} className="review-item">
-                    <div className="review-header">
-                      <div className="user-info">
-                        <img
-                          src={
-                            review?.userId?.image
-                              ? review?.userId?.image
-                              : "/images/user/profilepicture.jpg"
-                          }
-                          alt={review?.userId?.username}
-                          className="user-avatar"
-                        />
-                        <div className="user-details">
-                          <span className="username">
-                            {review?.userId?.username}
-                          </span>
-                          <span className="date">
-                            {new Date(review?.createdAt).toLocaleDateString()}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="review-rating">
-                        {"★".repeat(review?.rating)}
-                        {"☆".repeat(5 - review?.rating)}
-                      </div>
-                    </div>
-                    <div className="review-image">
-                      {review.image && (
-                        <img
-                          src={review?.image}
-                          alt={review?.review}
-                          style={{
-                            width: "20%",
-                            height: "20%",
-                            objectFit: "cover",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleImageClick(review?.image)}
-                        />
-                      )}
-                    </div>
-                    <p className="review-comment">{review?.review}</p>
-                  </div>
-                ))}
-                {reviews?.length > 2 && (
-                  <button
-                    className="show-more"
-                    onClick={() => setShowAllReviews(!showAllReviews)}
-                  >
-                    {showAllReviews ? `Show Less` : `Show All (${reviews.length - 2} more)`}
-                  </button>
-                )}
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Top Picks Section */}
-      <div className="top-picks-section" data-aos="fade-up">
+      <div className="top-picks-section">
         <div className="section-header">
           <h2>
             Top Picks <span>For You</span>
@@ -515,35 +361,14 @@ function ProductDetailsContent() {
 
       <div className="mobile-fixed-buttons">
         <div className="buy-buttons">
-          <button
-            className="add-cart"
-            onClick={() => handleAddToCart("add")}
-            disabled={loadingAction !== null}
-          >
-            {loadingAction === "add" ? <ButtonLoadingSpinner /> : "Add To Cart"}
-          </button>
-          <button className="buy-now" onClick={() => handleAddToCart("buy")}>
-            {loadingAction === "buy" ? <ButtonLoadingSpinner /> : "Buy Now"}
+          <button className="buy-now" onClick={() => handleConnectToWhatsapp()}>
+            <div className="buy-now-button">
+              <FaWhatsapp style={{ color: "white", fontSize: "1.5rem" }} />
+              Buy Now
+            </div>
           </button>
         </div>
       </div>
-      <RatingModal
-        isOpen={isRatingModalOpen}
-        onClose={() => setIsRatingModalOpen(false)}
-        onSubmit={handleSubmitReview}
-        productId={product?._id}
-      />
-
-      {previewImage && (
-        <div className="image-preview-overlay" onClick={handleClosePreview}>
-          <div className="image-preview-container">
-            <button className="close-preview" onClick={handleClosePreview}>
-              ×
-            </button>
-            <img src={previewImage} alt="Preview" />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

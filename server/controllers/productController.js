@@ -1,19 +1,14 @@
-const {
-  groupProductsByLabel,
-  groupProductsByRating,
-} = require("../helpers/aggregation/aggregations");
+const { groupProductsByLabel } = require("../helpers/aggregation/aggregations");
 const {
   updateOne,
   deleteOne,
 } = require("../helpers/handlerFactory/handlerFactory");
-const categoryModel = require("../model/categoryModel");
 const Product = require("../model/productModel");
 const productModel = require("../model/productModel");
 const Variant = require("../model/variantsModel");
 const uploadToCloudinary = require("../utilities/cloudinaryUpload");
 const AppError = require("../utilities/errorHandlings/appError");
 const catchAsync = require("../utilities/errorHandlings/catchAsync");
-const Rating = require("../model/ratingModel");
 const mongoose = require("mongoose");
 const formatProductResponse = require("../helpers/product/formatProducts");
 
@@ -419,51 +414,10 @@ const getProductDetails = catchAsync(async (req, res, next) => {
   }
 
   // Get rating distribution
-  const ratingDistribution = await Rating.aggregate([
-    { $match: { productId: new mongoose.Types.ObjectId(productDetails._id) } },
-    {
-      $group: {
-        _id: "$rating",
-        count: { $sum: 1 },
-      },
-    },
-    { $sort: { _id: -1 } },
-  ]);
 
   // Get all ratings with user details
-  const ratings = await Rating.find({ productId: productDetails._id })
-    .populate("userId", "username email profileImage") // Add the fields you want from the user
-    .sort({ createdAt: -1 }); // Sort by newest first
-
-  // Convert rating distribution to an object with all ratings (1-5)
-  const ratingCounts = {
-    5: 0,
-    4: 0,
-    3: 0,
-    2: 0,
-    1: 0,
-  };
-
-  ratingDistribution.forEach((rating) => {
-    ratingCounts[rating._id] = rating.count;
-  });
-
-  // Calculate rating statistics
-  const totalRatings = ratings.length;
-  const averageRating =
-    totalRatings > 0
-      ? ratings.reduce((sum, rating) => sum + rating.rating, 0) / totalRatings
-      : 0;
 
   const updated = productDetails.toObject();
-  updated.ratingDistribution = ratingCounts;
-  updated.ratings = ratings;
-  updated.ratingStats = {
-    totalRatings,
-    averageRating: Number(averageRating.toFixed(1)),
-    ratingCounts,
-  };
-
   res.status(200).json(updated);
 });
 
@@ -682,10 +636,6 @@ const getGroupedProductsByLabel = catchAsync(async (req, res, next) => {
   const result = await groupProductsByLabel();
   res.status(200).json(result);
 });
-const getGroupedProductsByRating = catchAsync(async (req, res, next) => {
-  const result = await groupProductsByRating();
-  res.status(200).json(result);
-});
 
 const searchProducts = catchAsync(async (req, res, next) => {
   let { keyword, page, limit } = req.query;
@@ -822,7 +772,6 @@ module.exports = {
   deleteProduct,
   getProductsByLabel,
   getGroupedProductsByLabel,
-  getGroupedProductsByRating,
   searchProducts,
   softDeleteProduct,
 };

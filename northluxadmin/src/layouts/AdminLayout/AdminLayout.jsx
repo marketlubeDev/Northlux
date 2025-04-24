@@ -2,7 +2,12 @@ import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Logo from "../../components/Logo";
 import { adminLogout } from "../../sevices/adminApis";
+import { useSelector, useDispatch } from "react-redux";
+import { setStore } from "../../redux/features";
 function AdminLayout() {
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.store.store);
+  console.log(store);
   const menuItems = [
     { name: "Dashboard", path: "/admin" },
     { name: "Products", path: "product" },
@@ -20,8 +25,14 @@ function AdminLayout() {
   const navigate = useNavigate();
 
   const logout = () => {
-    adminLogout();
-    navigate("login");
+    if (store && Object.keys(store).length > 0) {
+      localStorage.removeItem("storeToken");
+      dispatch(setStore(null));
+      navigate("login");
+    } else {
+      localStorage.removeItem("adminToken");
+      navigate("login");
+    }
   };
   return (
     <div className="h-screen ">

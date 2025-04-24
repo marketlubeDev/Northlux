@@ -1,8 +1,8 @@
 import apiClient from "../client";
 
 const orderService = {
-  placeOrder: async (address) => {
-    const response = await apiClient.post("/order/placeorder", { address });
+  placeOrder: async (data) => {
+    const response = await apiClient.post("/order/placeorder", data);
     return response.data;
   },
   getOrderHistory: async () => {

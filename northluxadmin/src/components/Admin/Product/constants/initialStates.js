@@ -8,6 +8,8 @@ export const initialProductState = {
   price: "",
   offerPrice: "",
   stock: "",
+  grossPrice: "",
+  store: "",
   variants: [],
 };
 
@@ -21,5 +23,6 @@ export const initialVariantState = {
   price: "",
   offerPrice: "",
   stock: "",
+  grossPrice: "",
   images: [],
 };

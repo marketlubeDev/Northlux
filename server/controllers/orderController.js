@@ -4,11 +4,7 @@ const orderModel = require("../model/orderModel");
 const productModel = require("../model/productModel");
 const catchAsync = require("../utilities/errorHandlings/catchAsync");
 const { getOrderStats } = require("../helpers/aggregation/aggregations");
-const Variant = require("../model/variantsModel");
-const Cart = require("../model/cartModel");
-const { NormalUser } = require("../model/userModel");
 
-// const placeOrder = catchAsync(async (req, res, next) => {
 //     const userId = req.user
 //     const { products, address, paymentMethod, transactionId } = req.body
 //     if (!products) {
@@ -70,164 +66,131 @@ const { NormalUser } = require("../model/userModel");
 // });
 
 const placeOrder = catchAsync(async (req, res, next) => {
-  const userId = req.user;
-  console.log(req.body, "userId");
-  const { address, paymentMethod } = req.body;
+  console.log(req.body, "req.body");
+  const { productId, variantId, quantity } = req.body;
 
-  let deliveryAddress;
-  if (mongoose.Types.ObjectId.isValid(address)) {
-    const user = await NormalUser.findById(userId);
-    deliveryAddress = user.address.find(
-      (addr) => addr._id.toString() === address
-    );
-  } else {
-    deliveryAddress = address;
-    if (address.saveAddress) {
-      const updateUserAddress = await NormalUser.findByIdAndUpdate(userId, {
-        $push: { address: address },
-      });
-    }
-  }
-  const cart = await Cart.findOne({ user: userId });
-  if (!cart || cart.items.length === 0) {
-    return next(new AppError("No items in cart to place an order", 400));
+  if (!mongoose.isValidObjectId(productId)) {
+    return next(new AppError("Invalid product ID", 400));
   }
 
-  let totalAmount = 0;
-  const validatedProducts = [];
+  // Get the current date components
+  const date = new Date();
+  const year = date.getFullYear().toString().slice(-2); // Last 2 digits of year
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
 
-  for (const item of cart.items) {
-    const product = await productModel
-      .findById(item.product)
-      .populate("variants");
+  // Get count of orders for today to create sequence
+  const todayStart = new Date(date.setHours(0, 0, 0, 0));
+  const todayEnd = new Date(date.setHours(23, 59, 59, 999));
 
-    if (!product) {
-      return next(new AppError(`Product not found: ${item.product}`, 404));
-    }
+  const orderCount = await orderModel.countDocuments({
+    createdAt: {
+      $gte: todayStart,
+      $lte: todayEnd,
+    },
+  });
 
-    let price;
-    let stock;
+  const sequence = (orderCount + 1).toString().padStart(4, "0");
 
-    if (item.variant) {
-      const variant = product.variants.find(
-        (v) => v._id.toString() === item.variant.toString()
-      );
+  const aggregationPipeline = [
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(productId),
+      },
+    },
+    {
+      $lookup: {
+        from: "stores",
+        localField: "store",
+        foreignField: "_id",
+        as: "store",
+      },
+    },
+    {
+      $lookup: {
+        from: "variants",
+        let: { variantIds: "$variants" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $in: ["$_id", "$$variantIds"] },
+                  variantId
+                    ? { $eq: ["$_id", new mongoose.Types.ObjectId(variantId)] }
+                    : { $expr: true },
+                ],
+              },
+            },
+          },
+        ],
+        as: "variants",
+      },
+    },
+    {
+      $project: {
+        name: 1,
+        offerPrice: 1,
+        images: {
+          $cond: {
+            if: { $gt: [{ $size: "$variants" }, 0] },
+            then: { $first: "$variants.images" },
+            else: "$images",
+          },
+        },
+        store: { $arrayElemAt: ["$store", 0] },
+        variants: 1,
+      },
+    },
+  ];
 
-      if (!variant) {
-        return next(new AppError(`Variant not found: ${item.variant}`, 404));
-      }
+  const [product] = await productModel.aggregate(aggregationPipeline);
 
-      if (variant.stock < item.quantity) {
-        return next(
-          new AppError(
-            `Insufficient stock for variant ${variant.attributes.title} of ${product.name}`,
-            400
-          )
-        );
-      }
-
-      price = variant.offerPrice || variant.price;
-      stock = variant.stock;
-
-      await Variant.findByIdAndUpdate(variant._id, {
-        $inc: { stock: -item.quantity },
-      });
-    } else {
-      if (product.stock < item.quantity) {
-        return next(
-          new AppError(`Insufficient stock for product ${product.name}`, 400)
-        );
-      }
-
-      price = product.offerPrice || product.price;
-      stock = product.stock;
-
-      await productModel.findByIdAndUpdate(product._id, {
-        $inc: { stock: -item.quantity },
-      });
-    }
-
-    const itemTotal = price * item.quantity;
-    totalAmount += itemTotal;
-
-    validatedProducts.push({
-      productId: product._id,
-      variantId: item.variant || null,
-      quantity: item.quantity,
-      price: price,
-    });
+  if (!product) {
+    return next(new AppError("Product not found", 404));
   }
 
-  // Apply coupon discount if available
-  let finalAmount = totalAmount;
-  if (cart.couponApplied && cart.couponApplied.discountAmount) {
-    finalAmount -= cart.couponApplied.discountAmount;
+  if (variantId && (!product.variants || product.variants.length === 0)) {
+    return next(new AppError("Variant not found", 404));
   }
 
-  let newOrder;
+  const finalPrice = product.variants?.[0]?.offerPrice || product.offerPrice;
+  const totalAmount = finalPrice * quantity;
 
-  if (paymentMethod === "ONLINE") {
-    newOrder = await orderModel.findOneAndUpdate(
-      { paymentId: razorpay_payment_id },
-      {
-        paymentStatus: "paid",
-        paymentMethod: "ONLINE",
-        products: validatedProducts,
-        totalAmount: finalAmount,
-        couponApplied: cart.couponApplied,
-        deliveryAddress,
-        paymentId: razorpay_payment_id,
-      }
-    );
-  } else {
-    newOrder = await orderModel.create({
-      user: userId,
-      products: validatedProducts,
-      totalAmount: finalAmount,
-      couponApplied: cart.couponApplied,
-      deliveryAddress,
-      paymentMethod: "COD",
-      paymentStatus: "pending",
-    });
-  }
+  // Create order ID: STORENAME-YYMMDD-SEQUENCE
+  // Example: NORTHLUX-230901-0001
+  const storeName = (product.store?.store_name || "Northlux")
+    .toUpperCase()
+    .replace(/\s+/g, "");
+  const orderId = `${storeName}${year}${month}${day}${sequence}`;
 
-  // const newOrder = await orderModel.create({
-  //   user: userId,
-  //   products: validatedProducts,
-  //   totalAmount: finalAmount,
-  //   couponApplied: cart.couponApplied,
-  //   deliveryAddress,
-  // });
+  console.log(orderId, "orderId");
 
-  // Delete the cart after placing the order
-  await Cart.findOneAndDelete({ user: userId });
+  const newOrder = new orderModel({
+    orderId,
+    product: product._id,
+    variant: variantId,
+    quantity,
+    totalAmount,
+  });
 
-  const populatedOrder = await orderModel
-    .findById(newOrder._id)
-    .populate({
-      path: "products.productId",
-      model: "Product",
-      select: "name images brand category",
-    })
-    .populate({
-      path: "products.variantId",
-      model: "Variant",
-      select: "attributes images price offerPrice stock",
-    })
-    .populate({
-      path: "user",
-      model: "User",
-      select: "name email",
-    });
+  await newOrder.save();
 
-  if (!populatedOrder) {
-    return next(new AppError("Error creating order", 400));
-  }
-
-  res.status(201).json({
-    success: true,
-    message: "Order placed successfully",
-    order: populatedOrder,
+  res.status(200).json({
+    status: "success",
+    data: {
+      order: {
+        orderId,
+        productName: product.name,
+        productImage: product.images[0],
+        variantName: product.variants?.[0]?.attributes?.title || null,
+        quantity,
+        pricePerUnit: finalPrice,
+        totalAmount,
+        storeName: product.store?.store_name,
+        storeNumber: product.store?.store_number,
+      },
+    },
   });
 });
 

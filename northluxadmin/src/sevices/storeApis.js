@@ -19,3 +19,8 @@ export const getStoreAndProducts = async (id) => {
   const response = await axiosInstance.get(`/admin/getstoreandproducts/${id}`);
   return response.data;
 };
+
+export const storeLogin = async (data) => {
+  const response = await axiosInstance.post(`/store/login`, data);
+  return response.data;
+};

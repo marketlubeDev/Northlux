@@ -1,4 +1,3 @@
-const Subscribers = require("../model/subscribersModel");
 const { NormalUser } = require("../model/userModel");
 const createToken = require("../utilities/createToken");
 const AppError = require("../utilities/errorHandlings/appError");
@@ -174,22 +173,6 @@ const deleteUserAddress = catchAsync(async (req, res, next) => {
   });
 });
 
-const submitUserDetails = catchAsync(async (req, res, next) => {
-  const { name, email, phone } = req.body;
-  const newSubscriber = new Subscribers({ name, email, phone });
-  await newSubscriber.save();
-  res.status(200).json({
-    status: "success",
-    message: "Subscriber added successfully",
-    data: newSubscriber,
-  });
-});
-
-const getAllSubscribers = catchAsync(async (req, res, next) => {
-  const subscribers = await Subscribers.find();
-  res.status(200).json({ subscribers });
-});
-
 module.exports = {
   register,
   login,
@@ -199,6 +182,4 @@ module.exports = {
   checkUser,
   updateUser,
   deleteUserAddress,
-  submitUserDetails,
-  getAllSubscribers,
 };

@@ -13,6 +13,7 @@ function Storeinfo() {
   const { store, stores } = useLocation().state;
   console.log(store?.store_name, "Storename");
   const [selectedStore, setSelectedStore] = useState(id);
+  const [storeInfo, setStoreInfo] = useState(store);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -33,7 +34,9 @@ function Storeinfo() {
     }
   };
   useEffect(() => {
-    fetchStoreAndProducts();
+    setStoreInfo(() => {
+      return stores.find((store) => store._id === selectedStore);
+    });
     fetchStoreAndProducts();
   }, [id, selectedStore]);
 
@@ -44,14 +47,6 @@ function Storeinfo() {
 
   const handleEdit = (id) => {
     navigate(`/admin/product/addproduct`, { state: { productId: id } });
-  };
-
-  // Sample data for statistics
-  const statistics = {
-    totalSales: 1280,
-    monthlyRevenue: 34351,
-    profit: 20351,
-    totalItemValue: 56780,
   };
 
   return (
@@ -78,19 +73,23 @@ function Storeinfo() {
         <div className="flex justify-between items-center">
           <div className="text-sm text-gray-600 space-y-1 cursor-pointer">
             <p>
-              Store Name: <span className="font-bold">{store?.store_name}</span>
+              Store Name:{" "}
+              <span className="font-bold">{storeInfo?.store_name}</span>
             </p>
             <p>
               Email address:{" "}
-              <span className="text-green-600 font-bold">{store?.email}</span>
+              <span className="text-green-600 font-bold">
+                {storeInfo?.email}
+              </span>
             </p>
             <p>
-              Contact: <span className="font-bold">{store?.store_number}</span>
+              Contact:{" "}
+              <span className="font-bold">{storeInfo?.store_number}</span>
             </p>
             <p>
               Created on:{" "}
               <span className="font-bold">
-                {new Date(store?.createdAt).toLocaleDateString()}
+                {new Date(storeInfo?.createdAt).toLocaleDateString()}
               </span>
             </p>
           </div>
@@ -146,7 +145,14 @@ function Storeinfo() {
               placeholder="Search by product name, SKU..."
               className="w-1/5 border border-gray-300 rounded-md px-4 py-2"
             />
-            <button className=" text-green-600 px-4 py-2 rounded-md border border-green-600">
+            <button
+              className=" text-green-600 px-4 py-2 rounded-md border border-green-600"
+              onClick={() =>
+                navigate("/admin/product/addproduct", {
+                  state: { storeId: selectedStore },
+                })
+              }
+            >
               + Add Product
             </button>
           </div>

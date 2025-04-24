@@ -7,8 +7,6 @@ const {
   checkUser,
   updateUser,
   deleteUserAddress,
-  submitUserDetails,
-  getAllSubscribers,
 } = require("../../controllers/userController");
 const autheticateToken = require("../../middlewares/authMiddleware");
 const userRouter = require("express").Router();
@@ -25,6 +23,4 @@ userRouter.patch(
   autheticateToken(["user"]),
   deleteUserAddress
 );
-userRouter.post("/submit-user-details", submitUserDetails);
-userRouter.get("/subscribers", getAllSubscribers);
 module.exports = userRouter;

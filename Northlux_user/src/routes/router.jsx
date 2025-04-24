@@ -5,11 +5,6 @@ import Userlayout from "../Layout/Userlayout";
 import Homepage from "../pages/Homepage/Homepage";
 import AllProducts from "../pages/productpage/Allproducts";
 import ProductDetails from "../pages/productpage/ProductDetails";
-import Profile from "../pages/profile/Profile";
-import Cartpage from "../pages/cartpage/Cartpage";
-import Login from "../pages/Loginpage/Login";
-import Signup from "../pages/Signuppage/Signup";
-import ProtectedRoute from "../components/route/ProtectedRoute";
 import BrandPage from "../pages/BrandPage/BrandPage";
 const error = new Error("Page Not Found", { cause: 404 });
 
@@ -35,22 +30,6 @@ const router = createBrowserRouter([
     errorElement: <ErrorFallback error={error} />,
     children: [
       {
-        path: "/signup",
-        element: (
-          <WithErrorBoundary>
-            <Signup />
-          </WithErrorBoundary>
-        ),
-      },
-      {
-        path: "/login",
-        element: (
-          <WithErrorBoundary>
-            <Login />
-          </WithErrorBoundary>
-        ),
-      },
-      {
         path: "/",
         element: (
           <WithErrorBoundary>
@@ -74,26 +53,7 @@ const router = createBrowserRouter([
           </WithErrorBoundary>
         ),
       },
-      {
-        path: "/profile",
-        element: (
-          <WithErrorBoundary>
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          </WithErrorBoundary>
-        ),
-      },
-      {
-        path: "/cart",
-        element: (
-          <WithErrorBoundary>
-            <ProtectedRoute>
-              <Cartpage />
-            </ProtectedRoute>
-          </WithErrorBoundary>
-        ),
-      },
+
       {
         path: "/brands",
         element: <BrandPage />,

@@ -25,7 +25,11 @@ adminRouter.get(
 );
 adminRouter.get("/salesreport", autheticateToken(["admin"]), getSalesDetails);
 adminRouter.get("/monthlyreport", autheticateToken(["admin"]), monthlyReport);
-adminRouter.get("/dashboard", autheticateToken(["admin"]), AdminDashboard);
+adminRouter.get(
+  "/dashboard",
+  autheticateToken(["admin", "store"]),
+  AdminDashboard
+);
 adminRouter.get(
   "/getcategoriesbrands",
   autheticateToken(["admin"]),

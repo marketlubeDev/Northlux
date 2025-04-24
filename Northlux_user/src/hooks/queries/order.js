@@ -4,15 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 export const usePlaceOrder = () => {
-  const navigate = useNavigate();
   return useMutation({
-    mutationFn: (address) => orderService.placeOrder(address),
-    onSuccess: () => {
+    mutationFn: (data) => orderService.placeOrder(data),
+    onSuccess: (data) => {
       toast.success("Order placed successfully");
-      navigate("/profile?tab=order-history");
+      return data;
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || "Failed to place order");
+      return false;
     },
   });
 };
