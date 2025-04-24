@@ -1,7 +1,6 @@
 import React from "react";
 
 function PageHeader({ content, otherDetails }) {
-  console.log(otherDetails, "otherDetails");
 
   return (
     <div
