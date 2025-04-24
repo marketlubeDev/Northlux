@@ -15,6 +15,8 @@ const createBrand = catchAsync(async (req, res, next) => {
   }
 
   const brandData = { name, description, isPriority };
+console.log(brandData);
+
 
   if (req.files && req.files.length > 0) {
     // Handle main brand image
@@ -48,9 +50,13 @@ const createBrand = catchAsync(async (req, res, next) => {
 // Get all brands
 const getAllBrands = catchAsync(async (req, res, next) => {
   const { page = 1, limit = 10, search } = req.query;
-  console.log(page, limit, search);
 
-  let matchStage = {$match:{}};
+  const pageNumber = parseInt(page, 10);
+  const limitNumber = parseInt(limit, 10);
+
+  console.log(pageNumber, limitNumber, search);
+
+  let matchStage = { $match: {} };
 
   if (search) {
     matchStage = {
@@ -61,8 +67,8 @@ const getAllBrands = catchAsync(async (req, res, next) => {
   const facetStage = {
     $facet: {
       brands: [
-        { $skip: (page - 1) * limit },
-        { $limit: limit },
+        { $skip: (pageNumber - 1) * limitNumber },
+        { $limit: limitNumber },
       ],
       priorityBrandCount: [
         { $match: { isPriority: true } },
@@ -107,7 +113,7 @@ const getBrandById = catchAsync(async (req, res, next) => {
 // Update brand with image handling
 const updateBrand = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  const { name, description } = req.body;
+  const { name, description, isPriority } = req.body;
 
   const brand = await Brand.findById(id);
   if (!brand) {
@@ -134,7 +140,7 @@ const updateBrand = catchAsync(async (req, res, next) => {
 
   brand.name = name || brand.name;
   brand.description = description || brand.description;
-
+  brand.isPriority = isPriority || brand.isPriority;
   await brand.save();
 
   res.status(200).json({

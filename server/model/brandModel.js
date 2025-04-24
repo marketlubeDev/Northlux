@@ -35,9 +35,9 @@ const brandSchema = new Schema(
 );
 
 
-brandSchema.statics.countPriorityBrands = async function () {
-  return await this.countDocuments({ isPriority: true });
-};
+// brandSchema.statics.countPriorityBrands = async function () {
+//   return await this.countDocuments({ isPriority: true });
+// };
 
 
 
