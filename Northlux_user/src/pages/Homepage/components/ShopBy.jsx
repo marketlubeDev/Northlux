@@ -97,7 +97,7 @@ const ShopBy = () => {
       {/* </div> */}
       <div className="browse-all">
         <p>Shop Smart – All Brands & Wears, One Click!</p>
-        <Link to="/products">Browse all →</Link>
+        <Link to="/brands">Browse all →</Link>
       </div>
     </section>
   );

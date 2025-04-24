@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCategories } from "../hooks/queries/categories";
 import { useNavigate } from "react-router-dom";
+import { useBrands } from "../hooks/queries/brands";
 
 const brands = [
   {
@@ -85,24 +86,38 @@ const brands = [
 ];
 
 export const NavBar = () => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [dropdownContent, setDropdownContent] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [dropdownOpen, setDropdownOpen] = useState(false); // New state for dropdown
   const navigate = useNavigate();
+  // const [navState, setNavState] = useState(null);
+
   const {
-    data,
+    data: categoriesData,
     isLoading: categoriesLoading,
     error: categoriesError,
   } = useCategories();
 
-  const categories = data?.envelop?.data || [];
+  const { data: brandsData } = useBrands();
+
+  const categories = categoriesData?.envelop?.data || [];
+  const brands = brandsData?.data?.brands || [];
+
+  const handleDropdownHover = (content, parent) => {
+    // setNavState(parent);
+    setDropdownContent({ content, parent });
+    setDropdownOpen(true);
+  };
+
+  const handleDropdownLeave = () => {
+    setDropdownOpen(false);
+  };
 
   const handleCategoryClick = (category) => {
     if (selectedCategory?._id === category._id) {
       setSelectedCategory(null);
-      setDropdownOpen(false); // Close dropdown if the same category is clicked
     } else {
       setSelectedCategory(category);
-      setDropdownOpen(true); // Open dropdown for new category
     }
 
     navigate("/products", {
@@ -115,54 +130,71 @@ export const NavBar = () => {
     });
   };
 
+  const handleClickSubCategory = (subCategory) => {
+    console.log(subCategory, "=========subCategory");
+
+    if (dropdownContent?.parent === "subcategories") {
+      navigate("/products", {
+        state: {
+          selectedSubCategory: subCategory,
+        },
+      });
+    } else {
+      const brandId = subCategory._id;
+      navigate(`/brands/${brandId}`);
+    }
+  };
+
   return (
     <div className="nav-bar-container">
       {categories && (
         <ul className="nav-bar-list">
           <li onClick={() => handleCategoryClick({ id: null, name: "All" })}>
             All
-            <span className="arrow-icon"></span>
           </li>
           <li
+            onMouseEnter={() => handleDropdownHover(brands, "brands")}
             onClick={() => navigate("/brands")}
-            onMouseEnter={() => setDropdownOpen(true)}
-            // onMouseLeave={() => setDropdownOpen(false)}
+            // onMouseLeave={handleDropdownLeave}
           >
             Brands
             <span className="arrow-icon"></span>
-            {dropdownOpen && (
-              <div
-                className="dropdown-content"
-                onMouseLeave={() => setDropdownOpen(false)}
-              >
-                <ul className="dropdown-content-list">
-                  {brands?.map((brand) => (
-                    <div key={brand?.id} className="dropdown-content-list-item">
-                      <li>{brand?.name}</li>
-                      <p>{brand?.description}</p>
-                    </div>
-                  ))}
-                </ul>
-                <div className="view-all-container">
-                  <p>Shop All Brands</p>
-                  <button className="view-all-container-button">
-                    Shop Now
-                  </button>
-                </div>
-              </div>
-            )}
           </li>
-          {categories?.map((category) => (
+          {categories.map((category) => (
             <li
-              key={category?._id}
+              key={category._id}
+              onMouseEnter={() =>
+                handleDropdownHover(category.subcategories, "subcategories")
+              }
               onClick={() => handleCategoryClick(category)}
-              style={{ cursor: "pointer" }}
+              // onMouseLeave={handleDropdownLeave}
             >
-              {category?.name}
+              {category.name}
               <span className="arrow-icon"></span>
             </li>
           ))}
         </ul>
+      )}
+
+      {dropdownOpen && dropdownContent?.content?.length > 0 && (
+        <div className="dropdown-content" onMouseLeave={handleDropdownLeave}>
+          <ul className="dropdown-content-list">
+            {dropdownContent?.content?.map((item) => (
+              <div
+                key={item.id || item._id}
+                className="dropdown-content-list-item"
+                onClick={() => handleClickSubCategory(item)}
+              >
+                <li>{item.name}</li>
+                <p>{item.description}</p>
+              </div>
+            ))}
+          </ul>
+          <div className="view-all-container">
+            <p>View All</p>
+            <button className="view-all-container-button">View All</button>
+          </div>
+        </div>
       )}
     </div>
   );
