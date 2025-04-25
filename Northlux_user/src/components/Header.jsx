@@ -7,14 +7,11 @@ import {
   MdOutlineHeadphones,
 } from "react-icons/md";
 import { BiLogOut } from "react-icons/bi";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { logout } from "../redux/features/user/userSlice";
 import { useDispatch } from "react-redux";
-import { useCategories } from "../hooks/queries/categories";
 import { useProducts } from "../hooks/queries/products";
-import BrandsList from "./BrandsList/BrandsList";
-import BrandsList from "./BrandsList/BrandsList";
 import { NavBar } from "./NavBar";
 
 export default function Header() {
@@ -30,9 +27,8 @@ export default function Header() {
   const [searchResults, setSearchResults] = useState([]);
   const searchRef = useRef(null);
   const [isBrandsListOpen, setIsBrandsListOpen] = useState(false);
-  const [hoveredCategory, setHoveredCategory] = useState(null);
 
-  const { data: products, isLoading } = useProducts();
+  const { data: products } = useProducts();
 
   useEffect(() => {
     if (searchQuery) {

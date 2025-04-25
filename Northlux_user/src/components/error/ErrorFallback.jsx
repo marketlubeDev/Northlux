@@ -1,8 +1,12 @@
 import React from "react";
 import { FiAlertTriangle, FiHome, FiRefreshCcw } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function ErrorFallback({ error, resetErrorBoundary, showHomeButton = true }) {
+  const navigate = useNavigate();
+  const handleRefresh = () => {
+    navigate("/");
+  };
   return (
     <div className="error-container">
       <div className="error-content">
@@ -14,7 +18,7 @@ function ErrorFallback({ error, resetErrorBoundary, showHomeButton = true }) {
         </div>
 
         <div className="error-actions">
-          <button className="refresh-btn" onClick={resetErrorBoundary}>
+          <button className="refresh-btn" onClick={handleRefresh}>
             <FiRefreshCcw />
             Try Again
           </button>

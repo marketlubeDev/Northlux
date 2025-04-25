@@ -11,7 +11,7 @@ const autheticateToken = require("../../middlewares/authMiddleware");
 
 const orderRouter = require("express").Router();
 orderRouter.get("/get-user-orders", autheticateToken(["user"]), getUserOrders);
-orderRouter.post("/placeorder", autheticateToken(["user"]), placeOrder);
+orderRouter.post("/placeorder", placeOrder);
 orderRouter.patch(
   "/change-status/:orderId",
   autheticateToken(["admin", "store", "user"]),
