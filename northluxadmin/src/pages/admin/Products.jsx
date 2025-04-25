@@ -18,6 +18,7 @@ function Products() {
   const [totalPages, setTotalPages] = useState(5);
   const [isLoading, setIsLoading] = useState(true);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [pageRender, setPageRender] = useState(0);
   const navigate = useNavigate();
 
   const [showBulkOfferModal, setShowBulkOfferModal] = useState(false);
@@ -45,7 +46,7 @@ function Products() {
     } else {
       fetchProducts(currentPage);
     }
-  }, [currentPage]); // Add currentPage as dependency
+  }, [currentPage, pageRender]); // Add currentPage as dependency
 
   const fetchProducts = async (page) => {
     try {
@@ -138,6 +139,8 @@ function Products() {
     };
   }, [debouncedSearch]);
 
+
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 relative">
       <PageHeader content="Products" />
@@ -200,7 +203,7 @@ function Products() {
             isOpen={showBulkOfferModal}
             onClose={() => setShowBulkOfferModal(false)}
           >
-            <BulkOfferForm isProductSelected={isProductSelected} selectedProducts={selectedProducts} />
+            <BulkOfferForm isProductSelected={isProductSelected} selectedProducts={selectedProducts} setPageRender={setPageRender} />
           </Modal>
 
           {/* Table section with loading state */}
