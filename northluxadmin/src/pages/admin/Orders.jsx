@@ -32,10 +32,8 @@ function Orders() {
     "onrefound",
   ];
 
-  console.log(dateRange , "date");
-  console.log(dateRange , "date");
-
-
+  console.log(dateRange, "date");
+  console.log(dateRange, "date");
 
   // Move fetchData outside of useEffect so it can be reused
   const fetchData = async () => {
@@ -47,8 +45,12 @@ function Orders() {
 
       if (startDate && endDate) {
         // Format dates to start and end of day in UTC
-        const formattedStartDate = new Date(startDate.setHours(0, 0, 0, 0)).toISOString();
-        const formattedEndDate = new Date(endDate.setHours(23, 59, 59, 999)).toISOString();
+        const formattedStartDate = new Date(
+          startDate.setHours(0, 0, 0, 0)
+        ).toISOString();
+        const formattedEndDate = new Date(
+          endDate.setHours(23, 59, 59, 999)
+        ).toISOString();
 
         queryParams.push(`startDate=${formattedStartDate}`);
         queryParams.push(`endDate=${formattedEndDate}`);
@@ -69,7 +71,8 @@ function Orders() {
         getOrders(queryString),
         getOrderStats(),
       ]);
-      setOrders(ordersRes.orders);
+      console.log(ordersRes, "ordersRes");
+      setOrders(ordersRes?.data?.orders);
       setOrderStats(statsRes.stats);
       setErrorMessage("");
     } catch (err) {
@@ -275,14 +278,7 @@ function Orders() {
     );
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
-
   const TableRow = ({ order }) => {
-    console.log(order , "order");
     const [paymentStatus, setPaymentStatus] = useState(
       order.paymentStatus || "pending"
     );
@@ -339,34 +335,6 @@ function Orders() {
       }
     };
 
-    // Function to format products display
-    const formatProducts = (products) => {
-      return products?.map((product, index) => (
-        <div
-          key={product._id}
-          className={index !== 0 ? "mt-2 pt-2 border-t" : ""}
-        >
-          <div className="flex items-start">
-            <img
-              src={
-                product?.productId?.images[0]
-                  ? product?.productId?.images[0]
-                  : product?.variantId?.images[0]
-              }
-              alt={product.productId.name}
-              className="w-10 h-10 object-cover rounded mr-2"
-            />
-            <div>
-              <p className="font-medium">{product.productId.name}</p>
-              <p className="text-xs text-gray-500">
-                Qty: {product.quantity} × ₹{product.price}
-              </p>
-            </div>
-          </div>
-        </div>
-      ));
-    };
-
     const getAvailableOrderOptions = () => {
       if (orderStatus === "delivered") {
         return ["delivered"]; // Only show current status if delivered
@@ -377,25 +345,27 @@ function Orders() {
     return (
       <tr className="bg-white border-b hover:bg-gray-50">
         <td className="px-6 py-4">
-          <div className="max-h-32 overflow-y-auto">
-            {formatProducts(order.products)}
+          <div className="max-h-32 ">
+            <span className="text-sm font-medium">{order?.orderId}</span>
           </div>
         </td>
         <td className="px-6 py-4 whitespace-nowrap">
-          {formatDate(order.createdAt)}
+          {new Date(order.createdAt).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}
         </td>
-        <td className="px-6 py-4">{order?.user?.phonenumber}</td>
-        <td className="px-6 py-4">{order?.deliveryAddress?.pincode || "N/A"}</td>
+        <td className="px-6 py-4">{order?.phone || "N/A"}</td>
+
         <td className="px-6 py-4">
-          <div className="space-y-1">
-            {[
-              ...new Set(order.products?.map((p) => p.productId.category.name)),
-            ].join(", ")}
-          </div>
+          <span className="text-sm font-medium">
+            {order?.store?.name || "N/A"}
+          </span>
         </td>
         <td className="px-6 py-4">
           <div className="font-medium text-gray-900">
-            ₹{order.totalAmount?.toLocaleString() || 0}
+            ₹{order.totalAmount || 0}
           </div>
         </td>
         <StatusDropdown
@@ -533,7 +503,7 @@ function Orders() {
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                   <th scope="col" className="px-6 py-3">
-                    Order Items
+                    Order Item
                   </th>
                   <th scope="col" className="px-6 py-3">
                     <div className="flex items-center">Date Placed</div>
@@ -541,11 +511,9 @@ function Orders() {
                   <th scope="col" className="px-6 py-3">
                     <div className="flex items-center">Phone Number</div>
                   </th>
+
                   <th scope="col" className="px-6 py-3">
-                    <div className="flex items-center">Address</div>
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    <div className="flex items-center">Categories</div>
+                    <div className="flex items-center">Store</div>
                   </th>
                   <th scope="col" className="px-6 py-3">
                     <div className="flex items-center">Total Amount</div>

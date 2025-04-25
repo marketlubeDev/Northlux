@@ -34,7 +34,7 @@ import {
 } from "../../components/Admin/Product/constants/initialStates";
 import LoadingSpinner from "../../components/spinner/LoadingSpinner";
 
-function Addproduct() {
+function Addproduct({ role }) {
   // State Management
   const [productData, setProductData] = useState(initialProductState);
   const [currentVariant, setCurrentVariant] = useState(initialVariantState);
@@ -93,6 +93,7 @@ function Addproduct() {
           variants: variants,
           sku: !hasVariants ? res?.data?.sku : "",
           description: !hasVariants ? res?.data?.description : "",
+          grossPrice: !hasVariants ? res?.data?.grossPrice : "",
           // units: res.data.units,
           price: !hasVariants ? res.data.price : "",
           offerPrice: !hasVariants ? res.data.offerPrice : "",
@@ -168,23 +169,6 @@ function Addproduct() {
       }));
     }
   };
-
-  // const handleRadioChange = (event) => {
-  //   const value = event.target.value;
-  //   setSelectedVariant(value);
-
-  //   // Reset product data structure based on variant selection
-  //   if (value === "noVariants") {
-  //     setProductData((prev) => ({
-  //       ...prev,
-  //       variants: [],
-  //     }));
-  //   }
-
-  //   // Clear all errors when switching variant types
-  //   setErrors({});
-  //   setVariantErrors({});
-  // };
 
   const handleRadioChange = (event) => {
     const value = event.target.value;
@@ -538,13 +522,21 @@ function Addproduct() {
         res = await updateProduct(productId, formData);
         if (res.status === 200) {
           toast.success("Product updated successfully");
-          navigate("/admin/product");
+          if (role === "store") {
+            navigate("/store/product");
+          } else {
+            navigate("/admin/product");
+          }
         }
       } else {
         res = await addProduct(formData);
         if (res.status === 201) {
           toast.success("Product added successfully");
-          navigate("/admin/product");
+          if (role === "store") {
+            navigate("/store/product");
+          } else {
+            navigate("/admin/product");
+          }
         }
       }
     } catch (err) {

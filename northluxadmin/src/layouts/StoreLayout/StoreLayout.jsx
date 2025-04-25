@@ -1,18 +1,16 @@
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Logo from "../../components/Logo";
-import { adminLogout } from "../../sevices/adminApis";
 import { useSelector, useDispatch } from "react-redux";
 import { setStore } from "../../redux/features/storeSlice";
-function AdminLayout() {
+
+function StoreLayout() {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.store.store);
-  console.log(store);
   const menuItems = [
-    { name: "Dashboard", path: "/admin" },
+    { name: "Dashboard", path: "/store" },
     { name: "Products", path: "product" },
     { name: "Orders", path: "order" },
-    { name: "Stores", path: "store" },
     { name: "Categories", path: "category" },
     { name: "Brands", path: "brand" },
     { name: "Labels", path: "label" },
@@ -64,6 +62,9 @@ function AdminLayout() {
 
               <Logo />
             </div>
+            <div className="flex items-center justify-center bg-green-500 rounded-full px-4 py-2  text-white cursor-pointer text-center">
+              <span className="whitespace-nowrap">{store?.store_name}</span>
+            </div>
           </div>
         </div>
       </nav>
@@ -105,4 +106,4 @@ function AdminLayout() {
   );
 }
 
-export default AdminLayout;
+export default StoreLayout;

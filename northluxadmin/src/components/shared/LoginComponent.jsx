@@ -5,7 +5,7 @@ import { adminLogin } from "../../sevices/adminApis";
 import { toast } from "react-toastify";
 import { storeLogin } from "../../sevices/storeApis";
 import { useDispatch } from "react-redux";
-import { setStore } from "../../redux/features";
+import { setStore } from "../../redux/features/storeSlice";
 
 function LoginComponent({ role }) {
   const dispatch = useDispatch();
@@ -42,7 +42,7 @@ function LoginComponent({ role }) {
         toast.success(res?.message);
         localStorage.setItem("storeToken", res?.token);
         dispatch(setStore(res?.store));
-        navigate("/admin");
+        navigate("/store");
       }
     } catch (err) {
       console.log(err);
@@ -50,11 +50,6 @@ function LoginComponent({ role }) {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleLoginTypeChange = (e) => {
-    setLoginType(e.target.value);
-    setValues({ email: "", password: "", phone: "" });
   };
 
   return (

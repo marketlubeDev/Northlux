@@ -1,7 +1,9 @@
 import { axiosInstance } from "../axios/axiosInstance";
 
-export const listProducts = (page) => {
-  return axiosInstance.get(`product/get-products?page=${page}`);
+export const listProducts = (page, role) => {
+  return axiosInstance.get(
+    `product/get-products-by-role?page=${page}&role=${role}`
+  );
 };
 
 export const addProduct = (formData) => {

@@ -32,7 +32,7 @@ adminRouter.get(
 );
 adminRouter.get(
   "/getcategoriesbrands",
-  autheticateToken(["admin"]),
+  autheticateToken(["admin", "store"]),
   fetchCategoriesAndBrands
 );
 adminRouter.post("/register", adminRegister);

@@ -73,13 +73,11 @@ const placeOrder = catchAsync(async (req, res, next) => {
     return next(new AppError("Invalid product ID", 400));
   }
 
-  // Get the current date components
   const date = new Date();
-  const year = date.getFullYear().toString().slice(-2); // Last 2 digits of year
+  const year = date.getFullYear().toString().slice(-2);
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const day = date.getDate().toString().padStart(2, "0");
 
-  // Get count of orders for today to create sequence
   const todayStart = new Date(date.setHours(0, 0, 0, 0));
   const todayEnd = new Date(date.setHours(23, 59, 59, 999));
 
@@ -146,6 +144,8 @@ const placeOrder = catchAsync(async (req, res, next) => {
 
   const [product] = await productModel.aggregate(aggregationPipeline);
 
+  console.log(product, variantId, "product");
+
   if (!product) {
     return next(new AppError("Product not found", 404));
   }
@@ -162,6 +162,7 @@ const placeOrder = catchAsync(async (req, res, next) => {
   const storeName = (product.store?.store_name || "Northlux")
     .toUpperCase()
     .replace(/\s+/g, "");
+
   const orderId = `${storeName}${year}${month}${day}${sequence}`;
 
   console.log(orderId, "orderId");
@@ -254,12 +255,22 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
 });
 
 const filterOrders = catchAsync(async (req, res, next) => {
-  const { status, startDate, endDate, category, page, limit } = req.query;
+  const {
+    status,
+    startDate,
+    endDate,
+    category,
+    page = 1,
+    limit = 10,
+  } = req.query;
 
   let filterCriteria = {};
 
   if (status) {
     filterCriteria.status = status;
+  }
+  if (category) {
+    filterCriteria.category = new mongoose.Types.ObjectId(category);
   }
 
   if (startDate || endDate) {
@@ -270,48 +281,154 @@ const filterOrders = catchAsync(async (req, res, next) => {
 
   const skip = (page - 1) * limit;
 
-  let orders = await orderModel
-    .find(filterCriteria)
-    .populate({
-      path: "products.productId",
-      select: "name images price category",
-      populate: {
-        path: "category",
-        select: "name",
+  const aggregationPipeline = [
+    // Match stage for initial filtering
+    {
+      $match: filterCriteria,
+    },
+    // Lookup product details
+    {
+      $lookup: {
+        from: "products",
+        localField: "product",
+        foreignField: "_id",
+        as: "product",
       },
-    })
-    .populate({
-      path: "products.variantId",
-      model: "Variant",
-      select: "attributes stock images",
-    })
-    .populate("user", "username phonenumber address")
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit);
+    },
+    // Unwind product array
+    {
+      $unwind: {
+        path: "$product",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
 
-  const totalOrders = await orderModel.countDocuments(filterCriteria);
+    {
+      $lookup: {
+        from: "categories",
+        localField: "product.category",
+        foreignField: "_id",
+        as: "product.category",
+      },
+    },
+
+    {
+      $lookup: {
+        from: "stores",
+        localField: "product.store",
+        foreignField: "_id",
+        as: "product.store",
+      },
+    },
+    {
+      $unwind: {
+        path: "$product.category",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+
+    {
+      $lookup: {
+        from: "variants",
+        localField: "variant",
+        foreignField: "_id",
+        as: "variant",
+      },
+    },
+
+    {
+      $unwind: {
+        path: "$variant",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    // Sort by creation date
+    {
+      $sort: { createdAt: -1 },
+    },
+    // Skip and limit for pagination
+    {
+      $skip: skip,
+    },
+    {
+      $limit: limit,
+    },
+    // Project stage to shape the output
+    {
+      $project: {
+        _id: 1,
+        orderId: 1,
+        quantity: 1,
+        totalAmount: 1,
+        createdAt: 1,
+        status: 1,
+        store: {
+          _id: { $arrayElemAt: ["$product.store._id", 0] },
+          name: { $arrayElemAt: ["$product.store.store_name", 0] },
+          phone: { $arrayElemAt: ["$product.store.store_number", 0] },
+          email: { $arrayElemAt: ["$product.store.email", 0] },
+        },
+        productDetails: {
+          $cond: {
+            if: { $ifNull: ["$variant", false] },
+            then: {
+              _id: "$variant._id",
+              name: "$product.name",
+              variantName: "$variant.attributes.title",
+              price: "$variant.offerPrice",
+              images: "$variant.images",
+              stock: "$variant.stock",
+              category: {
+                _id: "$product.category._id",
+                name: "$product.category.name",
+              },
+              hasVariant: true,
+            },
+            else: {
+              _id: "$product._id",
+              name: "$product.name",
+              price: "$product.offerPrice",
+              images: "$product.images",
+              stock: "$product.stock",
+              category: {
+                _id: "$product.category._id",
+                name: "$product.category.name",
+              },
+              hasVariant: false,
+            },
+          },
+        },
+      },
+    },
+  ];
+
+  // Execute aggregation
+  const orders = await orderModel.aggregate(aggregationPipeline);
+  console.log(orders, "orders");
+
+  // Get total count for pagination
+  const countPipeline = [
+    { $match: filterCriteria },
+    {
+      $count: "total",
+    },
+  ];
+
+  const [countResult] = await orderModel.aggregate(countPipeline);
+  const totalOrders = countResult ? countResult.total : 0;
   const totalPages = Math.ceil(totalOrders / limit);
 
-  if (category) {
-    orders = orders.filter((order) =>
-      order.products.some(
-        (product) => product.productId?.category?._id.toString() === category
-      )
-    );
-  }
-
-  if (orders.length === 0) {
-    return res
-      .status(404)
-      .json({ message: "No orders found matching the criteria." });
-  }
-
   res.status(200).json({
-    message: "Orders retrieved successfully",
-    orders,
-    totalOrders,
-    totalPages,
+    status: "success",
+    data: {
+      orders,
+      pagination: {
+        total: totalOrders,
+        page: page,
+        limit,
+        totalPages,
+      },
+    },
   });
 });
 

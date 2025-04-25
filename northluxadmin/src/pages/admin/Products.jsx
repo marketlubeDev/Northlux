@@ -11,7 +11,7 @@ import Pagination from "../../components/Admin/Product/components/Pagination/Pag
 import { Modal } from "../../components/shared/Modal";
 import { BulkOfferForm } from "../../components/Admin/Product/components/Forms/BulkOfferForm";
 
-function Products() {
+function Products({ role }) {
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,7 +50,7 @@ function Products() {
   const fetchProducts = async (page) => {
     try {
       setIsLoading(true);
-      const res = await listProducts(page);
+      const res = await listProducts(page, role);
       setProducts(res?.data?.data?.products);
       setTotalPages(res?.data?.data?.totalPages);
     } catch (err) {
@@ -221,6 +221,7 @@ function Products() {
                 setSelectedProducts={setSelectedProducts}
                 isProductSelected={isProductSelected}
                 selectedProductsCount={selectedProductsCount}
+                role={role}
               />
             )}
           </div>

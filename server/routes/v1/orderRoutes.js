@@ -14,23 +14,23 @@ orderRouter.get("/get-user-orders", autheticateToken(["user"]), getUserOrders);
 orderRouter.post("/placeorder", autheticateToken(["user"]), placeOrder);
 orderRouter.patch(
   "/change-status/:orderId",
-  autheticateToken(["admin", "seller", "user"]),
+  autheticateToken(["admin", "store", "user"]),
   updateOrderStatus
 );
 orderRouter.get(
   "/get-orders",
-  autheticateToken(["admin", "seller"]),
+  autheticateToken(["admin", "store"]),
   filterOrders
 );
 
 orderRouter.get(
   "/get-order-stats",
-  autheticateToken(["admin", "seller"]),
+  autheticateToken(["admin", "store"]),
   orderStats
 );
 orderRouter.get(
   "/get-order/:orderId",
-  autheticateToken(["admin", "seller"]),
+  autheticateToken(["admin", "store"]),
   getOrderById
 );
 orderRouter.post(

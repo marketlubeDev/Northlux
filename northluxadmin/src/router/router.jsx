@@ -16,6 +16,7 @@ import Banner from "../pages/admin/Banner";
 import OfferBanner from "../pages/admin/OfferBanner";
 import Store from "../pages/admin/Store";
 import Storeinfo from "../pages/admin/Storeinfo";
+import StoreLayout from "../layouts/StoreLayout/StoreLayout";
 export const router = createBrowserRouter([
   {
     path: "/admin/login",
@@ -89,6 +90,70 @@ export const router = createBrowserRouter([
       {
         path: "storeinfo/:id",
         element: <Storeinfo />,
+      },
+    ],
+  },
+
+  {
+    path: "/store",
+    element: <StoreLayout />,
+    children: [
+      {
+        path: "",
+        element: <DashBoard role={"store"} />,
+      },
+      {
+        path: "product",
+        element: <Products role={"store"} />,
+      },
+      {
+        path: "product/addproduct",
+        element: <Addproduct role={"store"} />,
+      },
+      {
+        path: "order",
+        element: <Orders role={"store"} />,
+      },
+      {
+        path: "category",
+        element: <Category role={"store"} />,
+      },
+      {
+        path: "brand",
+        element: <Brand role={"store"} />,
+      },
+      {
+        path: "label",
+        element: <Label role={"store"} />,
+      },
+      {
+        path: "coupon",
+        element: <Coupons role={"store"} />,
+      },
+
+      {
+        path: "review",
+        element: <Review role={"store"} />,
+      },
+      {
+        path: "customer",
+        element: <Customers role={"store"} />,
+      },
+      {
+        path: "banner",
+        element: <Banner role={"store"} />,
+      },
+      {
+        path: "offer-banner",
+        element: <OfferBanner role={"store"} />,
+      },
+      {
+        path: "store",
+        element: <Store role={"store"} />,
+      },
+      {
+        path: "storeinfo/:id",
+        element: <Storeinfo role={"store"} />,
       },
     ],
   },

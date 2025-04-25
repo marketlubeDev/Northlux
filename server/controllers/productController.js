@@ -212,7 +212,11 @@ const listProducts = catchAsync(async (req, res, next) => {
     search,
     labelId,
     brandId,
+    role,
   } = req.query;
+
+  console.log(role, "role");
+  console.log(req.user, "req.user");
 
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 10;
@@ -222,6 +226,9 @@ const listProducts = catchAsync(async (req, res, next) => {
   const filter = {
     isDeleted: { $ne: true },
   };
+  if (role === "store") {
+    filter.store = new mongoose.Types.ObjectId(req.user);
+  }
 
   if (categoryId) {
     filter.category = new mongoose.Types.ObjectId(categoryId);
