@@ -195,6 +195,7 @@ function Products() {
             </div>
           </div>
 
+          {/* Bulk Offer Modal */}
           <Modal
             isOpen={showBulkOfferModal}
             onClose={() => setShowBulkOfferModal(false)}

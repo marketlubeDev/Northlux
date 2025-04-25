@@ -25,9 +25,11 @@ const productSchema = new Schema(
       enum: ["instock", "outofstock"],
       default: "instock",
     },
+    offer: { type: Schema.Types.ObjectId, ref: "Offer" },
   },
   { timestamps: true }
 );
+
 
 const Product = new mongoose.model("Product", productSchema);
 module.exports = Product;

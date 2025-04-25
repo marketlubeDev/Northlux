@@ -30,6 +30,6 @@ v1Router.use("/coupon", couponRouter);
 v1Router.use("/banner", bannerRouter);
 v1Router.use("/offerBanner", offerBannerRouter);
 v1Router.use("/utilities", utilitesRouter);
-v1Router.use("/offers", offerRouter);
+v1Router.use("/offer", offerRouter);
 
 module.exports = v1Router;
