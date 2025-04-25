@@ -26,6 +26,7 @@ const orderSchema = new Schema(
       enum: ["pending", "paid", "failed", "refunded", "onrefund", "processed"],
       default: "pending",
     },
+    store: { type: Schema.Types.ObjectId, ref: "Store" },
   },
   { timestamps: true }
 );

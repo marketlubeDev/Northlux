@@ -11,6 +11,9 @@ import LoadingSpinner from "../../components/spinner/LoadingSpinner";
 import { useEffect, useState, useRef } from "react";
 import { TfiReload } from "react-icons/tfi";
 import { toast } from "react-toastify";
+import { Popover, Transition } from "@headlessui/react";
+import { Fragment } from "react";
+import { createPortal } from "react-dom";
 
 function Orders() {
   const [formUtilites, setFormUtilites] = useState([]);
@@ -31,9 +34,6 @@ function Orders() {
     "refunded",
     "onrefound",
   ];
-
-  console.log(dateRange, "date");
-  console.log(dateRange, "date");
 
   // Move fetchData outside of useEffect so it can be reused
   const fetchData = async () => {
@@ -71,7 +71,6 @@ function Orders() {
         getOrders(queryString),
         getOrderStats(),
       ]);
-      console.log(ordersRes, "ordersRes");
       setOrders(ordersRes?.data?.orders);
       setOrderStats(statsRes.stats);
       setErrorMessage("");
@@ -130,38 +129,17 @@ function Orders() {
   };
 
   const StatusDropdown = ({ currentStatus, options, onStatusChange, type }) => {
-    const [isOpen, setIsOpen] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [selectedStatus, setSelectedStatus] = useState(null);
-    const dropdownRef = useRef(null);
+    const buttonRef = useRef(null);
 
     // Check if status changes should be disabled
     const isStatusChangeDisabled = currentStatus === "delivered";
-
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (
-          dropdownRef.current &&
-          !dropdownRef.current.contains(event.target)
-        ) {
-          setIsOpen(false);
-        }
-      };
-
-      if (isOpen) {
-        document.addEventListener("mousedown", handleClickOutside);
-      }
-
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, [isOpen]);
 
     const handleStatusClick = (status) => {
       if (isStatusChangeDisabled) return;
       setSelectedStatus(status);
       setShowConfirmation(true);
-      setIsOpen(false);
     };
 
     const handleConfirm = () => {
@@ -203,77 +181,108 @@ function Orders() {
 
     return (
       <td className="px-6 py-4">
-        <div className="relative" ref={dropdownRef}>
-          <button
-            onClick={() => !isStatusChangeDisabled && setIsOpen(!isOpen)}
-            className={`inline-flex items-center gap-2 ${
-              isStatusChangeDisabled ? "cursor-not-allowed opacity-75" : ""
-            }`}
-            disabled={isStatusChangeDisabled}
-            title={
-              isStatusChangeDisabled
-                ? "Status cannot be changed after delivery"
-                : ""
-            }
-          >
-            <span
-              className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                currentStatus
-              )}`}
-            >
-              {formatStatusDisplay(currentStatus)}
-            </span>
-            {!isStatusChangeDisabled && (
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+        <Popover className="relative">
+          {({ open }) => (
+            <>
+              <Popover.Button
+                ref={buttonRef}
+                className={`
+                  ${open ? "outline-none ring-2 ring-indigo-500" : ""}
+                  inline-flex items-center gap-2
+                  ${
+                    isStatusChangeDisabled
+                      ? "cursor-not-allowed opacity-75"
+                      : ""
+                  }
+                `}
+                disabled={isStatusChangeDisabled}
+                title={
+                  isStatusChangeDisabled
+                    ? "Status cannot be changed after delivery"
+                    : ""
+                }
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            )}
-          </button>
-
-          {isOpen && !isStatusChangeDisabled && (
-            <div
-              className="absolute rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
-              style={{
-                zIndex: 50,
-                marginTop: "0.5rem",
-                minWidth: "150px",
-              }}
-            >
-              <div className="py-1" role="menu">
-                {options?.map((status) => (
-                  <button
-                    key={status}
-                    onClick={() => handleStatusClick(status)}
-                    className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left ${
-                      currentStatus === status ? "bg-gray-50" : ""
+                <span
+                  className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                    currentStatus
+                  )}`}
+                >
+                  {formatStatusDisplay(currentStatus)}
+                </span>
+                {!isStatusChangeDisabled && (
+                  <svg
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      open ? "transform rotate-180" : ""
                     }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    {formatStatusDisplay(status)}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                )}
+              </Popover.Button>
 
-          <ConfirmationPopup
-            isOpen={showConfirmation}
-            onClose={() => setShowConfirmation(false)}
-            onConfirm={handleConfirm}
-            status={`${
-              type === "payment" ? "Payment" : "Order"
-            } status to ${formatStatusDisplay(selectedStatus)}`}
-          />
-        </div>
+              {typeof window !== "undefined" &&
+                createPortal(
+                  <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-200"
+                    enterFrom="opacity-0 translate-y-1"
+                    enterTo="opacity-100 translate-y-0"
+                    leave="transition ease-in duration-150"
+                    leaveFrom="opacity-100 translate-y-0"
+                    leaveTo="opacity-0 translate-y-1"
+                  >
+                    <Popover.Panel
+                      className="fixed z-[100] w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
+                      style={{
+                        top: buttonRef.current
+                          ? buttonRef.current.getBoundingClientRect().bottom +
+                            window.scrollY +
+                            8
+                          : 0,
+                        left: buttonRef.current
+                          ? buttonRef.current.getBoundingClientRect().left +
+                            window.scrollX
+                          : 0,
+                      }}
+                    >
+                      <div className="py-1">
+                        {options?.map((status) => (
+                          <button
+                            key={status}
+                            onClick={() => handleStatusClick(status)}
+                            className={`
+                            block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100
+                            ${currentStatus === status ? "bg-gray-50" : ""}
+                          `}
+                          >
+                            {formatStatusDisplay(status)}
+                          </button>
+                        ))}
+                      </div>
+                    </Popover.Panel>
+                  </Transition>,
+                  document.body
+                )}
+            </>
+          )}
+        </Popover>
+
+        <ConfirmationPopup
+          isOpen={showConfirmation}
+          onClose={() => setShowConfirmation(false)}
+          onConfirm={handleConfirm}
+          status={`${
+            type === "payment" ? "Payment" : "Order"
+          } status to ${formatStatusDisplay(selectedStatus)}`}
+        />
       </td>
     );
   };
@@ -313,7 +322,6 @@ function Orders() {
           toast.error(result.message);
         }
       } catch (error) {
-        console.log(error);
         toast.error("Failed to update payment status");
       }
     };
@@ -330,7 +338,6 @@ function Orders() {
           toast.error(result.message);
         }
       } catch (error) {
-        console.log(error);
         toast.error("Failed to update order status");
       }
     };
@@ -348,6 +355,12 @@ function Orders() {
           <div className="max-h-32 ">
             <span className="text-sm font-medium">{order?.orderId}</span>
           </div>
+        </td>
+        <td
+          title={order?.productDetails?.name}
+          className="cursor-pointer px-6 py-4"
+        >
+          {order?.productDetails?.name.slice(0, 20)}...
         </td>
         <td className="px-6 py-4 whitespace-nowrap">
           {new Date(order.createdAt).toLocaleDateString("en-US", {
@@ -503,7 +516,10 @@ function Orders() {
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                   <th scope="col" className="px-6 py-3">
-                    Order Item
+                    Order ID
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    <div className="flex items-center">Product</div>
                   </th>
                   <th scope="col" className="px-6 py-3">
                     <div className="flex items-center">Date Placed</div>

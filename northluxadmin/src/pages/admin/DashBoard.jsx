@@ -9,7 +9,6 @@ import { useSelector } from "react-redux";
 
 function DashBoard() {
   const store = useSelector((state) => state.store.store);
-  console.log(store);
   const [cardsData, setCardsData] = useState([]);
   const [topProudcts, setTopProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,7 +24,6 @@ function DashBoard() {
       setCardsData(res?.data?.summary);
       setTopProducts(res?.data?.topProducts);
     } catch (err) {
-      console.log(err);
     } finally {
       setIsLoading(false);
     }

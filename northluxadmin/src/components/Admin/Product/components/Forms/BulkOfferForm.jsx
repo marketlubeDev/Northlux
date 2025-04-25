@@ -12,15 +12,6 @@ export const BulkOfferForm = ({ onClose, isProductSelected }) => {
   const [endDate, setEndDate] = useState("");
 
   const handleApplyOffer = () => {
-    console.log({
-      offerType,
-      category,
-      brand,
-      offerMetric,
-      offerValue,
-      startDate,
-      endDate,
-    });
     if (!offerType || !offerMetric || !offerValue || !startDate || !endDate) {
       toast.error("Please fill all the fields");
       return;

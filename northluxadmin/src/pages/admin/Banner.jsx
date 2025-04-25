@@ -43,7 +43,6 @@ function Banner() {
     }
   };
   const handleSubmit = async (e) => {
-    console.log(formData);
     e.preventDefault();
     setIsSubmitting(true);
     try {
@@ -72,7 +71,6 @@ function Banner() {
   };
 
   const handleEditBanner = async (banner) => {
-     console.log(banner);
     setEditingBanner(banner);
     setFormData({
       title: banner.title,
@@ -99,11 +97,9 @@ function Banner() {
       [name]: value,
     }));
 
-    console.log(formData);
 
   };
   const handleCloseModal = () =>{
-console.log("close modal");
     setShowModal(false);
     setEditingBanner(null);
     resetForm();

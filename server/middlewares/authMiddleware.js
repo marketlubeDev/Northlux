@@ -41,7 +41,7 @@ const autheticateToken = (allowedRoles) => {
       if (!verifiedToken) {
         return next(new AppError("Invalid token", 401));
       }
-      console.log(verifiedToken, "verifiedToken");
+
       // Ensure the token role matches one of the allowed roles
       if (!allowedRoles.includes(verifiedToken.role)) {
         return next(

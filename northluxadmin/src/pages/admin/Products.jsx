@@ -24,7 +24,6 @@ function Products({ role }) {
   const [isProductSelected, setIsProductSelected] = useState(false);
   const selectedProductsCount = selectedProducts?.length;
 
-  // console.log("selectedProducts==========", selectedProducts);
 
   // handleIsProductSelected
   useEffect(() => {

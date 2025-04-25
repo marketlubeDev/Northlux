@@ -104,7 +104,7 @@ function Addproduct({ role }) {
 
         setProductData(productData);
       } catch (err) {
-        console.log(err, "err");
+       
         toast.error("Failed to fetch product");
       } finally {
         setIsLoadingData(false);
@@ -368,9 +368,7 @@ function Addproduct({ role }) {
   };
 
   const handlePublish = async () => {
-    // Check if variants are required but none are added
-    console.log(productData, "productData>>>");
-    console.log(selectedVariant, "selectedVariant>>>");
+   
     if (
       selectedVariant === "hasVariants" &&
       productData.variants.length === 0

@@ -30,7 +30,6 @@ function Customers() {
           setHasNextPage(response.data.pagination.hasNextPage);
           setHasPrevPage(response.data.pagination.hasPrevPage);
         } catch (error) {
-          console.log(error);
           setError(error);
         } finally {
           setLoading(false);

@@ -8,7 +8,7 @@ const ImageUploaderContainer = ({
   fileInputs,
   error,
 }) => {
-  console.log(images, "images in image uploader");
+
   const getImageUrl = (image) => {
     if (!image) return null;
 

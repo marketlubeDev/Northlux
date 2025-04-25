@@ -17,7 +17,7 @@ const ShopBy = () => {
     isError: categoriesError,
   } = useCategories();
 
-  console.log(brandsData);
+  
 
   const brands = brandsData?.data.brands;
   const categories = categoriesData?.envelop?.data;

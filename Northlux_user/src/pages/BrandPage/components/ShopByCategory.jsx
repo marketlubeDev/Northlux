@@ -13,13 +13,13 @@ const ShopByCategory = ({ id }) => {
   });
   const { data: categories } = useCategories({brandId: id});
 
-console.log(categories)
+
 
   // const categories = ["sholder bags", "t-shirts", "shoes", "bags", "sneakers"];
 
 const allCategories = categories?.envelop?.data || [];
 
-console.log(id ,"id" ,activeTab ,"activeTab")
+
 
   return (
     <section className="shop-by-category">

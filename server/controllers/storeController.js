@@ -118,7 +118,6 @@ const editStore = catchAsync(async (req, res, next) => {
 
 const getStoreAndProducts = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  console.log(id, "id");
   const { page = 1, limit = 10, search = "" } = req.query;
 
   if (!id) {
@@ -212,7 +211,6 @@ const getStoreAndProducts = catchAsync(async (req, res, next) => {
     },
   ]);
 
-  console.log(result, "result");
 
   const totalProducts = result[0].totalCount[0]?.count || 0;
   const products = result[0].products.map(formatProductResponse);

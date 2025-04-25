@@ -7,7 +7,7 @@ import { setStore } from "../../redux/features/storeSlice";
 function AdminLayout() {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.store.store);
-  console.log(store);
+ 
   const menuItems = [
     { name: "Dashboard", path: "/admin" },
     { name: "Products", path: "product" },
@@ -23,14 +23,8 @@ function AdminLayout() {
   const navigate = useNavigate();
 
   const logout = () => {
-    if (store && Object.keys(store).length > 0) {
-      localStorage.removeItem("storeToken");
-      dispatch(setStore(null));
-      navigate("login");
-    } else {
-      localStorage.removeItem("adminToken");
-      navigate("login");
-    }
+    localStorage.removeItem("adminToken");
+    navigate("/");
   };
   return (
     <div className="h-screen ">

@@ -60,7 +60,6 @@ function Brand() {
       try {
         setLoading(true);
         const response = await searchBrand(query);
-        console.log(response, "response");
         setBrands(response.brands);
       } catch (error) {
         toast.error("Failed to search brands");
@@ -126,7 +125,6 @@ function Brand() {
       if (formData.bannerImage) {
         formDataToSend.append("bannerImage", formData.bannerImage);
       }
-
 
       if (editingBrand) {
         await editBrand(editingBrand._id, formDataToSend);
@@ -263,7 +261,6 @@ function Brand() {
                   <th scope="col" className="px-6 py-3 bg-gray-50">
                     Banner Image
                   </th>
-
 
                   <th scope="col" className="px-6 py-3 bg-gray-50">
                     Action
@@ -406,9 +403,16 @@ function Brand() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Banner Image
                   </label>
-                  <div onClick={handleBannerImageClick} className="relative w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors">
+                  <div
+                    onClick={handleBannerImageClick}
+                    className="relative w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors"
+                  >
                     {bannerImagePreview ? (
-                      <img src={bannerImagePreview} alt="Brand preview" className="w-full h-full object-contain rounded-lg" />
+                      <img
+                        src={bannerImagePreview}
+                        alt="Brand preview"
+                        className="w-full h-full object-contain rounded-lg"
+                      />
                     ) : (
                       <p className="text-gray-500">Click to upload image</p>
                     )}

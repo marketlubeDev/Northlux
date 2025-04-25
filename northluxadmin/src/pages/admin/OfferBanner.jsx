@@ -40,7 +40,6 @@ function OfferBanner() {
   const fetchOfferBanners = async () => {
     try {
       const data = await getOfferBanners();
-      console.log(data);
       setOfferBanners(data?.data);
     } catch (error) {
       toast.error("Failed to fetch offer banners");

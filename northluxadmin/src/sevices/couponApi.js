@@ -6,7 +6,6 @@ export const createCoupon = async (couponData) => {
 };
 
 export const editCoupon = async (id, couponData) => {
-  console.log(id, couponData);
   const response = await axiosInstance.patch(`/coupon/${id}`, couponData);
   return response.data;
 };

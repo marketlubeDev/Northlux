@@ -66,7 +66,6 @@ const { getOrderStats } = require("../helpers/aggregation/aggregations");
 // });
 
 const placeOrder = catchAsync(async (req, res, next) => {
-  console.log(req.body, "req.body");
   const { productId, variantId, quantity } = req.body;
 
   if (!mongoose.isValidObjectId(productId)) {
@@ -144,7 +143,6 @@ const placeOrder = catchAsync(async (req, res, next) => {
 
   const [product] = await productModel.aggregate(aggregationPipeline);
 
-  console.log(product, variantId, "product");
 
   if (!product) {
     return next(new AppError("Product not found", 404));
@@ -165,7 +163,6 @@ const placeOrder = catchAsync(async (req, res, next) => {
 
   const orderId = `${storeName}${year}${month}${day}${sequence}`;
 
-  console.log(orderId, "orderId");
 
   const newOrder = new orderModel({
     orderId,
@@ -173,6 +170,7 @@ const placeOrder = catchAsync(async (req, res, next) => {
     variant: variantId,
     quantity,
     totalAmount,
+    store: product.store._id,
   });
 
   await newOrder.save();
@@ -198,6 +196,7 @@ const placeOrder = catchAsync(async (req, res, next) => {
 const updateOrderStatus = catchAsync(async (req, res, next) => {
   const { orderId } = req.params;
   const { status, type } = req.body;
+
 
   const validStatuses = {
     order: [
@@ -234,14 +233,9 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
   const updatedOrder = await orderModel
     .findByIdAndUpdate(orderId, updateField, { new: true })
     .populate({
-      path: "products.productId",
+      path: "product",
       select: "name images price category",
-      populate: {
-        path: "category",
-        select: "name",
-      },
-    })
-    .populate("user", "username phonenumber address");
+    });
 
   if (!updatedOrder) {
     return next(new AppError("Order not found.", 404));
@@ -264,7 +258,13 @@ const filterOrders = catchAsync(async (req, res, next) => {
     limit = 10,
   } = req.query;
 
+ 
+
   let filterCriteria = {};
+
+  if (req.role !== "admin") {
+    filterCriteria.store = new mongoose.Types.ObjectId(req.user);
+  }
 
   if (status) {
     filterCriteria.status = status;
@@ -362,6 +362,7 @@ const filterOrders = catchAsync(async (req, res, next) => {
         totalAmount: 1,
         createdAt: 1,
         status: 1,
+        paymentStatus: 1,
         store: {
           _id: { $arrayElemAt: ["$product.store._id", 0] },
           name: { $arrayElemAt: ["$product.store.store_name", 0] },
@@ -404,7 +405,6 @@ const filterOrders = catchAsync(async (req, res, next) => {
 
   // Execute aggregation
   const orders = await orderModel.aggregate(aggregationPipeline);
-  console.log(orders, "orders");
 
   // Get total count for pagination
   const countPipeline = [

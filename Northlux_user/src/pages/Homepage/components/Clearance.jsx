@@ -18,7 +18,7 @@ function Clearance() {
 
   const productslists = response?.data?.products || [];
 
-  console.log(response , "clearence");
+
 
   useEffect(() => {
     if (response?.data?.products) {

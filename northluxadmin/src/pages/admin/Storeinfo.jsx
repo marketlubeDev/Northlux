@@ -11,7 +11,6 @@ function Storeinfo() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { store, stores } = useLocation().state;
-  console.log(store?.store_name, "Storename");
   const [selectedStore, setSelectedStore] = useState(id);
   const [storeInfo, setStoreInfo] = useState(store);
   const [products, setProducts] = useState([]);
@@ -24,10 +23,8 @@ function Storeinfo() {
     try {
       setLoading(true);
       const response = await getStoreAndProducts(selectedStore);
-      console.log(response);
       setProducts(response?.data?.products);
     } catch (error) {
-      console.log(error);
       toast.error(error?.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);

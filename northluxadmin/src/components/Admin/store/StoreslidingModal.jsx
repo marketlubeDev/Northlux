@@ -102,7 +102,7 @@ const StoreSlidingModal = ({
 
       if (editData) {
         const response = await updateStore(formData, editData._id);
-        console.log(response);
+  
         if (response?.success) {
           setStores(
             stores.map((store) =>
@@ -116,7 +116,7 @@ const StoreSlidingModal = ({
         }
       } else {
         const response = await addStore(formData);
-        console.log(response);
+   
         if (response?.success) {
           setStores([...stores, response?.store]);
           toast.success(response?.message || "Store created successfully");
@@ -125,10 +125,8 @@ const StoreSlidingModal = ({
           toast.error(response?.message || "Something went wrong");
         }
       }
-      console.log(formData);
+ 
     } catch (error) {
-      console.log(error);
-
       toast.error(error?.response?.data?.message || "Something went wrong");
     }
   };

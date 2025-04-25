@@ -17,7 +17,12 @@ import OfferBanner from "../pages/admin/OfferBanner";
 import Store from "../pages/admin/Store";
 import Storeinfo from "../pages/admin/Storeinfo";
 import StoreLayout from "../layouts/StoreLayout/StoreLayout";
+import Landingpage from "../pages/Landing/Landingpage";
 export const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Landingpage />,
+  },
   {
     path: "/admin/login",
     element: <LoginComponent role={"admin"} />,

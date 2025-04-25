@@ -83,7 +83,6 @@ const addProduct = catchAsync(async (req, res, next) => {
         })
       );
     } catch (err) {
-      console.log("err", err);
       return next(new AppError(err, 400));
     }
   }
@@ -215,8 +214,7 @@ const listProducts = catchAsync(async (req, res, next) => {
     role,
   } = req.query;
 
-  console.log(role, "role");
-  console.log(req.user, "req.user");
+
 
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 10;
@@ -429,7 +427,6 @@ const getProductDetails = catchAsync(async (req, res, next) => {
 });
 
 const updateProduct = catchAsync(async (req, res, next) => {
-  console.log(req.body, req.query, "req.body");
   const { productId } = req.query;
   const updateData = req.body;
 
@@ -448,7 +445,6 @@ const updateProduct = catchAsync(async (req, res, next) => {
             _id: { $ne: variant._id }, // Exclude the current variant
           });
 
-          console.log(skuExists, "skuExists");
 
           const productSkuExists = await Product.findOne({
             sku: variant.sku,
@@ -470,7 +466,6 @@ const updateProduct = catchAsync(async (req, res, next) => {
         })
       );
     } catch (err) {
-      console.log("err", err);
       return next(new AppError(err, 400));
     }
   }

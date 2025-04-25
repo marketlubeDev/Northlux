@@ -116,7 +116,6 @@ const AddressModal = ({ isOpen, onClose, mode = "cart" }) => {
       const address = selectedAddress ? selectedAddress : formData;
       placeOrder(address, {
         onSuccess: (data) => {
-          console.log(data, "data");
           handleWhatsAppRedirect(data.order);
           onClose();
         },
@@ -132,7 +131,7 @@ const AddressModal = ({ isOpen, onClose, mode = "cart" }) => {
   };
 
   const handleWhatsAppRedirect = (data) => {
-    console.log(data, "data");
+   
 
     const message = `
     *Hello! I would like to place a new order*
@@ -144,9 +143,9 @@ const AddressModal = ({ isOpen, onClose, mode = "cart" }) => {
     *Please deliver to:*
     ${data.deliveryAddress.fullName}
     ${data.deliveryAddress.street}
-    ${data.deliveryAddress.landmark ? data.deliveryAddress.landmark + "\n" : ""}${
-          data.deliveryAddress.city
-        }
+    ${
+      data.deliveryAddress.landmark ? data.deliveryAddress.landmark + "\n" : ""
+    }${data.deliveryAddress.city}
     ${data.deliveryAddress.state} - ${data.deliveryAddress.pincode}
 
     *I would like to order:*

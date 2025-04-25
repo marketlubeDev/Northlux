@@ -81,7 +81,6 @@ function ProductDetailsContent() {
 
       placeOrder(productToAdd, {
         onSuccess: (data) => {
-          console.log(data);
           const orderDetails = data?.data?.order;
           const message =
             `*NEW ORDER DETAILS*%0a%0a` +
@@ -106,13 +105,9 @@ function ProductDetailsContent() {
           const whatsappUrl = `https://wa.me/${orderDetails?.storeNumber}?text=${message}`;
           window.open(whatsappUrl, "_blank");
         },
-        onError: (error) => {
-          console.log(error);
-        },
+        onError: (error) => {},
       });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const truncateDescription = (text) => {

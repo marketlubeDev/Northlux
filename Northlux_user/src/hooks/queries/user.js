@@ -11,7 +11,7 @@ export const useUpdateUser = () => {
     mutationFn: (user) => userService.updateUser(user),
     onSuccess: (response) => {
       toast.success("User updated successfully");
-      console.log(response);
+
       if (response) {
         dispatch(setUser(response));
         dispatch(setIsLoggedIn(true));

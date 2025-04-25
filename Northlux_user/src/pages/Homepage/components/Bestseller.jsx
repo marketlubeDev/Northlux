@@ -85,7 +85,6 @@ function Bestseller() {
               alt={currentProduct?.name}
               className="fade-image"
               onClick={() => {
-                console.log("Product ID:", currentProduct?._id);
                 navigate(`/products/${currentProduct?._id}`);
               }}
             />

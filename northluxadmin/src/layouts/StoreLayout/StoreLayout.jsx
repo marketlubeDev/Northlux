@@ -21,14 +21,8 @@ function StoreLayout() {
   const navigate = useNavigate();
 
   const logout = () => {
-    if (store && Object.keys(store).length > 0) {
-      localStorage.removeItem("storeToken");
-      dispatch(setStore(null));
-      navigate("login");
-    } else {
-      localStorage.removeItem("adminToken");
-      navigate("login");
-    }
+    localStorage.removeItem("storeToken");
+    navigate("/");
   };
   return (
     <div className="h-screen ">

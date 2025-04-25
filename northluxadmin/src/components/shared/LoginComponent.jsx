@@ -31,21 +31,19 @@ function LoginComponent({ role }) {
     try {
       if (loginType === "admin") {
         const res = await adminLogin(values);
-        console.log(res);
+
         toast.success(res?.data?.message);
         localStorage.setItem("adminToken", res?.data?.token);
         navigate("/admin");
       } else {
         // TODO: Implement store login
         const res = await storeLogin(values);
-        console.log(res);
         toast.success(res?.message);
         localStorage.setItem("storeToken", res?.token);
         dispatch(setStore(res?.store));
         navigate("/store");
       }
     } catch (err) {
-      console.log(err);
       toast.error(err?.response?.data?.message || "Something went wrong");
     } finally {
       setIsLoading(false);

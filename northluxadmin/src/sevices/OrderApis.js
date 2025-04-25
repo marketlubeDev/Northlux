@@ -1,12 +1,11 @@
 import { axiosInstance } from "../axios/axiosInstance";
 
 export const getOrders = async (queryParams = "") => {
-console.log(queryParams , "query");
   return axiosInstance
     .get(`/order/get-orders${queryParams}`)
     .then((res) => res.data)
     .catch((err) => {
-      console.log(err);
+      toast.error(err?.response?.data?.message || "Something went wrong");
     });
 };
 
@@ -15,7 +14,7 @@ export const getOrderStats = () => {
     .get("/order/get-order-stats")
     .then((res) => res.data)
     .catch((err) => {
-      console.log(err);
+      toast.error(err?.response?.data?.message || "Something went wrong");
     });
 };
 
@@ -24,17 +23,6 @@ export const updateOrderStatus = async (orderId, status, type) => {
     .patch(`/order/change-status/${orderId}`, { status, type })
     .then((res) => res.data)
     .catch((err) => {
-      console.log(err);
+      toast.error(err?.response?.data?.message || "Something went wrong");
     });
 };
-// Modify the getOrders function to accept query parameters
-// export const getOrders = async (queryParams = "") => {
-//   try {
-//     const response = await axiosInstance.get(
-//       `/api/v1/admin/orders${queryParams}`
-//     );
-//     return response.data;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
