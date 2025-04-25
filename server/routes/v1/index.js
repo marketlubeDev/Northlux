@@ -9,6 +9,7 @@ const userRouter = require("./userRoutes");
 const v1Router = require("express").Router();
 const offerBannerRouter = require("./offerBannerRoute");
 const storeRouter = require("./storeRoutes");
+const offerRouter = require("./offerRoutes");
 
 v1Router.use("/user", userRouter);
 v1Router.use("/product", productRouter);
@@ -20,5 +21,6 @@ v1Router.use("/brand", brandRouter);
 v1Router.use("/banner", bannerRouter);
 v1Router.use("/offerBanner", offerBannerRouter);
 v1Router.use("/store", storeRouter);
+v1Router.use("/offer", offerRouter);
 
 module.exports = v1Router;

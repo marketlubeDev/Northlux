@@ -32,6 +32,7 @@ const productSchema = new Schema(
       default: "instock",
     },
     grossPrice: { type: Number },
+    offer: { type: Schema.Types.ObjectId, ref: "Offer" },
   },
   { timestamps: true }
 );

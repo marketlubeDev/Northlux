@@ -45,6 +45,7 @@ const data = [
 // Separate the content into a new component
 function AllProductsContent() {
   const location = useLocation();
+  console.log(location, "location");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [openSections, setOpenSections] = useState({
     categories: true,
@@ -109,7 +110,11 @@ function AllProductsContent() {
     error: labelsError,
   } = useLabels();
 
-  const { allBanners, isLoading: bannersLoading, error: bannersError } = useBanners();
+  const {
+    allBanners,
+    isLoading: bannersLoading,
+    error: bannersError,
+  } = useBanners();
 
   const debouncedUpdateFilters = useCallback(
     debounce((newRange) => {
@@ -136,7 +141,13 @@ function AllProductsContent() {
 
   useEffect(() => {
     const categoryFromHeader = location.state?.selectedCategory;
+    const subCategoryFromHeader = location.state?.selectedSubCategory;
     const labelFromHomePage = location.state?.selectedLabel;
+
+    console.log(categoryFromHeader, "categoryFromHeader");
+    console.log(subCategoryFromHeader, "subCategoryFromHeader");
+    // console.log(labelFromHomePage, "labelFromHomePage");
+
     if (categoryFromHeader) {
       setSelectedFilters((prev) => ({
         ...prev,
@@ -145,6 +156,16 @@ function AllProductsContent() {
       setSelectedNames((prev) => ({
         ...prev,
         categoryName: categoryFromHeader.name,
+      }));
+    }
+    if (subCategoryFromHeader) {
+      setSelectedFilters((prev) => ({
+        ...prev,
+        subcategoryId: subCategoryFromHeader?.id,
+      }));
+      setSelectedNames((prev) => ({
+        ...prev,
+        subcategoryName: subCategoryFromHeader?.name,
       }));
     }
     if (labelFromHomePage) {
@@ -426,7 +447,11 @@ function AllProductsContent() {
 
   return (
     <div className="product-page">
-      <Carousel data={allBanners?.filter((banner) => banner?.bannerFor === "hero")} maxHeight="25rem" showButton={false} />
+      <Carousel
+        data={allBanners?.filter((banner) => banner?.bannerFor === "hero")}
+        maxHeight="25rem"
+        showButton={false}
+      />
       <div className="product-section">
         <div className="breadcrumb">
           <span>Home</span> / <span>All Products</span>
@@ -739,7 +764,9 @@ function AllProductsContent() {
               <div className="pagination-wrapper">
                 <Pagination
                   currentPage={currentPage}
-                  totalPages={Math.ceil(response?.data?.totalProducts / ITEMS_PER_PAGE)}
+                  totalPages={Math.ceil(
+                    response?.data?.totalProducts / ITEMS_PER_PAGE
+                  )}
                   onPageChange={handlePageChange}
                 />
               </div>

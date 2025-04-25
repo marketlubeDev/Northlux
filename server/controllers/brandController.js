@@ -8,24 +8,28 @@ const path = require("path");
 
 // Create a new brand
 const createBrand = catchAsync(async (req, res, next) => {
-  const { name, description } = req.body;
+  const { name, description, isPriority } = req.body;
 
   if (!name) {
     return next(new AppError("Brand name is required", 400));
   }
 
-  const brandData = { name, description };
+  const brandData = { name, description, isPriority };
+console.log(brandData);
+
 
   if (req.files && req.files.length > 0) {
     // Handle main brand image
-    const imageFile = req.files.find(file => file.fieldname === 'image');
+    const imageFile = req.files.find((file) => file.fieldname === "image");
     if (imageFile) {
       const uploadedImage = await uploadToCloudinary(imageFile.buffer);
       brandData.image = uploadedImage;
     }
 
     // Handle banner image
-    const bannerFile = req.files.find(file => file.fieldname === 'bannerImage');
+    const bannerFile = req.files.find(
+      (file) => file.fieldname === "bannerImage"
+    );
     if (bannerFile) {
       const uploadedBanner = await uploadToCloudinary(bannerFile.buffer);
       brandData.bannerImage = uploadedBanner;
@@ -42,18 +46,51 @@ const createBrand = catchAsync(async (req, res, next) => {
   });
 });
 
+
 // Get all brands
 const getAllBrands = catchAsync(async (req, res, next) => {
-  const brands = await Brand.find();
+  const { page = 1, limit = 10, search } = req.query;
+
+  const pageNumber = parseInt(page, 10);
+  const limitNumber = parseInt(limit, 10);
+
+
+  let matchStage = { $match: {} };
+
+  if (search) {
+    matchStage = {
+      $match: { name: { $regex: search, $options: "i" } },
+    };
+  }
+
+  const facetStage = {
+    $facet: {
+      brands: [
+        { $skip: (pageNumber - 1) * limitNumber },
+        { $limit: limitNumber },
+      ],
+      priorityBrandCount: [
+        { $match: { isPriority: true } },
+        { $count: "count" },
+      ],
+    },
+  };
+
+  const aggregation = await Brand.aggregate([matchStage, facetStage]);
+
+  const brands = aggregation[0].brands;
+  const priorityBrandCount = aggregation[0].priorityBrandCount[0]?.count || 0;
 
   res.status(200).json({
     status: "success",
     results: brands.length,
+    priorityBrandCount,
     data: {
       brands,
     },
   });
 });
+
 
 // Get a single brand by ID
 const getBrandById = catchAsync(async (req, res, next) => {
@@ -75,7 +112,7 @@ const getBrandById = catchAsync(async (req, res, next) => {
 // Update brand with image handling
 const updateBrand = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  const { name, description } = req.body;
+  const { name, description, isPriority } = req.body;
 
   const brand = await Brand.findById(id);
   if (!brand) {
@@ -84,14 +121,16 @@ const updateBrand = catchAsync(async (req, res, next) => {
 
   if (req.files && req.files.length > 0) {
     // Handle main brand image
-    const imageFile = req.files.find(file => file.fieldname === 'image');
+    const imageFile = req.files.find((file) => file.fieldname === "image");
     if (imageFile) {
       const uploadedImage = await uploadToCloudinary(imageFile.buffer);
       brand.image = uploadedImage;
     }
 
     // Handle banner image
-    const bannerFile = req.files.find(file => file.fieldname === 'bannerImage');
+    const bannerFile = req.files.find(
+      (file) => file.fieldname === "bannerImage"
+    );
     if (bannerFile) {
       const uploadedBanner = await uploadToCloudinary(bannerFile.buffer);
       brand.bannerImage = uploadedBanner;
@@ -100,7 +139,7 @@ const updateBrand = catchAsync(async (req, res, next) => {
 
   brand.name = name || brand.name;
   brand.description = description || brand.description;
-
+  brand.isPriority = isPriority || brand.isPriority;
   await brand.save();
 
   res.status(200).json({

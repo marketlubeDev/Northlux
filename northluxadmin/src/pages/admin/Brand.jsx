@@ -15,6 +15,7 @@ import ConfirmationModal from "../../components/Admin/ConfirmationModal";
 
 function Brand() {
   const [brands, setBrands] = useState([]);
+  const [priorityBrandsCount, setPriorityBrandsCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -22,6 +23,7 @@ function Brand() {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
+    isPriority: false,
     image: null,
     bannerImage: null,
   });
@@ -38,11 +40,15 @@ function Brand() {
     fetchBrands();
   }, []);
 
+  console.log(formData, "========formData");
+  console.log(brands, "========brands");
+
   const fetchBrands = async () => {
     try {
       setLoading(true);
       const response = await getAllBrands();
       setBrands(response.data.brands);
+      setPriorityBrandsCount(response?.priorityBrandCount);
     } catch (error) {
       toast.error("Failed to fetch brands");
     } finally {
@@ -77,11 +83,17 @@ function Brand() {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
+
+    if (type === "checkbox") {
+      setPriorityBrandsCount(
+        checked ? priorityBrandsCount + 1 : priorityBrandsCount - 1
+      );
+    }
   };
 
   const handleImageClick = () => {
@@ -118,6 +130,7 @@ function Brand() {
       const formDataToSend = new FormData();
       formDataToSend.append("name", formData.name);
       formDataToSend.append("description", formData.description);
+      formDataToSend.append("isPriority", formData.isPriority || false);
 
       if (formData.image) {
         formDataToSend.append("image", formData.image);
@@ -150,6 +163,7 @@ function Brand() {
       description: brand.description,
       image: null,
       bannerImage: null,
+      isPriority: brand.isPriority,
     });
     setImagePreview(brand.image);
     setBannerImagePreview(brand.bannerImage);
@@ -206,7 +220,11 @@ function Brand() {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      <PageHeader content="Brands" />
+      <PageHeader
+        content="Brands"
+        otherDetails={`${priorityBrandsCount} priority brands`}
+        // otherDetails={`${priorityBrandsCount} priority brands`}
+      />
 
       <div className="flex flex-col m-4">
         <div className="relative overflow-hidden shadow-md sm:rounded-lg flex flex-col flex-1 bg-white">
@@ -290,7 +308,13 @@ function Brand() {
                       key={brand._id}
                       className="bg-white border-b hover:bg-gray-50"
                     >
-                      <td className="px-6 py-4 font-medium text-gray-900">
+                      <td className="px-6 py-4 font-medium text-gray-900 flex items-center gap-2">
+                        <span
+                          className={`w-4 h-4 block rounded-full ${
+                            brand.isPriority && "bg-green-500"
+                          }`}
+                          title={brand.isPriority ? "Priority Brand" : ""}
+                        ></span>
                         {brand._id}
                       </td>
                       <td className="px-6 py-4">
@@ -439,6 +463,38 @@ function Brand() {
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                   required
                 />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Brand Description
+                </label>
+                <input
+                  type="text"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  required
+                />
+              </div>
+              <div className="mb-4 flex items-center gap-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Is Priority Brand ?
+                </label>
+                <input
+                  type="checkbox"
+                  name="isPriority"
+                  checked={formData.isPriority}
+                  // value={formData.isPriority}
+                  onChange={handleInputChange}
+                  disabled={priorityBrandsCount >= 8 && !formData.isPriority}
+                  className="w-ful p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                />
+                {priorityBrandsCount >= 8 && !formData.isPriority && (
+                  <p className="text-red-500 text-sm mt-1">
+                    Maximum of 8 priority brands reached.
+                  </p>
+                )}
               </div>
 
               <div className="flex justify-end gap-2">

@@ -18,7 +18,6 @@ async function getProducts(filters) {
   if (filters.page) params.append("page", filters.page);
   if (filters.limit) params.append("limit", filters.limit);
 
-
   if (filters.categoryId) params.append("categoryId", filters.categoryId);
   if (filters.subcategoryId)
     params.append("subcategoryId", filters.subcategoryId);

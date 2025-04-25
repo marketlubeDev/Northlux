@@ -6,6 +6,7 @@ import Homepage from "../pages/Homepage/Homepage";
 import AllProducts from "../pages/productpage/Allproducts";
 import ProductDetails from "../pages/productpage/ProductDetails";
 import BrandPage from "../pages/BrandPage/BrandPage";
+import { BrandListing } from "../pages/BrandPage/BrandListing";
 const error = new Error("Page Not Found", { cause: 404 });
 
 // Create a wrapper component for ErrorBoundary
@@ -56,7 +57,7 @@ const router = createBrowserRouter([
 
       {
         path: "/brands",
-        element: <BrandPage />,
+        element: <BrandListing />,
       },
       {
         path: "/brands/:id",

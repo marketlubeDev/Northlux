@@ -32,4 +32,7 @@
 @use "components/ButtonLoadingSpinner";
 @use "components/brandsLists";
 @use "components/Pagination";
-@use "page/Productpage/RatingModal"
+@use "page/Productpage/RatingModal";
+@use "page/BrandPage/BrandListing";
+@use "components/Breadcrumbs";
+@use "layout/Navbar";

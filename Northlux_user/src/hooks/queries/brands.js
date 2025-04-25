@@ -2,12 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { brandService } from "../../api/services/brandService";
 import apiClient from "../../api/client";
 
-export const useBrands = () => {
+export const useBrands = (filters = {}) => {
   return useQuery({
-    queryKey: ["brands"],
-    queryFn: brandService.getAllBrands,
+    queryKey: ["brands", filters],
+    queryFn: () => apiClient.get("/brand", { params: filters }).then((res) => res.data),
   });
 };
+
 
 export const useBrand = (id) => {
   const { data, isLoading, error } = useQuery({

@@ -26,9 +26,20 @@ const brandSchema = new Schema(
       type: String,
       default: null,
     },
+    isPriority: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
+
+
+// brandSchema.statics.countPriorityBrands = async function () {
+//   return await this.countDocuments({ isPriority: true });
+// };
+
+
 
 const Brand = mongoose.model("Brand", brandSchema);
 module.exports = Brand;

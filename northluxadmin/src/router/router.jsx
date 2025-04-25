@@ -18,6 +18,7 @@ import Store from "../pages/admin/Store";
 import Storeinfo from "../pages/admin/Storeinfo";
 import StoreLayout from "../layouts/StoreLayout/StoreLayout";
 import Landingpage from "../pages/Landing/Landingpage";
+import { ActiveOffers } from "../pages/admin/ActiveOffers";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -87,6 +88,10 @@ export const router = createBrowserRouter([
       {
         path: "offer-banner",
         element: <OfferBanner />,
+      },
+      {
+        path: "active-offer",
+        element: <ActiveOffers />,
       },
       {
         path: "store",

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const handlePrevPage = () => {
@@ -24,19 +24,19 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     } else {
       if (currentPage <= 3) {
         for (let i = 1; i <= 3; i++) pageNumbers.push(i);
-        pageNumbers.push('...');
+        pageNumbers.push("...");
         pageNumbers.push(totalPages);
       } else if (currentPage >= totalPages - 2) {
         pageNumbers.push(1);
-        pageNumbers.push('...');
+        pageNumbers.push("...");
         for (let i = totalPages - 2; i <= totalPages; i++) pageNumbers.push(i);
       } else {
         pageNumbers.push(1);
-        pageNumbers.push('...');
+        pageNumbers.push("...");
         pageNumbers.push(currentPage - 1);
         pageNumbers.push(currentPage);
         pageNumbers.push(currentPage + 1);
-        pageNumbers.push('...');
+        pageNumbers.push("...");
         pageNumbers.push(totalPages);
       }
     }
@@ -49,30 +49,42 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         className="pagination-arrow"
         onClick={handlePrevPage}
         disabled={currentPage === 1}
+        style={{
+          color: currentPage === 1 ? "gray" : "black",
+          cursor: currentPage === 1 ? "not-allowed" : "pointer",
+        }}
       >
         <span>←</span> Prev
       </button>
 
       <div className="pagination-numbers">
-        {getPageNumbers().map((pageNum, index) => (
-          pageNum === '...' ? (
-            <span key={`ellipsis-${index}`} className="ellipsis">...</span>
+        {getPageNumbers().map((pageNum, index) =>
+          pageNum === "..." ? (
+            <span key={`ellipsis-${index}`} className="ellipsis">
+              ...
+            </span>
           ) : (
             <button
               key={pageNum}
-              className={`page-number ${currentPage === pageNum ? 'active' : ''}`}
+              className={`page-number ${
+                currentPage === pageNum ? "active" : ""
+              }`}
               onClick={() => onPageChange(pageNum)}
             >
-              {String(pageNum).padStart(2, '0')}
+              {String(pageNum).padStart(2, "0")}
             </button>
           )
-        ))}
+        )}
       </div>
 
       <button
         className="pagination-arrow"
         onClick={handleNextPage}
         disabled={currentPage === totalPages}
+        style={{
+          color: currentPage === totalPages ? "gray" : "black",
+          cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+        }}
       >
         Next <span>→</span>
       </button>

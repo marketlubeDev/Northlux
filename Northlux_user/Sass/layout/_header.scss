@@ -167,6 +167,44 @@
     }
   }
 
+  // drop-down-style-new
+  .dropdown {
+    position: relative;
+    cursor: pointer;
+
+    &:hover .dropdown-content {
+      display: flex;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      width: 100%;
+      padding: 1rem;
+      justify-content: space-between;
+      flex-wrap: wrap;
+
+      .dropdown-section {
+        flex: 1;
+        margin: 0 1rem;
+
+        h4 {
+          margin-bottom: 0.5rem;
+          color: #00aaff;
+        }
+
+        p {
+          color: #333;
+        }
+      }
+    }
+  }
+
   .mobile-search-icon {
     display: none; // Hide by default on desktop
   }

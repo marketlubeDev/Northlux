@@ -10,8 +10,11 @@ import { useBrand, useBrands } from "../../hooks/queries/brands";
 export default function BrandPage() {
   const { allBanners, isLoading, error } = useBanners();
   const { id } = useParams();
+
+
   const { brand, isLoading: brandLoading, error: brandError } = useBrand(id);
 
+  console.log(brand);
 
   useEffect(() => {
     window.scrollTo(0, 0);

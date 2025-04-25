@@ -18,6 +18,7 @@ function Products({ role }) {
   const [totalPages, setTotalPages] = useState(5);
   const [isLoading, setIsLoading] = useState(true);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [pageRender, setPageRender] = useState(0);
   const navigate = useNavigate();
 
   const [showBulkOfferModal, setShowBulkOfferModal] = useState(false);
@@ -44,7 +45,7 @@ function Products({ role }) {
     } else {
       fetchProducts(currentPage);
     }
-  }, [currentPage]); // Add currentPage as dependency
+  }, [currentPage, pageRender]); // Add currentPage as dependency
 
   const fetchProducts = async (page) => {
     try {
@@ -137,6 +138,8 @@ function Products({ role }) {
     };
   }, [debouncedSearch]);
 
+
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 relative">
       <PageHeader content="Products" />
@@ -172,11 +175,11 @@ function Products({ role }) {
             </div>
             {/* buttons */}
             <div className="flex gap-2">
-              {isProductSelected && (
+              {/* {isProductSelected && (
                 <button className="font-semibold text-red-500 p-2 rounded-md hover:bg-red-500 hover:text-white transition-colors">
                   x Remove Offer
                 </button>
-              )}
+              )} */}
               <button
                 onClick={() => setShowBulkOfferModal(true)}
                 className="border-2 border-green-500 text-green-500 p-2 rounded-md hover:bg-green-500 hover:text-white transition-colors"
@@ -194,11 +197,12 @@ function Products({ role }) {
             </div>
           </div>
 
+          {/* Bulk Offer Modal */}
           <Modal
             isOpen={showBulkOfferModal}
             onClose={() => setShowBulkOfferModal(false)}
           >
-            <BulkOfferForm isProductSelected={isProductSelected} />
+            <BulkOfferForm isProductSelected={isProductSelected} selectedProducts={selectedProducts} setPageRender={setPageRender} />
           </Modal>
 
           {/* Table section with loading state */}
