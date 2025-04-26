@@ -12,6 +12,8 @@ import { useBanners } from "../../hooks/queries/banner";
 function Homepage() {
   const { allBanners, isLoading, error } = useBanners();
 
+  console.log(allBanners, "asigdksagkasg");
+
   return (
     <div>
       <Carousel
