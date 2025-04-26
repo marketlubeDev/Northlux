@@ -4,13 +4,13 @@ import { useFetch } from "../../hooks/useFetch";
 import { ActiveOffersTable } from "../../components/Admin/ActiveOffersTable";
 
 export const ActiveOffers = () => {
-  const [activeOffersData] = useFetch("/offer");
+  const [activeOffersData, loading, error, fetchData] = useFetch("/offer");
   const activeOffers = activeOffersData?.data || [];
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
       <PageHeader content="Active Offers" />
-      <ActiveOffersTable offers={activeOffers} />
+      <ActiveOffersTable offers={activeOffers} fetchData={fetchData} />
     </div>
   );
 };

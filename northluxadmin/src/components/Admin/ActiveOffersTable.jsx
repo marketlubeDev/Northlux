@@ -4,30 +4,35 @@ import React, { useState } from "react";
 import { GoTrash } from "react-icons/go";
 import { toast } from "react-toastify";
 import { axiosInstance } from "../../axios/axiosInstance";
+import ConfirmationModal from "./ConfirmationModal";
 
-export const ActiveOffersTable = ({ offers }) => {
-  const [selectedOffers, setSelectedOffers] = useState([]);
+export const ActiveOffersTable = ({ offers, fetchData }) => {
+  const [selectedOffer, setSelectedOffer] = useState("");
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
 
-  console.log(selectedOffers, "=========selectedOffers");
-  console.log(offers, "=========offers");
+  // const handleSelectAll = (e) => {
+  //   setSelectedOffers(e.target.checked ? offers.map((offer) => offer._id) : []);
+  // };
 
-  const handleSelectAll = (e) => {
-    setSelectedOffers(e.target.checked ? offers.map((offer) => offer._id) : []);
-  };
+  // const handleSelectOffer = (offerId) => {
+  //   setSelectedOffers((prev) => [...prev, offerId]);
+  // };
 
-  const handleSelectOffer = (offerId) => {
-    setSelectedOffers((prev) => [...prev, offerId]);
-  };
-
-  const handleDeleteOffer = async (id) => {
-    console.log(selectedOffers, "=========selectedOffers");
+  const handleDeleteOffer = async () => {
     try {
-      const response = await axiosInstance.delete(`/offer/${id}`);
-      console.log(response, "=========response");
+      const response = await axiosInstance.delete(`/offer/${selectedOffer}`);
       toast.success("Offers deleted successfully");
+      fetchData();
+      setDeleteConfirmation(false);
     } catch (error) {
       toast.error("Error deleting offers");
     }
+  };
+
+  const confirmDelete = (offerId) => {
+    setSelectedOffer(offerId);
+
+    setDeleteConfirmation(true);
   };
 
   return (
@@ -35,9 +40,9 @@ export const ActiveOffersTable = ({ offers }) => {
       <table className="min-w-full bg-white rounded-xl drop-shadow-lg shadow-xl">
         <thead className="bg-green-100 text-gray-600 *:text-sm *:font-normal">
           <tr>
-            <th className="py-2 px-4" onClick={handleSelectAll}>
+            {/* <th className="py-2 px-4" onClick={handleSelectAll}>
               <input type="checkbox" onChange={handleSelectAll} />
-            </th>
+            </th> */}
             <th className="py-2 px-4">Offer Name</th>
             <th className="py-2 px-4">Banner</th>
             <th className="py-2 px-4">Type</th>
@@ -51,13 +56,13 @@ export const ActiveOffersTable = ({ offers }) => {
         <tbody className="text-gray-600 *:text-sm">
           {offers.map((offer, index) => (
             <tr key={index} className="text-center border-b">
-              <td className="py-2 px-4">
+              {/* <td className="py-2 px-4">
                 <input
                   type="checkbox"
                   checked={selectedOffers.includes(offer._id)}
                   onChange={() => handleSelectOffer(offer._id)}
                 />
-              </td>
+              </td> */}
               <td className="py-2 px-4 font-medium text-gray-800">
                 {offer.offerName}
               </td>
@@ -76,12 +81,24 @@ export const ActiveOffersTable = ({ offers }) => {
                 {offer.offerValue}{" "}
                 {offer.offerMetric === "percentage" ? "%" : "₹"}
               </td>
-              <td className="py-2 px-4">{offer.startDate}</td>
-              <td className="py-2 px-4">{offer.endDate}</td>
+              <td className="py-2 px-4">
+                {new Date(offer.startDate).toLocaleDateString("en-IN", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </td>
+              <td className="py-2 px-4">
+                {new Date(offer.endDate).toLocaleDateString("en-IN", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </td>
               <td className="py-2 px-4">
                 <button
                   className="text-red-500 font-extrabold"
-                  onClick={() => handleDeleteOffer(offer._id)}
+                  onClick={() => confirmDelete(offer._id)}
                 >
                   <GoTrash />
                 </button>
@@ -90,6 +107,15 @@ export const ActiveOffersTable = ({ offers }) => {
           ))}
         </tbody>
       </table>
+
+      {deleteConfirmation && (
+        <ConfirmationModal
+          isOpen={deleteConfirmation}
+          message="Are you sure you want to delete these offers?"
+          onConfirm={handleDeleteOffer}
+          onClose={() => setDeleteConfirmation(false)}
+        />
+      )}
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { Breadcrumbs } from "../../components/Breadcrumbs";
 import { FiSearch } from "react-icons/fi";
 import Pagination from "../../components/Pagination";
 import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 export const BrandListing = () => {
   const [inputValue, setInputValue] = useState("");
@@ -58,7 +59,7 @@ export const BrandListing = () => {
 
   //handle loading states
   if (brandsLoading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
   // Handle error states
   if (brandsError) {

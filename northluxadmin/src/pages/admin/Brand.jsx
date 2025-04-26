@@ -40,9 +40,6 @@ function Brand() {
     fetchBrands();
   }, []);
 
-  console.log(formData, "========formData");
-  console.log(brands, "========brands");
-
   const fetchBrands = async () => {
     try {
       setLoading(true);

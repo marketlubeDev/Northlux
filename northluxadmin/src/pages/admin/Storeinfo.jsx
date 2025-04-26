@@ -6,6 +6,8 @@ import { useEffect } from "react";
 import { getStoreAndProducts } from "../../sevices/storeApis";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/spinner/LoadingSpinner";
+import Pagination from "../../components/Admin/Pagination";
+import { toast } from "react-toastify";
 
 function Storeinfo() {
   const { id } = useParams();
@@ -15,35 +17,67 @@ function Storeinfo() {
   const [storeInfo, setStoreInfo] = useState(store);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+  const itemsPerPage = 10;
+
   useEffect(() => {
     setSelectedStore(id);
   }, []);
 
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const fetchStoreAndProducts = async () => {
     try {
       setLoading(true);
-      const response = await getStoreAndProducts(selectedStore);
+      const response = await getStoreAndProducts(
+        selectedStore,
+        currentPage,
+        itemsPerPage,
+        debouncedSearchQuery
+      );
       setProducts(response?.data?.products);
+      setTotalPages(response?.data?.totalPages);
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     setStoreInfo(() => {
       return stores.find((store) => store._id === selectedStore);
     });
     fetchStoreAndProducts();
-  }, [id, selectedStore]);
+  }, [id, selectedStore, currentPage, debouncedSearchQuery]);
 
   const handleStoreChange = (e) => {
     const newStoreId = e.target.value;
     setSelectedStore(newStoreId);
+    setCurrentPage(1); // Reset to first page when changing stores
   };
 
   const handleEdit = (id) => {
     navigate(`/admin/product/addproduct`, { state: { productId: id } });
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1); // Reset to first page when searching
   };
 
   return (
@@ -137,11 +171,16 @@ function Storeinfo() {
         {/* Product Table */}
         <div className="bg-white rounded-xl shadow p-4">
           <div className="flex justify-between items-center mb-4">
-            <input
-              type="text"
-              placeholder="Search by product name, SKU..."
-              className="w-1/5 border border-gray-300 rounded-md px-4 py-2"
-            />
+            <div className="relative w-1/5">
+              <input
+                type="text"
+                placeholder="Search by product name, SKU..."
+                className="w-full border border-gray-300 rounded-md px-4 py-2 pl-10"
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            </div>
             <button
               className=" text-green-600 px-4 py-2 rounded-md border border-green-600"
               onClick={() =>
@@ -200,6 +239,15 @@ function Storeinfo() {
               )}
             </table>
           </div>
+          {!loading && products?.length > 0 && (
+            <div className="mt-4 flex justify-center">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          )}
         </div>
       </div>
     </>

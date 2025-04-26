@@ -7,7 +7,7 @@ import { setStore } from "../../redux/features/storeSlice";
 function AdminLayout() {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.store.store);
- 
+
   const menuItems = [
     { name: "Dashboard", path: "/admin" },
     { name: "Products", path: "product" },
@@ -20,6 +20,8 @@ function AdminLayout() {
     { name: "Banners", path: "banner" },
     { name: "Offer Banners", path: "offer-banner" },
     { name: "Active Offers", path: "active-offer" },
+    { name: "Sales", path: "sales" },
+    { name: "Inventory", path: "inventory" },
   ];
   const navigate = useNavigate();
 

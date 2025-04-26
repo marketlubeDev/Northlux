@@ -28,6 +28,7 @@ const addProduct = catchAsync(async (req, res, next) => {
     stockStatus,
     store,
     grossPrice,
+    priority,
   } = req.body;
 
   if (stockStatus === "outofstock" && stock > 0) {
@@ -214,8 +215,6 @@ const listProducts = catchAsync(async (req, res, next) => {
     role,
   } = req.query;
 
-
-
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 10;
   const skip = (page - 1) * limit;
@@ -224,7 +223,8 @@ const listProducts = catchAsync(async (req, res, next) => {
   const filter = {
     isDeleted: { $ne: true },
   };
-  if (role === "store") {
+
+  if (req.role === "store") {
     filter.store = new mongoose.Types.ObjectId(req.user);
   }
 
@@ -331,6 +331,7 @@ const listProducts = catchAsync(async (req, res, next) => {
           ? { effectivePrice: -1 }
           : { createdAt: -1 },
     },
+    { $sort: { priority: -1 } },
     { $skip: skip },
     { $limit: limit },
   ];
@@ -444,7 +445,6 @@ const updateProduct = catchAsync(async (req, res, next) => {
             $or: queryConditions,
             _id: { $ne: variant._id }, // Exclude the current variant
           });
-
 
           const productSkuExists = await Product.findOne({
             sku: variant.sku,

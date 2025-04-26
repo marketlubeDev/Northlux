@@ -33,6 +33,7 @@ const productSchema = new Schema(
     },
     grossPrice: { type: Number },
     offer: { type: Schema.Types.ObjectId, ref: "Offer" },
+    priority: { type: Number, enum: [0, 1], default: 0 },
   },
   { timestamps: true }
 );

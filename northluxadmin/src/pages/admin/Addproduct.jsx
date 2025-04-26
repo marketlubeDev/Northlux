@@ -94,6 +94,7 @@ function Addproduct({ role }) {
           sku: !hasVariants ? res?.data?.sku : "",
           description: !hasVariants ? res?.data?.description : "",
           grossPrice: !hasVariants ? res?.data?.grossPrice : "",
+          priority: res?.data?.priority || 0,
           // units: res.data.units,
           price: !hasVariants ? res.data.price : "",
           offerPrice: !hasVariants ? res.data.offerPrice : "",
@@ -104,7 +105,6 @@ function Addproduct({ role }) {
 
         setProductData(productData);
       } catch (err) {
-       
         toast.error("Failed to fetch product");
       } finally {
         setIsLoadingData(false);
@@ -368,7 +368,6 @@ function Addproduct({ role }) {
   };
 
   const handlePublish = async () => {
-   
     if (
       selectedVariant === "hasVariants" &&
       productData.variants.length === 0
@@ -415,6 +414,7 @@ function Addproduct({ role }) {
     formData.append("category", productData.category);
     formData.append("label", productData.label);
     formData.append("store", productData.store);
+    formData.append("priority", productData.priority);
     // formData.append("units", productData.units);
 
     if (selectedVariant === "hasVariants") {
@@ -565,6 +565,13 @@ function Addproduct({ role }) {
     setSelectedVariantIndex(null);
   };
 
+  const handlePriorityChange = (priority) => {
+    setProductData((prev) => ({
+      ...prev,
+      priority: priority ? 1 : 0,
+    }));
+  };
+
   return (
     <div className="space-y-3 w-full bg-white p-3 flex flex-col min-h-full">
       <PageHeader content={"Products"} />
@@ -590,6 +597,8 @@ function Addproduct({ role }) {
                 handleChange={handleProductChange}
                 value={productData.name}
                 errors={errors}
+                priority={productData.priority}
+                onPriorityChange={handlePriorityChange}
               />
 
               <div className="flex gap-2">

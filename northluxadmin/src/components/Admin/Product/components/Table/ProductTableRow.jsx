@@ -47,8 +47,14 @@ const ProductTableRow = ({
       </td>
       <th
         scope="row"
-        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white flex items-center gap-2"
       >
+        <span
+          className={`w-4 h-4 block rounded-full ${
+            product?.priority && "bg-green-500"
+          }`}
+          title={product?.priority ? "Priority Product" : ""}
+        ></span>
         {product?.name?.split("").length > 30
           ? product?.name?.split(" ").slice(0, 4).join(" ") + "..."
           : product?.name}
