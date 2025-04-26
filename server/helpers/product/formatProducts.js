@@ -8,6 +8,7 @@ const formatProductResponse = (product) => {
   return {
     _id: product._id,
     name: product.name,
+    priority: product.priority,
     store: product.store
       ? {
           _id: product.store._id,

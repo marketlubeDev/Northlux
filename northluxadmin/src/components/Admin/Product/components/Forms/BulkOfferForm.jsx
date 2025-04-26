@@ -10,10 +10,6 @@ export const BulkOfferForm = ({
   selectedProducts,
   setPageRender,
 }) => {
-  // const [offerType, setOfferType] = useState(isProductSelected ? "group" : "category");
-  const [category, setCategory] = useState("");
-  const [brand, setBrand] = useState("");
-
   const [formData, setFormData] = useState({
     offerType: isProductSelected ? "group" : "category",
     offerName: "",
@@ -27,7 +23,7 @@ export const BulkOfferForm = ({
     bannerImage: "",
   });
 
-  console.log(formData, "=========formData");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
@@ -38,8 +34,6 @@ export const BulkOfferForm = ({
   // handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, "===name");
-    console.log(value, "===value");
 
     setFormData({ ...formData, [name]: value });
   };
@@ -47,18 +41,42 @@ export const BulkOfferForm = ({
   // handle apply offer
   const handleApplyOffer = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axiosInstance.post("/offer", {
-        ...formData,
-      });
+    setIsLoading(true);
 
-      console.log(response, "=========offer created");
+    if (
+      !formData.bannerImage ||
+      !formData.offerName ||
+      !formData.offerMetric ||
+      !formData.offerValue ||
+      !formData.startDate ||
+      !formData.endDate
+    ) {
+      toast.error("Please fill all the fields");
+      return;
+    }
+
+    const newFormData = new FormData();
+    newFormData.append("offerType", formData.offerType);
+    newFormData.append("offerName", formData.offerName);
+    newFormData.append("category", formData.category);
+    newFormData.append("brand", formData.brand);
+    newFormData.append("products", JSON.stringify(formData.products));
+    newFormData.append("offerMetric", formData.offerMetric);
+    newFormData.append("offerValue", formData.offerValue);
+    newFormData.append("startDate", formData.startDate);
+    newFormData.append("endDate", formData.endDate);
+    newFormData.append("bannerImage", formData.bannerImage);
+
+    try {
+      const response = await axiosInstance.post("/offer", newFormData);
       onClose();
       toast.success("Offer applied successfully");
       setPageRender((prev) => prev + 1);
     } catch (error) {
       console.log(error);
       toast.error("Error applying offer");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -299,8 +317,9 @@ export const BulkOfferForm = ({
           <button
             type="submit"
             className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+            disabled={isLoading}
           >
-            + Apply Offer
+            {isLoading ? "Applying..." : "Apply Offer"}
           </button>
         </div>
       </form>

@@ -17,8 +17,6 @@ const ShopBy = () => {
     isError: categoriesError,
   } = useCategories();
 
-  
-
   const brands = brandsData?.data.brands;
   const categories = categoriesData?.envelop?.data;
 
@@ -56,7 +54,7 @@ const ShopBy = () => {
           <LoadingSpinner />
         ) : (
           <div className="content">
-            {brands?.map((brand, index) => (
+            {brands?.slice(0, 8)?.map((brand, index) => (
               <div
                 onClick={() => navigate(`/brands/${brand._id}`)}
                 key={index}

@@ -19,6 +19,8 @@ import Storeinfo from "../pages/admin/Storeinfo";
 import StoreLayout from "../layouts/StoreLayout/StoreLayout";
 import Landingpage from "../pages/Landing/Landingpage";
 import { ActiveOffers } from "../pages/admin/ActiveOffers";
+import Sales from "../pages/admin/Sales";
+import Inventory from "../pages/admin/Inventory";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -101,6 +103,14 @@ export const router = createBrowserRouter([
         path: "storeinfo/:id",
         element: <Storeinfo />,
       },
+      {
+        path: "sales",
+        element: <Sales role={"admin"} />,
+      },
+      {
+        path: "inventory",
+        element: <Inventory role={"admin"} />,
+      },
     ],
   },
 
@@ -164,6 +174,18 @@ export const router = createBrowserRouter([
       {
         path: "storeinfo/:id",
         element: <Storeinfo role={"store"} />,
+      },
+      {
+        path: "active-offer",
+        element: <ActiveOffers role={"store"} />,
+      },
+      {
+        path: "sales",
+        element: <Sales role={"store"} />,
+      },
+      {
+        path: "inventory",
+        element: <Inventory role={"store"} />,
       },
     ],
   },

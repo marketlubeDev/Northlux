@@ -3,88 +3,6 @@ import { useCategories } from "../hooks/queries/categories";
 import { useNavigate } from "react-router-dom";
 import { useBrands } from "../hooks/queries/brands";
 
-const brands = [
-  {
-    id: 1,
-    name: "Brand 1",
-    description: "Brand 1 description",
-  },
-  {
-    id: 2,
-    name: "Brand 2",
-    description: "Brand 2 description",
-  },
-  {
-    id: 3,
-    name: "Brand 3",
-    description: "Brand 3 description",
-  },
-  {
-    id: 4,
-    name: "Brand 4",
-    description: "Brand 4 description",
-  },
-  {
-    id: 5,
-    name: "Brand 5",
-    description: "Brand 5 description",
-  },
-  {
-    id: 6,
-    name: "Brand 6",
-    description: "Brand 6 description",
-  },
-  {
-    id: 7,
-    name: "Brand 7",
-    description: "Brand 7 description",
-  },
-  {
-    id: 8,
-    name: "Brand 8",
-    description: "Brand 8 description",
-  },
-  {
-    id: 9,
-    name: "Brand 9",
-    description: "Brand 9 description",
-  },
-  {
-    id: 10,
-    name: "Brand 10",
-    description: "Brand 10 description",
-  },
-  {
-    id: 11,
-    name: "Brand 11",
-    description: "Brand 11 description",
-  },
-  {
-    id: 12,
-    name: "Brand 12",
-  },
-  {
-    id: 13,
-    name: "Brand 13",
-  },
-  {
-    id: 14,
-    name: "Brand 14",
-  },
-  {
-    id: 15,
-    name: "Brand 15",
-  },
-  {
-    id: 16,
-    name: "Brand 16",
-  },
-  {
-    id: 17,
-    name: "Brand 17",
-  },
-];
-
 export const NavBar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownContent, setDropdownContent] = useState([]);
@@ -192,7 +110,12 @@ export const NavBar = () => {
           </ul>
           <div className="view-all-container">
             <p>View All</p>
-            <button className="view-all-container-button">View All</button>
+            <button
+              className="view-all-container-button"
+              onClick={() => navigate("/brands")}
+            >
+              View All
+            </button>
           </div>
         </div>
       )}

@@ -376,6 +376,7 @@ function Orders() {
             {order?.store?.name || "N/A"}
           </span>
         </td>
+        <td className="px-6 py-4 text-center">{order?.quantity || "N/A"}</td>
         <td className="px-6 py-4">
           <div className="font-medium text-gray-900">
             ₹{order.totalAmount || 0}
@@ -415,7 +416,7 @@ function Orders() {
                 />
               </div>
               <div className="w-full flex flex-col gap-2">
-                <select
+                {/* <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -426,7 +427,7 @@ function Orders() {
                       {category.name}
                     </option>
                   ))}
-                </select>
+                </select> */}
                 <select
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
@@ -530,6 +531,9 @@ function Orders() {
 
                   <th scope="col" className="px-6 py-3">
                     <div className="flex items-center">Store</div>
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    <div className="flex items-center">Quantity</div>
                   </th>
                   <th scope="col" className="px-6 py-3">
                     <div className="flex items-center">Total Amount</div>

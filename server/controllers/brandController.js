@@ -15,8 +15,7 @@ const createBrand = catchAsync(async (req, res, next) => {
   }
 
   const brandData = { name, description, isPriority };
-console.log(brandData);
-
+  console.log(brandData);
 
   if (req.files && req.files.length > 0) {
     // Handle main brand image
@@ -46,14 +45,12 @@ console.log(brandData);
   });
 });
 
-
 // Get all brands
 const getAllBrands = catchAsync(async (req, res, next) => {
   const { page = 1, limit = 10, search } = req.query;
 
   const pageNumber = parseInt(page, 10);
   const limitNumber = parseInt(limit, 10);
-
 
   let matchStage = { $match: {} };
 
@@ -62,6 +59,7 @@ const getAllBrands = catchAsync(async (req, res, next) => {
       $match: { name: { $regex: search, $options: "i" } },
     };
   }
+  const sortStage = { $sort: { isPriority: -1 } };
 
   const facetStage = {
     $facet: {
@@ -76,7 +74,11 @@ const getAllBrands = catchAsync(async (req, res, next) => {
     },
   };
 
-  const aggregation = await Brand.aggregate([matchStage, facetStage]);
+  const aggregation = await Brand.aggregate([
+    matchStage,
+    sortStage,
+    facetStage,
+  ]);
 
   const brands = aggregation[0].brands;
   const priorityBrandCount = aggregation[0].priorityBrandCount[0]?.count || 0;
@@ -90,7 +92,6 @@ const getAllBrands = catchAsync(async (req, res, next) => {
     },
   });
 });
-
 
 // Get a single brand by ID
 const getBrandById = catchAsync(async (req, res, next) => {

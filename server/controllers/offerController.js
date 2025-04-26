@@ -5,19 +5,27 @@ const uploadToCloudinary = require("../utilities/cloudinaryUpload");
 const Product = require("../model/productModel");
 const mongoose = require("mongoose");
 const Variant = require("../model/variantsModel");
-// const uploadToCloudinary = require("../utilities/cloudinary");
-// const path = require("path");
-// const fs = require("fs");
 
-// Define the aggregation pipeline
 const buildAggregationPipeline = (newOffer, query) => {
   const aggregationPipeline = [query];
   return aggregationPipeline;
 };
 
 const createOffer = catchAsync(async (req, res, next) => {
+  console.log(req.body, "=========req.body");
   const { bannerImage, ...offerData } = req.body;
   let hasVariants = false;
+
+  if (typeof offerData.products === "string") {
+    try {
+      // Parse the string representation of an array
+      offerData.products = JSON.parse(offerData.products);
+    } catch (error) {
+      console.error("Error parsing products JSON:", error);
+      // If parsing fails, set it as an array with the string value
+      offerData.products = [offerData.products];
+    }
+  }
 
   // Cast offerValue to Number
   offerData.offerValue = Number(offerData.offerValue);
@@ -29,18 +37,23 @@ const createOffer = catchAsync(async (req, res, next) => {
   }
 
   const newOffer = await Offer.create(offerData);
+  console.log(newOffer, "=========newOffer");
   let productsCount = 0;
 
   const aggregationPipeline = buildAggregationPipeline(newOffer, {});
 
   // for category
   if (newOffer.offerType === "category") {
-    aggregationPipeline[0] = { $match: { category: newOffer.category } };
+    aggregationPipeline[0] = {
+      $match: { category: new mongoose.Types.ObjectId(newOffer.category) },
+    };
   }
 
   // for brand
   if (newOffer.offerType === "brand") {
-    aggregationPipeline[0] = { $match: { brand: newOffer.brand } };
+    aggregationPipeline[0] = {
+      $match: { brand: new mongoose.Types.ObjectId(newOffer.brand) },
+    };
   }
 
   // for group
@@ -62,6 +75,7 @@ const createOffer = catchAsync(async (req, res, next) => {
   }
 
   const products = await Product.aggregate(aggregationPipeline);
+  console.log(products, "=========products");
   productsCount = products.length;
   newOffer.productsCount = productsCount;
   await newOffer.save();

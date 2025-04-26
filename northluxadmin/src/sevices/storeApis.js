@@ -15,8 +15,19 @@ export const updateStore = async (data, id) => {
   return response.data;
 };
 
-export const getStoreAndProducts = async (id) => {
-  const response = await axiosInstance.get(`/admin/getstoreandproducts/${id}`);
+export const getStoreAndProducts = async (
+  id,
+  page = 1,
+  limit = 10,
+  search = ""
+) => {
+  const response = await axiosInstance.get(`/admin/getstoreandproducts/${id}`, {
+    params: {
+      page,
+      limit,
+      search,
+    },
+  });
   return response.data;
 };
 

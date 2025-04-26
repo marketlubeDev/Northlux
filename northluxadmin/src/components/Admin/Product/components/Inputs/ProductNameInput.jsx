@@ -1,11 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import ErrorMessage from "../../../../common/ErrorMessage";
 
-const ProductNameInput = ({ handleChange, value, errors }) => (
+const ProductNameInput = ({
+  handleChange,
+  value,
+  errors,
+  priority,
+  onPriorityChange,
+}) => (
   <div className="mb-5">
-    <label className="block mb-2 text-sm font-medium text-gray-900">
-      ProductName <span className="text-red-500">*</span>
-    </label>
+    <div className="flex items-center justify-between mb-2">
+      <label className="block text-sm font-medium text-gray-900">
+        {priority ? "Priority Product Name" : "Product Name"}{" "}
+        <span className="text-red-500">*</span>
+      </label>
+      <label className="flex items-center gap-2 text-xs font-medium text-gray-700 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={priority === 1}
+          onChange={(e) => onPriorityChange(e.target.checked)}
+          className="accent-green-600"
+        />
+        Mark as Priority
+      </label>
+    </div>
     <input
       type="text"
       name="name"

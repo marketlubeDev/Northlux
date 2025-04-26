@@ -19,12 +19,12 @@ function Products({ role }) {
   const [isLoading, setIsLoading] = useState(true);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [pageRender, setPageRender] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const navigate = useNavigate();
 
   const [showBulkOfferModal, setShowBulkOfferModal] = useState(false);
   const [isProductSelected, setIsProductSelected] = useState(false);
   const selectedProductsCount = selectedProducts?.length;
-
 
   // handleIsProductSelected
   useEffect(() => {
@@ -45,12 +45,12 @@ function Products({ role }) {
     } else {
       fetchProducts(currentPage);
     }
-  }, [currentPage, pageRender]); // Add currentPage as dependency
+  }, [currentPage, pageRender, pageSize]);
 
   const fetchProducts = async (page) => {
     try {
       setIsLoading(true);
-      const res = await listProducts(page, role);
+      const res = await listProducts(page, pageSize);
       setProducts(res?.data?.data?.products);
       setTotalPages(res?.data?.data?.totalPages);
     } catch (err) {
@@ -103,7 +103,7 @@ function Products({ role }) {
       const res = await searchProducts({
         keyword,
         page,
-        limit: 10,
+        limit: pageSize,
       });
       setProducts(res?.data?.data?.products);
       setTotalPages(res?.data?.data?.totalPages);
@@ -131,14 +131,19 @@ function Products({ role }) {
     }
   };
 
+  // Handle page size change
+  const handlePageSizeChange = (e) => {
+    const newPageSize = parseInt(e.target.value);
+    setPageSize(newPageSize);
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
+
   // Cleanup debounce on component unmount
   useEffect(() => {
     return () => {
       debouncedSearch.cancel();
     };
   }, [debouncedSearch]);
-
-
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 relative">
@@ -202,7 +207,11 @@ function Products({ role }) {
             isOpen={showBulkOfferModal}
             onClose={() => setShowBulkOfferModal(false)}
           >
-            <BulkOfferForm isProductSelected={isProductSelected} selectedProducts={selectedProducts} setPageRender={setPageRender} />
+            <BulkOfferForm
+              isProductSelected={isProductSelected}
+              selectedProducts={selectedProducts}
+              setPageRender={setPageRender}
+            />
           </Modal>
 
           {/* Table section with loading state */}
@@ -232,10 +241,26 @@ function Products({ role }) {
           {/* Pagination */}
           {!isLoading && totalPages > 1 && (
             <div className="sticky bottom-0 flex items-center justify-between p-4 bg-white border-t">
-              <div>
+              <div className="flex items-center gap-4">
                 <p className="text-sm text-gray-700">
                   Showing page {currentPage} of {totalPages}
                 </p>
+                <div className="flex items-center gap-2">
+                  <label htmlFor="pageSize" className="text-sm text-gray-700">
+                    Items per page:
+                  </label>
+                  <select
+                    id="pageSize"
+                    value={pageSize}
+                    onChange={handlePageSizeChange}
+                    className="border border-gray-300 rounded-md px-2 py-1 text-sm"
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                    <option value={50}>50</option>
+                  </select>
+                </div>
               </div>
               <Pagination
                 currentPage={currentPage}
