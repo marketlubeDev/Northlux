@@ -7,7 +7,6 @@ export const usePlaceOrder = () => {
   return useMutation({
     mutationFn: (data) => orderService.placeOrder(data),
     onSuccess: (data) => {
-      toast.success("Order placed successfully");
       return data;
     },
     onError: (error) => {
