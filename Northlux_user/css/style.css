@@ -6081,7 +6081,8 @@ input[required]::placeholder::after {
   background: #1e1e1e;
   height: 48px;
   padding-inline: 10%;
-  position: relative;
+  overflow-x: auto;
+  overflow-y: visible;
   z-index: 5;
 }
 .nav-bar-container .nav-bar-list {
@@ -6096,9 +6097,15 @@ input[required]::placeholder::after {
   letter-spacing: 0px;
   text-align: left;
 }
+@media (max-width: 768px) {
+  .nav-bar-container .nav-bar-list {
+    gap: 80px;
+  }
+}
 .nav-bar-container .nav-bar-list li {
   cursor: pointer;
   display: flex;
+  text-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
 }
@@ -6120,7 +6127,7 @@ input[required]::placeholder::after {
 .nav-bar-container .dropdown-content {
   z-index: 100;
   position: absolute;
-  top: 48px;
+  top: 112px;
   left: 0;
   right: 0;
   margin-inline: 2%;
@@ -6133,6 +6140,12 @@ input[required]::placeholder::after {
   display: flex;
   justify-content: stretch;
   gap: 10px;
+  overflow-y: auto;
+}
+@media (max-width: 768px) {
+  .nav-bar-container .dropdown-content {
+    flex-direction: column;
+  }
 }
 .nav-bar-container .dropdown-content .dropdown-content-list {
   flex: 5;
@@ -6143,6 +6156,11 @@ input[required]::placeholder::after {
   list-style: none;
   padding: 0;
   margin: 0;
+}
+@media (max-width: 768px) {
+  .nav-bar-container .dropdown-content .dropdown-content-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 .nav-bar-container .dropdown-content .dropdown-content-list-item {
   padding: 20px;
