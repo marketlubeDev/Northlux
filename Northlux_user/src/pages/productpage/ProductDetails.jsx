@@ -1,11 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Card from "../../components/Card";
-import {
-  FiChevronLeft,
-  FiChevronRight,
-  FiShare2,
-  FiHeart,
-} from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight, FiShare2 } from "react-icons/fi";
 import { FaWhatsapp } from "react-icons/fa";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 
@@ -355,7 +350,44 @@ function ProductDetailsContent() {
       </div>
 
       <div className="mobile-fixed-buttons">
-        <div className="buy-buttons">
+        <div
+          className="buy-buttons"
+          style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+        >
+          <div className="quantity-container" style={{ flex: 1 }}>
+            <span>Qty:</span>
+            <input
+              type="text"
+              className="quantity-input"
+              value={quantity.toString()}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === "") {
+                  setQuantity("");
+                } else {
+                  const parsed = parseInt(value);
+                  if (!isNaN(parsed) && parsed >= 0) {
+                    setQuantity(parsed);
+                  }
+                }
+              }}
+              onBlur={() => {
+                if (quantity === "" || quantity < 1) {
+                  setQuantity(1);
+                }
+              }}
+            />
+            <div className="quantity-buttons">
+              <IoIosArrowUp
+                size={30}
+                onClick={() => setQuantity((prev) => prev + 1)}
+              />
+              <IoIosArrowDown
+                size={30}
+                onClick={() => quantity > 1 && setQuantity((prev) => prev - 1)}
+              />
+            </div>
+          </div>
           <button className="buy-now" onClick={() => handleConnectToWhatsapp()}>
             <div className="buy-now-button">
               <FaWhatsapp style={{ color: "white", fontSize: "1.5rem" }} />
