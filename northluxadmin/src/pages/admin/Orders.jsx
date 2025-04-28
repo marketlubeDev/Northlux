@@ -19,6 +19,9 @@ import { useSelector } from "react-redux";
 function Orders({ role }) {
   const store = useSelector((state) => state.store.store);
   const stores = useSelector((state) => state.adminUtilities.stores);
+import { FaRegEdit } from "react-icons/fa";
+
+function Orders() {
   const [formUtilites, setFormUtilites] = useState([]);
   const [orders, setOrders] = useState([]);
   const [orderStats, setOrderStats] = useState(null);
@@ -404,7 +407,15 @@ function Orders({ role }) {
             day: "numeric",
           })}
         </td>
-        <td className="px-6 py-4">{order?.phone || "N/A"}</td>
+        <td className="px-6 py-4 flex items-center gap-2 justify-center">
+          {order?.phone || "N/A"}
+          <span
+            className="text-blue-500 cursor-pointer"
+            // onClick={handleEditMobile}
+          >
+            <FaRegEdit />
+          </span>
+        </td>
 
         <td className="px-6 py-4">
           <span className="text-sm font-medium">

@@ -6,10 +6,12 @@ const {
   getUserOrders,
   cancelOrder,
   orderStats,
+  editMobile,
 } = require("../../controllers/orderController");
 const autheticateToken = require("../../middlewares/authMiddleware");
 
 const orderRouter = require("express").Router();
+
 orderRouter.get("/get-user-orders", autheticateToken(["user"]), getUserOrders);
 orderRouter.post("/placeorder", placeOrder);
 orderRouter.patch(
@@ -38,5 +40,7 @@ orderRouter.post(
   autheticateToken(["user"]),
   cancelOrder
 );
+
+orderRouter.patch("/edit-mobile", autheticateToken(["admin","store"]), editMobile);
 
 module.exports = orderRouter;
