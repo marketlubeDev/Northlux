@@ -143,7 +143,6 @@ const placeOrder = catchAsync(async (req, res, next) => {
 
   const [product] = await productModel.aggregate(aggregationPipeline);
 
-
   if (!product) {
     return next(new AppError("Product not found", 404));
   }
@@ -162,7 +161,6 @@ const placeOrder = catchAsync(async (req, res, next) => {
     .replace(/\s+/g, "");
 
   const orderId = `${storeName}${year}${month}${day}${sequence}`;
-
 
   const newOrder = new orderModel({
     orderId,
@@ -196,7 +194,6 @@ const placeOrder = catchAsync(async (req, res, next) => {
 const updateOrderStatus = catchAsync(async (req, res, next) => {
   const { orderId } = req.params;
   const { status, type } = req.body;
-
 
   const validStatuses = {
     order: [
@@ -257,8 +254,6 @@ const filterOrders = catchAsync(async (req, res, next) => {
     page = 1,
     limit = 10,
   } = req.query;
-
- 
 
   let filterCriteria = {};
 
@@ -602,6 +597,31 @@ const orderStats = catchAsync(async (req, res, next) => {
   });
 });
 
+const editMobile = catchAsync(async (req, res, next) => {
+  const { orderId, mobile } = req.body;
+
+  // const user = await userModel.findByIdAndUpdate(
+  //   userId,
+  //   { mobileNumber },
+  //   { new: true }
+  // );
+
+  const order = await orderModel.findByIdAndUpdate(
+    { _id: orderId },
+    { mobile },
+    { new: true }
+  );
+
+  if (!order) {
+    return next(new AppError("Order not found", 404));
+  }
+
+  res.status(200).json({
+    message: "Mobile number updated successfully",
+    order,
+  });
+});
+
 module.exports = {
   placeOrder,
   updateOrderStatus,
@@ -610,4 +630,5 @@ module.exports = {
   getUserOrders,
   cancelOrder,
   orderStats,
+  editMobile,
 };

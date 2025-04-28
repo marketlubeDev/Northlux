@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import { Popover, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { createPortal } from "react-dom";
+import { FaRegEdit } from "react-icons/fa";
 
 function Orders() {
   const [formUtilites, setFormUtilites] = useState([]);
@@ -369,7 +370,15 @@ function Orders() {
             day: "numeric",
           })}
         </td>
-        <td className="px-6 py-4">{order?.phone || "N/A"}</td>
+        <td className="px-6 py-4 flex items-center gap-2 justify-center">
+          {order?.phone || "N/A"}
+          <span
+            className="text-blue-500 cursor-pointer"
+            // onClick={handleEditMobile}
+          >
+            <FaRegEdit />
+          </span>
+        </td>
 
         <td className="px-6 py-4">
           <span className="text-sm font-medium">
