@@ -1,5 +1,9 @@
 import React, { useRef } from "react";
-import { FiArrowLeft, FiArrowRight, FiArrowRight as ViewAllIcon } from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiArrowRight,
+  FiArrowRight as ViewAllIcon,
+} from "react-icons/fi";
 import Card from "../../../components/Card";
 import { Link, useNavigate } from "react-router-dom";
 import { useProducts } from "../../../hooks/queries/products";
@@ -7,7 +11,11 @@ import LoadingSpinner from "../../../components/LoadingSpinner";
 
 function Trending() {
   const scrollContainerRef = useRef(null);
-  const { data: response, isLoading, error } = useProducts({
+  const {
+    data: response,
+    isLoading,
+    error,
+  } = useProducts({
     labelId: "67e6441c1befacf37ff60151",
   });
   const navigate = useNavigate();
@@ -56,12 +64,15 @@ function Trending() {
           </h2>
         </div>
         <p onClick={handleViewAll} className="view-all desktop-view-all">
-          View All <ViewAllIcon/>
+          View All <ViewAllIcon />
         </p>
       </div>
 
       <div className="trending-products-wrapper">
-        <button className="scroll-button scroll-left" onClick={() => scroll("left")}>
+        <button
+          className="scroll-button scroll-left"
+          onClick={() => scroll("left")}
+        >
           <FiArrowLeft />
         </button>
         <div className="trending-products" ref={scrollContainerRef}>
@@ -69,19 +80,17 @@ function Trending() {
             <Card key={product?._id} product={product} />
           ))}
         </div>
-        <button className="scroll-button scroll-right" onClick={() => scroll("right")}>
+        <button
+          className="scroll-button scroll-right"
+          onClick={() => scroll("right")}
+        >
           <FiArrowRight />
         </button>
       </div>
 
       <p onClick={handleViewAll} className="view-all mobile-view-all">
-        View All <ViewAllIcon/>
+        View All <ViewAllIcon />
       </p>
-
-      <div className="trending-footer">
-        <p>Don't miss out! Explore all trending styles</p>
-        <Link to="/products">Shop all →</Link>
-      </div>
     </section>
   );
 }
