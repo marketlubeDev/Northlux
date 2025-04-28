@@ -34,16 +34,18 @@ function Card({ product }) {
 
       <div className="product-card_content">
         {/* <span className="category">{category.name}</span> */}
-        <h3 className="title">{name.split("").length > 20 ? name.slice(0, 20) + "..." : name}</h3>
+        <h3 className="title">
+          {name.split("").length > 20 ? name.slice(0, 20) + "..." : name}
+        </h3>
         <div className="price">
           <span className="current-price">₹{offerPrice}</span>
           <span className="original-price">₹{price}</span>
         </div>
-        <div className="rating">
+        {/* <div className="rating">
           {"★".repeat(Math.floor(averageRating))}
           {"☆".repeat(5 - Math.floor(averageRating))}
           <span className="rating-number">{averageRating}</span>
-        </div>
+        </div> */}
         {/* <div className="add-to-cart-wrapper">
           <button
             // onClick={() => handleAddToCart("buy")}

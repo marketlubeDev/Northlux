@@ -188,9 +188,9 @@ export default function Header() {
             className="header-actions-item user-menu-container"
             ref={userMenuRef}
           >
-            <FiUser className="icon" onClick={toggleUserMenu} />
+            {/* <FiUser className="icon" onClick={toggleUserMenu} /> */}
 
-            {isUserMenuOpen && isLoggedIn && (
+            {/* {isUserMenuOpen && isLoggedIn && (
               <div className={`user-menu ${isUserMenuOpen ? "active" : ""}`}>
                 <Link
                   to="/profile?tab=personal-info"
@@ -242,12 +242,7 @@ export default function Header() {
                   </Link>
                 </div>
               </div>
-            )}
-          </div>
-          <div className="header-actions-item">
-            <Link to="/cart">
-              <FiShoppingCart className="icon" />
-            </Link>
+            )} */}
           </div>
         </div>
 
