@@ -83,19 +83,19 @@ export const BrandListing = () => {
           </div>
 
           {/* Desktop Search */}
-          <div className="header-search desktop-search brand-listing-search">
-            <div className="search-container">
-              <input
-                type="text"
-                placeholder="Search by brand name"
-                value={inputValue}
-                onChange={handleInputChange}
-                className="search-input"
-                ref={inputRef}
-                autoFocus={true}
-              />
-            </div>
+          {/* <div className=" desktop-search brand-listing-search"> */}
+          <div className=" brand-listing-search">
+            <input
+              type="text"
+              placeholder="Search by brand name"
+              value={inputValue}
+              onChange={handleInputChange}
+              className="search-input"
+              ref={inputRef}
+              autoFocus={true}
+            />
           </div>
+          {/* </div> */}
         </div>
       </div>
       <div className="brand-listing-container">

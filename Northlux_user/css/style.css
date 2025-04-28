@@ -5995,18 +5995,52 @@ input[required]::placeholder::after {
   gap: 0.5rem;
   padding-bottom: 1rem;
   border-bottom: 3px solid rgba(102, 102, 102, 0.2);
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+@media (max-width: 768px) {
+  .brand-listing-page .brand-listing-header {
+    flex-direction: column;
+    align-items: start;
+    border-bottom: 1px solid rgba(102, 102, 102, 0.2);
+  }
 }
 .brand-listing-page .brand-listing-header .brand-listing-search {
   display: flex;
   flex-direction: column;
+  flex: 1;
   gap: 1rem;
   max-width: 400px;
+}
+@media (max-width: 768px) {
+  .brand-listing-page .brand-listing-header .brand-listing-search {
+    width: 100%;
+    max-width: unset;
+  }
+}
+.brand-listing-page .brand-listing-header .brand-listing-search input {
+  align-items: center;
+  width: 100%;
+  height: 2.5rem;
+  border: 1px solid #ddd;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: #f8f8f8;
+  padding-left: 20px;
 }
 .brand-listing-page .brand-listing-container {
   margin-top: 2rem;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 32px 16px;
+}
+@media (max-width: 768px) {
+  .brand-listing-page .brand-listing-container {
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: 1rem;
+  }
 }
 .brand-listing-page .brand-listing-item {
   position: relative;
@@ -6058,12 +6092,6 @@ input[required]::placeholder::after {
   cursor: pointer;
   height: 40px;
   margin-bottom: 100px;
-}
-.brand-listing-page .brand-listing-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
 }
 
 .breadcrumb-component {

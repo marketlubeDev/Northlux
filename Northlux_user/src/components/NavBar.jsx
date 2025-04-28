@@ -75,8 +75,6 @@ export const NavBar = () => {
   };
 
   const handleClickSubCategory = (subCategory) => {
-    console.log(subCategory, "=========subCategory");
-
     if (dropdownContent?.parent === "subcategories") {
       navigate("/products", {
         state: {
@@ -103,8 +101,6 @@ export const NavBar = () => {
       });
     }
   };
-
-  console.log(currentDropDownParent, "===========currentDropDownParent");
 
   return (
     <div className="nav-bar-container">
@@ -156,7 +152,6 @@ export const NavBar = () => {
             ))}
           </ul>
           <div className="view-all-container">
-            <p>View All</p>
             <button
               className="view-all-container-button"
               onClick={() => handleNavigateToParent()}
