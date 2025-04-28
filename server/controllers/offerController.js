@@ -12,17 +12,15 @@ const buildAggregationPipeline = (newOffer, query) => {
 };
 
 const createOffer = catchAsync(async (req, res, next) => {
-  console.log(req.body, "=========req.body");
   const { bannerImage, ...offerData } = req.body;
   let hasVariants = false;
 
   if (typeof offerData.products === "string") {
     try {
-      // Parse the string representation of an array
       offerData.products = JSON.parse(offerData.products);
     } catch (error) {
       console.error("Error parsing products JSON:", error);
-      // If parsing fails, set it as an array with the string value
+
       offerData.products = [offerData.products];
     }
   }
@@ -37,7 +35,6 @@ const createOffer = catchAsync(async (req, res, next) => {
   }
 
   const newOffer = await Offer.create(offerData);
-  console.log(newOffer, "=========newOffer");
   let productsCount = 0;
 
   const aggregationPipeline = buildAggregationPipeline(newOffer, {});
@@ -75,7 +72,6 @@ const createOffer = catchAsync(async (req, res, next) => {
   }
 
   const products = await Product.aggregate(aggregationPipeline);
-  console.log(products, "=========products");
   productsCount = products.length;
   newOffer.productsCount = productsCount;
   await newOffer.save();
@@ -196,14 +192,14 @@ const deleteOffer = catchAsync(async (req, res, next) => {
   // Find products associated with the offer
   const products = await Product.find({ offer: offer._id });
 
-  console.log(products, "================products");
+
 
   // Check if any product has variants
   const hasVariants = products.some(
     (product) => product?.variants && product?.variants?.length > 0
   );
 
-  console.log(hasVariants, "================hasVariants");
+  
 
   // Reset offerPrice for products without variants
   if (!hasVariants) {

@@ -211,7 +211,6 @@ const getStoreAndProducts = catchAsync(async (req, res, next) => {
     },
   ]);
 
-
   const totalProducts = result[0].totalCount[0]?.count || 0;
   const products = result[0].products.map(formatProductResponse);
 
@@ -227,6 +226,14 @@ const getStoreAndProducts = catchAsync(async (req, res, next) => {
   });
 });
 
+const checkStore = catchAsync(async (req, res, next) => {
+  const store = await storeModel.findById(req.user);
+  if (!store) {
+    return next(new AppError("Store not found", 404));
+  }
+  res.status(200).json({ store });
+});
+
 module.exports = {
   createStore,
   loginStore,
@@ -234,4 +241,5 @@ module.exports = {
   editStore,
   // getStoreById,
   getStoreAndProducts,
+  checkStore,
 };

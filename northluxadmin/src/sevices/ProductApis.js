@@ -1,8 +1,11 @@
 import { axiosInstance } from "../axios/axiosInstance";
 
-export const listProducts = (page, limit = 10) => {
+export const listProducts = (page, limit = 10, filter = {}) => {
   return axiosInstance.get(
-    `product/get-products-by-role?page=${page}&limit=${limit}`
+    `product/get-products-by-role?page=${page}&limit=${limit}`,
+    {
+      params: filter,
+    }
   );
 };
 

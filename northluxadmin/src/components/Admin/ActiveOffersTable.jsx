@@ -5,8 +5,9 @@ import { GoTrash } from "react-icons/go";
 import { toast } from "react-toastify";
 import { axiosInstance } from "../../axios/axiosInstance";
 import ConfirmationModal from "./ConfirmationModal";
+import LoadingSpinner from "../spinner/LoadingSpinner";
 
-export const ActiveOffersTable = ({ offers, fetchData }) => {
+export const ActiveOffersTable = ({ offers, fetchData, loading }) => {
   const [selectedOffer, setSelectedOffer] = useState("");
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
 
@@ -54,57 +55,60 @@ export const ActiveOffersTable = ({ offers, fetchData }) => {
           </tr>
         </thead>
         <tbody className="text-gray-600 *:text-sm">
-          {offers.map((offer, index) => (
-            <tr key={index} className="text-center border-b">
-              {/* <td className="py-2 px-4">
-                <input
-                  type="checkbox"
-                  checked={selectedOffers.includes(offer._id)}
-                  onChange={() => handleSelectOffer(offer._id)}
-                />
-              </td> */}
-              <td className="py-2 px-4 font-medium text-gray-800">
-                {offer.offerName}
-              </td>
-              <td className="py-2 px-4">
-                <img
-                  src={offer.bannerImage}
-                  alt={offer.offerName}
-                  className="h-10 mx-auto"
-                />
-              </td>
-              <td className="py-2 px-4">{offer.offerType}</td>
-              <td className="py-2 px-4">
-                {offer.products.map((product) => product.name).join(", ")}
-              </td>
-              <td className="py-2 px-4 text-green-500 font-medium">
-                {offer.offerValue}{" "}
-                {offer.offerMetric === "percentage" ? "%" : "₹"}
-              </td>
-              <td className="py-2 px-4">
-                {new Date(offer.startDate).toLocaleDateString("en-IN", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </td>
-              <td className="py-2 px-4">
-                {new Date(offer.endDate).toLocaleDateString("en-IN", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </td>
-              <td className="py-2 px-4">
-                <button
-                  className="text-red-500 font-extrabold"
-                  onClick={() => confirmDelete(offer._id)}
-                >
-                  <GoTrash />
-                </button>
+          {loading ? (
+            <tr>
+              <td colSpan="8" className="text-center">
+                <LoadingSpinner />
               </td>
             </tr>
-          ))}
+          ) : (
+            <>
+              {offers.map((offer, index) => (
+                <tr key={index} className="text-center border-b">
+                  <td className="py-2 px-4 font-medium text-gray-800">
+                    {offer.offerName}
+                  </td>
+                  <td className="py-2 px-4">
+                    <img
+                      src={offer.bannerImage}
+                      alt={offer.offerName}
+                      className="h-10 mx-auto"
+                    />
+                  </td>
+                  <td className="py-2 px-4">{offer.offerType}</td>
+                  <td className="py-2 px-4">
+                    {offer.products.map((product) => product.name).join(", ")}
+                  </td>
+                  <td className="py-2 px-4 text-green-500 font-medium">
+                    {offer.offerValue}{" "}
+                    {offer.offerMetric === "percentage" ? "%" : "₹"}
+                  </td>
+                  <td className="py-2 px-4">
+                    {new Date(offer.startDate).toLocaleDateString("en-IN", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </td>
+                  <td className="py-2 px-4">
+                    {new Date(offer.endDate).toLocaleDateString("en-IN", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </td>
+                  <td className="py-2 px-4">
+                    <button
+                      className="text-red-500 font-extrabold"
+                      onClick={() => confirmDelete(offer._id)}
+                    >
+                      <GoTrash />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </>
+          )}
         </tbody>
       </table>
 

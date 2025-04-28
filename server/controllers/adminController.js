@@ -60,7 +60,10 @@ const AdminLogin = catchAsync(async (req, res, next) => {
 });
 
 const AdminDashboard = catchAsync(async (req, res, next) => {
-  const dashboardDetails = await getDashBoardDetails();
+  const user = req.user;
+  const role = req.role;
+
+  const dashboardDetails = await getDashBoardDetails(user, role);
   res.status(200).json(dashboardDetails);
 });
 

@@ -276,14 +276,19 @@ const getMonthlySalesReport = (startDate, endDate) => {
   });
 };
 
-const getDashBoardDetails = () => {
+const getDashBoardDetails = (user, role) => {
   return new Promise(async (resolve, reject) => {
+    let matchCriteria = {};
+    if (role === "store") {
+      matchCriteria.store = new mongoose.Types.ObjectId(user);
+    }
     try {
       // Aggregation for total orders, total deliveries, and total revenue
       const orderStats = await orderModel.aggregate([
         {
           $match: {
-            isDeleted: false, // Exclude soft-deleted orders
+            ...matchCriteria,
+            // isDeleted: false, // Exclude soft-deleted orders
           },
         },
         {
@@ -316,11 +321,15 @@ const getDashBoardDetails = () => {
 
       // Aggregation for top 4 products based on order placements
       const topProducts = await orderModel.aggregate([
-        { $unwind: "$products" }, // Flatten product arrays in orders
+        {
+          $match: {
+            ...matchCriteria,
+          },
+        },
         {
           $group: {
-            _id: "$products.productId",
-            totalOrdered: { $sum: "$products.quantity" },
+            _id: "$product",
+            totalOrdered: { $sum: "$quantity" },
           },
         },
         { $sort: { totalOrdered: -1 } }, // Sort in descending order

@@ -6,21 +6,18 @@ import StoreSlidingModal from "../../components/Admin/store/StoreslidingModal";
 import { getStores } from "../../sevices/storeApis";
 import LoadingSpinner from "../../components/spinner/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 function Store() {
+  const stores = useSelector((state) => state.adminUtilities.stores);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [stores, setStores] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [search, setSearch] = useState("");
+  const [filteredStores, setFilteredStores] = useState(stores);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchStores = async () => {
-      setIsLoading(true);
-      const response = await getStores();
-      setStores(response?.stores);
-      setIsLoading(false);
-    };
-    fetchStores();
+    setSearch("");
   }, []);
 
   const handleEdit = (store) => {
@@ -32,6 +29,14 @@ function Store() {
     setIsModalOpen(false);
     setSelectedStore(null);
   };
+
+  useEffect(() => {
+    setFilteredStores(
+      stores?.filter((store) =>
+        store?.store_name?.toLowerCase().includes(search.toLowerCase())
+      )
+    );
+  }, [search]);
 
   return (
     <>
@@ -48,6 +53,8 @@ function Store() {
                     type="text"
                     placeholder="Search by Store name..."
                     className="pl-10 pr-4 py-2 border rounded-lg w-[300px] text-sm focus:outline-none focus:border-[#259960]"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                   />
                   <svg
                     className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
@@ -99,7 +106,7 @@ function Store() {
                   </div>
 
                   <div className="bg-white">
-                    {stores?.map((store) => (
+                    {filteredStores?.map((store) => (
                       <div
                         key={store?._id}
                         onClick={() =>
@@ -143,7 +150,6 @@ function Store() {
             isOpen={isModalOpen}
             onClose={handleCloseModal}
             editData={selectedStore}
-            setStores={setStores}
             stores={stores}
           />
         </div>

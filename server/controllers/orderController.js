@@ -143,7 +143,6 @@ const placeOrder = catchAsync(async (req, res, next) => {
 
   const [product] = await productModel.aggregate(aggregationPipeline);
 
-
   if (!product) {
     return next(new AppError("Product not found", 404));
   }
@@ -162,7 +161,6 @@ const placeOrder = catchAsync(async (req, res, next) => {
     .replace(/\s+/g, "");
 
   const orderId = `${storeName}${year}${month}${day}${sequence}`;
-
 
   const newOrder = new orderModel({
     orderId,
@@ -196,7 +194,6 @@ const placeOrder = catchAsync(async (req, res, next) => {
 const updateOrderStatus = catchAsync(async (req, res, next) => {
   const { orderId } = req.params;
   const { status, type } = req.body;
-
 
   const validStatuses = {
     order: [
@@ -256,9 +253,8 @@ const filterOrders = catchAsync(async (req, res, next) => {
     category,
     page = 1,
     limit = 10,
+    store,
   } = req.query;
-
- 
 
   let filterCriteria = {};
 
@@ -277,6 +273,9 @@ const filterOrders = catchAsync(async (req, res, next) => {
     filterCriteria.createdAt = {};
     if (startDate) filterCriteria.createdAt.$gte = new Date(startDate);
     if (endDate) filterCriteria.createdAt.$lte = new Date(endDate);
+  }
+  if (store) {
+    filterCriteria.store = new mongoose.Types.ObjectId(store);
   }
 
   const skip = (page - 1) * limit;

@@ -73,7 +73,6 @@ export const BulkOfferForm = ({
       toast.success("Offer applied successfully");
       setPageRender((prev) => prev + 1);
     } catch (error) {
-      console.log(error);
       toast.error("Error applying offer");
     } finally {
       setIsLoading(false);

@@ -21,6 +21,7 @@ import Landingpage from "../pages/Landing/Landingpage";
 import { ActiveOffers } from "../pages/admin/ActiveOffers";
 import Sales from "../pages/admin/Sales";
 import Inventory from "../pages/admin/Inventory";
+import StoreProtectedRoute from "./StoreProtectedRoute/StoreProtectedRoute";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -116,7 +117,11 @@ export const router = createBrowserRouter([
 
   {
     path: "/store",
-    element: <StoreLayout />,
+    element: (
+      <StoreProtectedRoute>
+        <StoreLayout />
+      </StoreProtectedRoute>
+    ),
     children: [
       {
         path: "",

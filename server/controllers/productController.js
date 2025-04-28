@@ -213,6 +213,9 @@ const listProducts = catchAsync(async (req, res, next) => {
     labelId,
     brandId,
     role,
+    store,
+    brand,
+    category,
   } = req.query;
 
   page = parseInt(page) || 1;
@@ -228,8 +231,16 @@ const listProducts = catchAsync(async (req, res, next) => {
     filter.store = new mongoose.Types.ObjectId(req.user);
   }
 
-  if (categoryId) {
-    filter.category = new mongoose.Types.ObjectId(categoryId);
+  if (store && store !== "All Stores") {
+    filter.store = new mongoose.Types.ObjectId(store);
+  }
+
+  if (brand && brand !== "All Brands") {
+    filter.brand = new mongoose.Types.ObjectId(brand);
+  }
+
+  if (category && category !== "All Categories") {
+    filter.category = new mongoose.Types.ObjectId(category);
   }
 
   if (subcategoryId) {

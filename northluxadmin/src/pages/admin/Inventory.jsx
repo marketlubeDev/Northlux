@@ -5,13 +5,13 @@ import { getInventory } from "../../sevices/inventoryApi";
 import LoadingSpinner from "../../components/spinner/LoadingSpinner";
 import Pagination from "../../components/Admin/Pagination";
 import { FaSearch } from "react-icons/fa";
-import { getStores } from "../../sevices/storeApis";
-import { getAllBrands } from "../../sevices/brandApis";
 import { useSelector } from "react-redux";
-import { getAllCategories } from "../../sevices/categoryApis";
 
 const Inventory = ({ role }) => {
   const store = useSelector((state) => state.store.store);
+  const stores = useSelector((state) => state.adminUtilities.stores);
+  const categories = useSelector((state) => state.adminUtilities.categories);
+  const brands = useSelector((state) => state.adminUtilities.brands);
 
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -24,10 +24,8 @@ const Inventory = ({ role }) => {
   const [selectedBrand, setSelectedBrand] = useState("All Brands");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [searchQuery, setSearchQuery] = useState("");
-  const [stores, setStores] = useState([]);
+
   const [isLoading, setIsLoading] = useState(false);
-  const [brands, setBrands] = useState([]);
-  const [categories, setCategories] = useState([]);
 
   const convertToCSV = (data) => {
     const headers = [
@@ -87,27 +85,6 @@ const Inventory = ({ role }) => {
     }
   };
 
-  useEffect(() => {
-    const fetchStores = async () => {
-      setIsLoading(true);
-      const response = await getStores();
-      setStores(response?.stores);
-      setIsLoading(false);
-    };
-    if (role === "admin") {
-      fetchStores();
-    }
-  }, []);
-
-  const fetchCategories = async () => {
-    const response = await getAllCategories();
-    setCategories(response?.envelop?.data);
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
   const fetchInventory = async (pageNumber, isFilterChange = false) => {
     try {
       setLoading(true);
@@ -146,42 +123,15 @@ const Inventory = ({ role }) => {
     }
   };
 
-  const fetchBrands = async () => {
-    try {
-      setLoading(true);
-      const response = await getAllBrands();
-      setBrands(response.data.brands);
-    } catch (error) {
-      console.error("Failed to fetch brands:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    if (currentPage !== 1) setCurrentPage(1);
+    else fetchInventory(1, false);
+    // eslint-disable-next-line
+  }, [selectedStore, selectedBrand, selectedCategory, searchQuery]);
 
   useEffect(() => {
-    fetchBrands();
-  }, []);
-
-  useEffect(() => {
-    setCurrentPage(1);
-    fetchInventory(1, true);
-  }, [selectedStore, selectedBrand, selectedCategory]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setCurrentPage(1);
-      fetchInventory(1, true);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
-  useEffect(() => {
-    const pageChangeOnly = async () => {
-      if (currentPage > 0) {
-        await fetchInventory(currentPage, false);
-      }
-    };
-    pageChangeOnly();
+    fetchInventory(currentPage, false);
+    // eslint-disable-next-line
   }, [currentPage]);
 
   const handlePageChange = (page) => {
@@ -307,15 +257,7 @@ const Inventory = ({ role }) => {
                     </td>
                   </tr>
                 </tbody>
-              ) : error ? (
-                <tbody>
-                  <tr>
-                    <td colSpan="7" className="text-center py-4 text-red-500">
-                      {error}
-                    </td>
-                  </tr>
-                </tbody>
-              ) : (
+              ) : !isLoading && inventory.length > 0 ? (
                 <tbody>
                   {inventory.map((product) => (
                     <tr
@@ -340,6 +282,13 @@ const Inventory = ({ role }) => {
                     </tr>
                   ))}
                 </tbody>
+              ) : (
+                !isLoading &&
+                inventory.length === 0 && (
+                  <div className="text-center py-4 text-gray-500">
+                    No products found matching your criteria
+                  </div>
+                )
               )}
             </table>
           </div>
@@ -351,12 +300,6 @@ const Inventory = ({ role }) => {
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
               />
-            </div>
-          )}
-
-          {!loading && !error && inventory.length === 0 && (
-            <div className="text-center py-4 text-gray-500">
-              No products found matching your criteria
             </div>
           )}
         </div>

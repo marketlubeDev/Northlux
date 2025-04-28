@@ -1,12 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import admin from "../../assets/admin.png";
 import store from "../../assets/store.png";
 import Logo from "../../components/Logo";
+import { useDispatch } from "react-redux";
+import {
+  setStores,
+  setBrands,
+  setCategories,
+} from "../../redux/features/AdminUtilities";
+import { getStores } from "../../sevices/storeApis";
+import { getAllBrands } from "../../sevices/brandApis";
+import { getAllCategories } from "../../sevices/categoryApis";
+import { toast } from "react-toastify";
 
 const Landingpage = () => {
   const [selectedRole, setSelectedRole] = useState(null);
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchAllData = async () => {
+      try {
+        const [storesRes, brandsRes, categoriesRes] = await Promise.all([
+          getStores(),
+          getAllBrands(),
+          getAllCategories(),
+        ]);
+        dispatch(setStores(storesRes.stores));
+        dispatch(setBrands(brandsRes.data.brands));
+        dispatch(setCategories(categoriesRes.envelop.data));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Failed to fetch initial data");
+      }
+    };
+
+    fetchAllData();
+  }, [dispatch]);
 
   const roles = [
     {

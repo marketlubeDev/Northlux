@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { addStore, updateStore } from "../../../sevices/storeApis";
+import { addStore, getStores, updateStore } from "../../../sevices/storeApis";
 import { toast } from "react-toastify";
+import { setStores } from "../../../redux/features/AdminUtilities";
+import { useDispatch } from "react-redux";
 
-const StoreSlidingModal = ({
-  isOpen,
-  onClose,
-  editData = null,
-  stores,
-  setStores,
-}) => {
+const StoreSlidingModal = ({ isOpen, onClose, editData = null, stores }) => {
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [values, setValues] = useState({
@@ -27,6 +24,12 @@ const StoreSlidingModal = ({
   });
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const refetch = () => {
+    getStores().then((res) => {
+      dispatch(setStores(res?.stores));
+    });
+  };
 
   useEffect(() => {
     if (editData) {
@@ -102,13 +105,9 @@ const StoreSlidingModal = ({
 
       if (editData) {
         const response = await updateStore(formData, editData._id);
-  
+
         if (response?.success) {
-          setStores(
-            stores.map((store) =>
-              store._id === editData._id ? response?.store : store
-            )
-          );
+          refetch();
           toast.success(response?.message || "Store updated successfully");
           onClose();
         } else {
@@ -116,16 +115,15 @@ const StoreSlidingModal = ({
         }
       } else {
         const response = await addStore(formData);
-   
+
         if (response?.success) {
-          setStores([...stores, response?.store]);
+          refetch();
           toast.success(response?.message || "Store created successfully");
           onClose();
         } else {
           toast.error(response?.message || "Something went wrong");
         }
       }
- 
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong");
     }

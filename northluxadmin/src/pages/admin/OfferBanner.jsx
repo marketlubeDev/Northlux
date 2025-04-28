@@ -2,9 +2,18 @@ import React, { useState, useRef, useEffect } from "react";
 import PageHeader from "../../components/Admin/PageHeader";
 import { FaTrash, FaEdit, FaCamera } from "react-icons/fa";
 import { toast } from "react-toastify";
-import { addOfferBanner, editOfferBanner, deleteOfferBanner, getOfferBanners } from "../../sevices/OfferBannerApis";
+import {
+  addOfferBanner,
+  editOfferBanner,
+  deleteOfferBanner,
+  getOfferBanners,
+} from "../../sevices/OfferBannerApis";
 import ConfirmationModal from "../../components/Admin/ConfirmationModal";
-import { validateOfferBannerField, validateOfferBannerForm } from "../../utils/validations/offerBannerValidation";
+import {
+  validateOfferBannerField,
+  validateOfferBannerForm,
+} from "../../utils/validations/offerBannerValidation";
+import LoadingSpinner from "../../components/spinner/LoadingSpinner";
 
 function OfferBanner() {
   const [showModal, setShowModal] = useState(false);
@@ -23,26 +32,30 @@ function OfferBanner() {
   const fileInputRef = useRef(null);
   const [offerBanners, setOfferBanners] = useState([]);
   const [errors, setErrors] = useState({
-    title: '',
-    image: '',
-    description: '',
-    offerValue: '',
-    link: ''
+    title: "",
+    image: "",
+    description: "",
+    offerValue: "",
+    link: "",
   });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [bannerToDelete, setBannerToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchOfferBanners();
   }, []);
 
   const fetchOfferBanners = async () => {
+    setIsLoading(true);
     try {
       const data = await getOfferBanners();
       setOfferBanners(data?.data);
     } catch (error) {
       toast.error("Failed to fetch offer banners");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -58,9 +71,9 @@ function OfferBanner() {
         image: file,
       }));
       setImagePreview(URL.createObjectURL(file));
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        image: ''
+        image: "",
       }));
     }
   };
@@ -72,19 +85,29 @@ function OfferBanner() {
       [name]: value,
     }));
 
-    const error = validateOfferBannerField(name, value, formData.offerType, imagePreview, !!editingBanner);
-    setErrors(prev => ({
+    const error = validateOfferBannerField(
+      name,
+      value,
+      formData.offerType,
+      imagePreview,
+      !!editingBanner
+    );
+    setErrors((prev) => ({
       ...prev,
-      [name]: error
+      [name]: error,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newErrors = validateOfferBannerForm(formData, imagePreview, !!editingBanner);
+    const newErrors = validateOfferBannerForm(
+      formData,
+      imagePreview,
+      !!editingBanner
+    );
 
-    if (Object.values(newErrors).some(error => error !== '')) {
+    if (Object.values(newErrors).some((error) => error !== "")) {
       setErrors(newErrors);
       return;
     }
@@ -175,7 +198,9 @@ function OfferBanner() {
       fetchOfferBanners();
       handleCloseDeleteModal();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to delete offer banner");
+      toast.error(
+        error.response?.data?.message || "Failed to delete offer banner"
+      );
     } finally {
       setIsDeleting(false);
     }
@@ -194,41 +219,80 @@ function OfferBanner() {
       </div>
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-        {offerBanners.length > 0 ? (
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" className="px-16 py-3">
+                Image
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Title
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Subtitle
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Offer
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Link
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {isLoading && (
               <tr>
-                <th scope="col" className="px-16 py-3">Image</th>
-                <th scope="col" className="px-6 py-3">Title</th>
-                <th scope="col" className="px-6 py-3">Subtitle</th>
-                <th scope="col" className="px-6 py-3">Offer</th>
-                <th scope="col" className="px-6 py-3">Link</th>
-                <th scope="col" className="px-6 py-3">Action</th>
+                <td colSpan="6" className="text-center">
+                  <LoadingSpinner />
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {offerBanners.map((banner) => (
-                <tr key={banner._id} className="bg-white border-b hover:bg-gray-50">
-                  <td className="p-4">
-                    <img src={banner.image} className="w-16 md:w-32  max-w-full max-h-full object-contain md:h-20" alt={banner.title} />
-                  </td>
-                  <td className="px-6 py-4 font-semibold">{banner.title}</td>
-                  <td className="px-6 py-4">{banner.subtitle}</td>
-                  <td className="px-6 py-4">{banner.offerValue}{banner.offerType === 'percentage' ? '%' : ' OFF'}</td>
-                  <td className="px-6 py-4">{banner.link}</td>
-                  <td className="px-6 py-10 flex gap-2">
-                    <FaTrash className="text-red-500 text-lg cursor-pointer" onClick={() => handleDeleteBanner(banner)} />
-                    <FaEdit className="text-blue-500 text-lg cursor-pointer" onClick={() => handleEditBanner(banner)} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <div className="p-8 text-center">
-            <p className="text-gray-500 text-lg">No offer banners available. Click "Add New Offer Banner" to create one.</p>
-          </div>
-        )}
+            )}
+            {!isLoading && offerBanners.length > 0
+              ? offerBanners.map((banner) => (
+                  <tr
+                    key={banner._id}
+                    className="bg-white border-b hover:bg-gray-50"
+                  >
+                    <td className="p-4">
+                      <img
+                        src={banner.image}
+                        className="w-16 md:w-32  max-w-full max-h-full object-contain md:h-20"
+                        alt={banner.title}
+                      />
+                    </td>
+                    <td className="px-6 py-4 font-semibold">{banner.title}</td>
+                    <td className="px-6 py-4">{banner.subtitle}</td>
+                    <td className="px-6 py-4">
+                      {banner.offerValue}
+                      {banner.offerType === "percentage" ? "%" : " OFF"}
+                    </td>
+                    <td className="px-6 py-4">{banner.link}</td>
+                    <td className="px-6 py-10 flex gap-2">
+                      <FaTrash
+                        className="text-red-500 text-lg cursor-pointer"
+                        onClick={() => handleDeleteBanner(banner)}
+                      />
+                      <FaEdit
+                        className="text-blue-500 text-lg cursor-pointer"
+                        onClick={() => handleEditBanner(banner)}
+                      />
+                    </td>
+                  </tr>
+                ))
+              : !isLoading &&
+                offerBanners.length === 0 && (
+                  <div className="p-8 text-center">
+                    <p className="text-gray-500 text-lg">
+                      No offer banners available. Click "Add New Offer Banner"
+                      to create one.
+                    </p>
+                  </div>
+                )}
+          </tbody>
+        </table>
       </div>
 
       {showModal && (
@@ -238,9 +302,22 @@ function OfferBanner() {
               <h2 className="text-xl font-semibold">
                 {editingBanner ? "Edit Offer Banner" : "Add New Offer Banner"}
               </h2>
-              <button onClick={handleCloseModal} className="text-gray-500 hover:text-gray-700">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <button
+                onClick={handleCloseModal}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
@@ -253,12 +330,16 @@ function OfferBanner() {
                 <div
                   onClick={handleImageClick}
                   className={`relative w-full h-48 border-2 border-dashed rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 ${
-                    errors.image ? 'border-red-500' : 'border-gray-300'
+                    errors.image ? "border-red-500" : "border-gray-300"
                   }`}
                 >
                   {imagePreview ? (
                     <div className="relative w-full h-full">
-                      <img src={imagePreview} alt="Preview" className="w-full h-full object-contain rounded-lg" />
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-full h-full object-contain rounded-lg"
+                      />
                       <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100">
                         <FaCamera className="text-white text-3xl" />
                       </div>
@@ -270,7 +351,9 @@ function OfferBanner() {
                     </div>
                   )}
                 </div>
-                {errors.image && <p className="mt-1 text-sm text-red-500">{errors.image}</p>}
+                {errors.image && (
+                  <p className="mt-1 text-sm text-red-500">{errors.image}</p>
+                )}
                 <input
                   type="file"
                   ref={fileInputRef}
@@ -281,91 +364,123 @@ function OfferBanner() {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Title
+                </label>
                 <input
                   type="text"
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
                   className={`w-full p-2 border rounded-md ${
-                    errors.title ? 'border-red-500' : 'border-gray-300'
+                    errors.title ? "border-red-500" : "border-gray-300"
                   }`}
                 />
-                {errors.title && <p className="mt-1 text-sm text-red-500">{errors.title}</p>}
+                {errors.title && (
+                  <p className="mt-1 text-sm text-red-500">{errors.title}</p>
+                )}
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Subtitle</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Subtitle
+                </label>
                 <input
                   type="text"
                   name="subtitle"
                   value={formData.subtitle}
                   onChange={handleInputChange}
                   className={`w-full p-2 border rounded-md ${
-                    errors.subtitle ? 'border-red-500' : 'border-gray-300'
+                    errors.subtitle ? "border-red-500" : "border-gray-300"
                   }`}
                 />
-                {errors.subtitle && <p className="mt-1 text-sm text-red-500">{errors.subtitle}</p>}
+                {errors.subtitle && (
+                  <p className="mt-1 text-sm text-red-500">{errors.subtitle}</p>
+                )}
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description
+                </label>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
                   className={`w-full p-2 border rounded-md ${
-                    errors.description ? 'border-red-500' : 'border-gray-300'
+                    errors.description ? "border-red-500" : "border-gray-300"
                   }`}
                   rows="3"
                 />
-                {errors.description && <p className="mt-1 text-sm text-red-500">{errors.description}</p>}
+                {errors.description && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.description}
+                  </p>
+                )}
               </div>
 
               <div className="mb-4 flex gap-4">
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Offer Value</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Offer Value
+                  </label>
                   <input
                     type="number"
                     name="offerValue"
                     value={formData.offerValue}
                     onChange={handleInputChange}
                     className={`w-full p-2 border rounded-md ${
-                      errors.offerValue ? 'border-red-500' : 'border-gray-300'
+                      errors.offerValue ? "border-red-500" : "border-gray-300"
                     }`}
                   />
-                  {errors.offerValue && <p className="mt-1 text-sm text-red-500">{errors.offerValue}</p>}
+                  {errors.offerValue && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.offerValue}
+                    </p>
+                  )}
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Offer Type</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Offer Type
+                  </label>
                   <select
                     name="offerType"
                     value={formData.offerType}
                     onChange={handleInputChange}
                     className={`w-full p-2 border rounded-md ${
-                      errors.offerType ? 'border-red-500' : 'border-gray-300'
+                      errors.offerType ? "border-red-500" : "border-gray-300"
                     }`}
                   >
-                    <option value="" disabled>Select Type</option>
+                    <option value="" disabled>
+                      Select Type
+                    </option>
                     <option value="percentage">Percentage</option>
                     <option value="fixed">Fixed</option>
                   </select>
-                  {errors.offerType && <p className="mt-1 text-sm text-red-500">{errors.offerType}</p>}
+                  {errors.offerType && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.offerType}
+                    </p>
+                  )}
                 </div>
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Link</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Link
+                </label>
                 <input
                   type="text"
                   name="link"
                   value={formData.link}
                   onChange={handleInputChange}
                   className={`w-full p-2 border rounded-md ${
-                    errors.link ? 'border-red-500' : 'border-gray-300'
+                    errors.link ? "border-red-500" : "border-gray-300"
                   }`}
                 />
-                {errors.link && <p className="mt-1 text-sm text-red-500">{errors.link}</p>}
+                {errors.link && (
+                  <p className="mt-1 text-sm text-red-500">{errors.link}</p>
+                )}
               </div>
 
               <div className="flex justify-end gap-2">
@@ -383,9 +498,25 @@ function OfferBanner() {
                 >
                   {isSubmitting ? (
                     <>
-                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      <svg
+                        className="animate-spin h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
                       </svg>
                       {editingBanner ? "Updating..." : "Adding..."}
                     </>

@@ -45,7 +45,6 @@ const data = [
 // Separate the content into a new component
 function AllProductsContent() {
   const location = useLocation();
-  console.log(location, "location");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [openSections, setOpenSections] = useState({
     categories: true,
@@ -144,9 +143,7 @@ function AllProductsContent() {
     const subCategoryFromHeader = location.state?.selectedSubCategory;
     const labelFromHomePage = location.state?.selectedLabel;
 
-    console.log(categoryFromHeader, "categoryFromHeader");
-    console.log(subCategoryFromHeader, "subCategoryFromHeader");
-    // console.log(labelFromHomePage, "labelFromHomePage");
+   
 
     if (categoryFromHeader) {
       setSelectedFilters((prev) => ({

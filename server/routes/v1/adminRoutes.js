@@ -17,7 +17,11 @@ const {
 } = require("../../controllers/storeController");
 const adminRouter = require("express").Router();
 
-adminRouter.get("/getstores", autheticateToken(["admin"]), getAllStores);
+adminRouter.get(
+  "/getstores",
+
+  getAllStores
+);
 adminRouter.get(
   "/getstoreandproducts/:id",
   autheticateToken(["admin"]),

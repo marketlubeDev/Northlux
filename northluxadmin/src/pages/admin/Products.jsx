@@ -10,8 +10,13 @@ import ProductTable from "../../components/Admin/Product/components/Table/Produc
 import Pagination from "../../components/Admin/Product/components/Pagination/Pagination";
 import { Modal } from "../../components/shared/Modal";
 import { BulkOfferForm } from "../../components/Admin/Product/components/Forms/BulkOfferForm";
+import { useSelector } from "react-redux";
 
 function Products({ role }) {
+  const stores = useSelector((state) => state.adminUtilities.stores);
+  const brands = useSelector((state) => state.adminUtilities.brands);
+  const categories = useSelector((state) => state.adminUtilities.categories);
+  const store = useSelector((state) => state.store.store);
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,6 +25,9 @@ function Products({ role }) {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [pageRender, setPageRender] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const [selectedStore, setSelectedStore] = useState(store?._id);
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const navigate = useNavigate();
 
   const [showBulkOfferModal, setShowBulkOfferModal] = useState(false);
@@ -40,17 +48,35 @@ function Products({ role }) {
 
   // Fetch products when page changes or on initial load
   useEffect(() => {
-    if (searchKeyword) {
-      performSearch(searchKeyword, currentPage);
-    } else {
-      fetchProducts(currentPage);
+    let filter = {};
+    if (selectedStore) {
+      filter.store = selectedStore;
     }
-  }, [currentPage, pageRender, pageSize]);
+    if (selectedBrand) {
+      filter.brand = selectedBrand;
+    }
+    if (selectedCategory) {
+      filter.category = selectedCategory;
+    }
+    if (searchKeyword) {
+      performSearch(searchKeyword, currentPage, filter);
+    } else {
+      fetchProducts(currentPage, filter);
+    }
+  }, [
+    currentPage,
+    pageRender,
+    pageSize,
+    selectedStore,
+    selectedBrand,
+    selectedCategory,
+  ]);
 
-  const fetchProducts = async (page) => {
+  const fetchProducts = async (page, filter) => {
     try {
       setIsLoading(true);
-      const res = await listProducts(page, pageSize);
+
+      const res = await listProducts(page, pageSize, filter);
       setProducts(res?.data?.data?.products);
       setTotalPages(res?.data?.data?.totalPages);
     } catch (err) {
@@ -147,7 +173,52 @@ function Products({ role }) {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 relative">
-      <PageHeader content="Products" />
+      <PageHeader content="Products" marginBottom="mb-0" />
+      <div className="bg-white p-4 shadow flex gap-2">
+        <div className="text-sm text-gray-600 space-y-1">
+          <select
+            value={selectedStore}
+            onChange={(e) => setSelectedStore(e.target.value)}
+            className="border border-gray-300 rounded-md px-4 py-2 w-60"
+            disabled={role === "store"}
+          >
+            <option value="All Stores">All Stores</option>
+            {stores?.map((store) => (
+              <option key={store._id} value={store._id}>
+                {store?.store_name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="text-sm text-gray-600 space-y-1">
+          <select
+            value={selectedBrand}
+            onChange={(e) => setSelectedBrand(e.target.value)}
+            className="border border-gray-300 rounded-md px-4 py-2 w-60"
+          >
+            <option value="All Brands">All Brands</option>
+            {brands?.map((brand) => (
+              <option key={brand._id} value={brand._id}>
+                {brand?.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="text-sm text-gray-600 space-y-1">
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="border border-gray-300 rounded-md px-4 py-2 w-60"
+          >
+            <option value="All Categories">All Categories</option>
+            {categories?.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category?.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
       <div className="flex flex-col  m-4">
         <div className="relative overflow-hidden shadow-md sm:rounded-lg flex flex-col flex-1 bg-white">
@@ -193,7 +264,13 @@ function Products({ role }) {
               </button>
               {!isProductSelected && (
                 <button
-                  onClick={() => navigate("addproduct")}
+                  onClick={() =>
+                    navigate("addproduct", {
+                      state: {
+                        storeId: store?._id,
+                      },
+                    })
+                  }
                   className="bg-green-500 p-2 text-white rounded-md hover:bg-green-600 transition-colors"
                 >
                   + Add Product

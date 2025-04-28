@@ -15,7 +15,7 @@ const createBrand = catchAsync(async (req, res, next) => {
   }
 
   const brandData = { name, description, isPriority };
-  console.log(brandData);
+
 
   if (req.files && req.files.length > 0) {
     // Handle main brand image

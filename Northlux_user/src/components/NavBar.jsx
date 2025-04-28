@@ -49,7 +49,6 @@ export const NavBar = () => {
   };
 
   const handleClickSubCategory = (subCategory) => {
-    console.log(subCategory, "=========subCategory");
 
     if (dropdownContent?.parent === "subcategories") {
       navigate("/products", {

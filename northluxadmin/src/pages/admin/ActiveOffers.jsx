@@ -10,7 +10,11 @@ export const ActiveOffers = () => {
   return (
     <div className="flex flex-col h-screen bg-gray-100">
       <PageHeader content="Active Offers" />
-      <ActiveOffersTable offers={activeOffers} fetchData={fetchData} />
+      <ActiveOffersTable
+        offers={activeOffers}
+        fetchData={fetchData}
+        loading={loading}
+      />
     </div>
   );
 };

@@ -49,6 +49,7 @@ function Addproduct({ role }) {
   const [editMode, setEditMode] = useState(false);
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(null);
   const [isLoadingData, setIsLoadingData] = useState(false);
+  const [storeLoggedIn, setStoreLoggedIn] = useState(false);
 
   const navigate = useNavigate();
 
@@ -61,6 +62,7 @@ function Addproduct({ role }) {
         ...prev,
         store: location.state.storeId,
       }));
+      setStoreLoggedIn(true);
     }
   }, [location.state?.storeId]);
   useEffect(() => {
@@ -622,6 +624,7 @@ function Addproduct({ role }) {
                   handleChange={handleProductChange}
                   value={productData.store}
                   errors={errors}
+                  disabled={storeLoggedIn}
                 />
                 <LabelSelect
                   labels={formUtilites.labels}

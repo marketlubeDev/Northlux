@@ -6,7 +6,7 @@ function TopProductCards({ item }) {
       <div className="h-72 p-5">
         <img
           className="w-full h-full rounded-t-lg object-contain"
-          src={item?.image ? item.image : item?.image[0]}
+          src={Array.isArray(item?.image) ? item?.image?.[0] : item?.image}
           alt="product image"
         />
       </div>

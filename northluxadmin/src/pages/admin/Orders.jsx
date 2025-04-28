@@ -14,8 +14,11 @@ import { toast } from "react-toastify";
 import { Popover, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { createPortal } from "react-dom";
-
-function Orders() {
+import { getStores } from "../../sevices/storeApis";
+import { useSelector } from "react-redux";
+function Orders({ role }) {
+  const store = useSelector((state) => state.store.store);
+  const stores = useSelector((state) => state.adminUtilities.stores);
   const [formUtilites, setFormUtilites] = useState([]);
   const [orders, setOrders] = useState([]);
   const [orderStats, setOrderStats] = useState(null);
@@ -24,6 +27,13 @@ function Orders() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [selectedStore, setSelectedStore] = useState("");
+
+  useEffect(() => {
+    if (role === "store") {
+      setSelectedStore(store._id);
+    }
+  }, [role, store]);
 
   const orderStatuses = [
     "pending",
@@ -64,6 +74,10 @@ function Orders() {
         queryParams.push(`status=${selectedStatus.toLowerCase()}`);
       }
 
+      if (selectedStore) {
+        queryParams.push(`store=${selectedStore}`);
+      }
+
       const queryString =
         queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
 
@@ -85,7 +99,7 @@ function Orders() {
   // Update useEffect to use the new fetchData function
   useEffect(() => {
     fetchData();
-  }, [dateRange, selectedCategory, selectedStatus]);
+  }, [dateRange, selectedCategory, selectedStatus, selectedStore]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -242,15 +256,36 @@ function Orders() {
                     <Popover.Panel
                       className="fixed z-[100] w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
                       style={{
-                        top: buttonRef.current
-                          ? buttonRef.current.getBoundingClientRect().bottom +
-                            window.scrollY +
-                            8
-                          : 0,
-                        left: buttonRef.current
-                          ? buttonRef.current.getBoundingClientRect().left +
-                            window.scrollX
-                          : 0,
+                        ...(() => {
+                          const buttonRect =
+                            buttonRef.current?.getBoundingClientRect();
+                          if (!buttonRect) return {};
+
+                          const spaceBelow =
+                            window.innerHeight - buttonRect.bottom;
+                          const spaceAbove = buttonRect.top;
+                          const dropdownHeight = 300; // Approximate height of dropdown
+
+                          // If there's not enough space below and more space above, position above
+                          if (
+                            spaceBelow < dropdownHeight &&
+                            spaceAbove > spaceBelow
+                          ) {
+                            return {
+                              bottom:
+                                window.innerHeight -
+                                (buttonRect.top + window.scrollY) +
+                                8,
+                              left: buttonRect.left + window.scrollX,
+                            };
+                          }
+
+                          // Default position (below)
+                          return {
+                            top: buttonRect.bottom + window.scrollY + 8,
+                            left: buttonRect.left + window.scrollX,
+                          };
+                        })(),
                       }}
                     >
                       <div className="py-1">
@@ -416,18 +451,6 @@ function Orders() {
                 />
               </div>
               <div className="w-full flex flex-col gap-2">
-                {/* <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                >
-                  <option value="">Filter by Product Category</option>
-                  {formUtilites.categories?.map((category) => (
-                    <option key={category._id} value={category._id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select> */}
                 <select
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
@@ -437,6 +460,19 @@ function Orders() {
                   {orderStatuses.map((status) => (
                     <option key={status} value={status}>
                       {status}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={selectedStore}
+                  onChange={(e) => setSelectedStore(e.target.value)}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  disabled={role === "store"}
+                >
+                  <option value="">Filter by Store</option>
+                  {stores?.map((store) => (
+                    <option key={store._id} value={store._id}>
+                      {store.store_name}
                     </option>
                   ))}
                 </select>
@@ -556,7 +592,7 @@ function Orders() {
                 <tbody>
                   <tr>
                     <td
-                      colSpan="8"
+                      colSpan="9"
                       className="px-6 py-12 text-center text-gray-500 bg-gray-50"
                     >
                       <div className="flex flex-col items-center justify-center">

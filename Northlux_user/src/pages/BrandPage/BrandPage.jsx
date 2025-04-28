@@ -14,7 +14,7 @@ export default function BrandPage() {
 
   const { brand, isLoading: brandLoading, error: brandError } = useBrand(id);
 
-  console.log(brand);
+
 
   useEffect(() => {
     window.scrollTo(0, 0);

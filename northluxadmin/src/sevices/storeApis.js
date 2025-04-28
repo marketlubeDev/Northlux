@@ -35,3 +35,7 @@ export const storeLogin = async (data) => {
   const response = await axiosInstance.post(`/store/login`, data);
   return response.data;
 };
+
+export const checkStore = () => {
+  return axiosInstance.get("/store/checkstore");
+};
