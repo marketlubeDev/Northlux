@@ -18,7 +18,7 @@ import { useSelector } from "react-redux";
 
 import { FaRegEdit } from "react-icons/fa";
 
-function Orders() {
+function Orders({ role }) {
   const store = useSelector((state) => state.store.store);
   const stores = useSelector((state) => state.adminUtilities.stores);
   const [formUtilites, setFormUtilites] = useState([]);

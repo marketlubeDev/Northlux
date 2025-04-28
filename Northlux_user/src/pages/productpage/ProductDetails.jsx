@@ -78,9 +78,9 @@ function ProductDetailsContent() {
         onSuccess: (data) => {
           const orderDetails = data?.data?.order;
           const message =
-            `*NEW ORDER DETAILS*%0a%0a` +
-            `🛍️ *Order ID:* ${orderDetails?.orderId}%0a%0a` +
-            `📦 *Product Details*%0a` +
+            `*ORDER DETAILS*%0a%0a` +
+            `*Order ID:* ${orderDetails?.orderId}%0a%0a` +
+            `*Product Details*%0a` +
             `• Name: ${orderDetails?.productName}%0a` +
             `${
               orderDetails?.variantName
@@ -90,12 +90,11 @@ function ProductDetailsContent() {
             `• Quantity: ${orderDetails?.quantity}%0a` +
             `• Price: ₹${orderDetails?.pricePerUnit}%0a` +
             `• Total: ₹${orderDetails?.totalAmount}%0a%0a` +
-            `🏪 *Store Details*%0a` +
+            `*Store Details*%0a` +
             `• ${orderDetails?.storeName}%0a` +
             `• Contact: ${orderDetails?.storeNumber}%0a%0a` +
-            `🖼️ *Product Image*%0a` +
-            `${orderDetails?.productImage}%0a%0a` +
-            `Thank you for choosing ${orderDetails?.storeName}! We'll process your order shortly.`;
+            `*Product Image*%0a` +
+            `${orderDetails?.productImage}%0a%0a`;
 
           const whatsappUrl = `https://wa.me/${orderDetails?.storeNumber}?text=${message}`;
           window.open(whatsappUrl, "_blank");
