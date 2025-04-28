@@ -39,12 +39,12 @@ export const BrandListing = () => {
     debouncedSearch(value);
   };
 
-  useEffect(() => {
-    // Focus the input field after searchQuery is updated
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [searchQuery]);
+  //? Focus the input field after searchQuery is updated
+  // useEffect(() => {
+  //   if (inputRef.current) {
+  //     inputRef.current.focus();
+  //   }
+  // }, [searchQuery]);
 
   const {
     data: brandsData,
@@ -92,7 +92,7 @@ export const BrandListing = () => {
               onChange={handleInputChange}
               className="search-input"
               ref={inputRef}
-              autoFocus={true}
+              // autoFocus={true}
             />
           </div>
           {/* </div> */}

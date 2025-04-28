@@ -7,9 +7,8 @@
   padding-inline: 10%;
   overflow-x: auto;
   overflow-y: visible;
-
-  // position: relative;
   z-index: 5;
+
   .nav-bar-list {
     height: 100%;
     display: flex;
@@ -21,10 +20,10 @@
     font-weight: 500;
     line-height: 22px;
     letter-spacing: 0px;
-    text-align: left;
+    // text-align: left;
 
     @media (max-width: 768px) {
-      gap: 80px;
+      gap: 60px;
     }
 
     li {
@@ -33,7 +32,8 @@
       display: flex;
       text-wrap: nowrap;
       align-items: center;
-      justify-content: space-between;
+      // justify-content: space-between;
+      height: 100%;
 
       &:hover {
         opacity: 1;
