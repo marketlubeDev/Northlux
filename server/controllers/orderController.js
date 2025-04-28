@@ -362,6 +362,8 @@ const filterOrders = catchAsync(async (req, res, next) => {
         createdAt: 1,
         status: 1,
         paymentStatus: 1,
+        mobile: 1,
+        address: 1,
         store: {
           _id: { $arrayElemAt: ["$product.store._id", 0] },
           name: { $arrayElemAt: ["$product.store.store_name", 0] },
@@ -601,18 +603,19 @@ const orderStats = catchAsync(async (req, res, next) => {
   });
 });
 
-const editMobile = catchAsync(async (req, res, next) => {
-  const { orderId, mobile } = req.body;
+const updateOrder = catchAsync(async (req, res, next) => {
+  const { orderId } = req.params;
+  const { mobile, address } = req.body;
 
-  // const user = await userModel.findByIdAndUpdate(
-  //   userId,
-  //   { mobileNumber },
-  //   { new: true }
-  // );
+  // Validate mobile number
+  const mobileRegex = /^\d{10}$/;
+  if (mobile && !mobileRegex.test(mobile)) {
+    return next(new AppError("Invalid mobile number. It must be 10 digits.", 400));
+  }
 
   const order = await orderModel.findByIdAndUpdate(
     { _id: orderId },
-    { mobile },
+    { mobile, address },
     { new: true }
   );
 
@@ -621,8 +624,9 @@ const editMobile = catchAsync(async (req, res, next) => {
   }
 
   res.status(200).json({
-    message: "Mobile number updated successfully",
+    message: "Contact details updated successfully",
     order,
+    success: true,
   });
 });
 
@@ -634,5 +638,5 @@ module.exports = {
   getUserOrders,
   cancelOrder,
   orderStats,
-  editMobile,
+  updateOrder,
 };

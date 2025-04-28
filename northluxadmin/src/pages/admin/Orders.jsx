@@ -5,6 +5,7 @@ import { getcategoriesbrands } from "../../sevices/adminApis";
 import {
   getOrders,
   getOrderStats,
+  updateOrder,
   updateOrderStatus,
 } from "../../sevices/OrderApis";
 import LoadingSpinner from "../../components/spinner/LoadingSpinner";
@@ -332,8 +333,8 @@ function Orders({ role }) {
     const [orderStatus, setOrderStatus] = useState(order.status || "pending");
     const [isEditMobileModalOpen, setIsEditMobileModalOpen] = useState(false);
     const [updateData, setUpdateData] = useState({
-      mobile: order.phone || null,
-      address: "",
+      mobile: order.mobile || null,
+      address: order.address || "",
     });
 
     const paymentOptions = [
@@ -394,111 +395,139 @@ function Orders({ role }) {
 
     const handleEditMobile = () => {
       setIsEditMobileModalOpen(true);
-      console.log("edit mobile");
     };
 
     const handleInputChange = (e) => {
       setUpdateData({ ...updateData, [e.target.name]: e.target.value });
     };
 
+    const handleUpdate = async () => {
+      try {
+        const result = await updateOrder(order._id, updateData);
+        if (result.success) {
+          toast.success(result.message);
+          setIsEditMobileModalOpen(false);
+          await fetchData();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    console.log(updateData, "updateData");
+
     return (
-      <tr className="bg-white border-b hover:bg-gray-50">
-        <td className="px-6 py-4">
-          <div className="max-h-32 ">
-            <span className="text-sm font-medium">{order?.orderId}</span>
-          </div>
-        </td>
-        <td
-          title={order?.productDetails?.name}
-          className="cursor-pointer px-6 py-4"
-        >
-          {order?.productDetails?.name.slice(0, 20)}...
-        </td>
-        <td className="px-6 py-4 whitespace-nowrap">
-          {new Date(order.createdAt).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })}
-        </td>
-        <td className="px-6 py-4 flex items-center gap-2 justify-center ">
-          {order?.phone || "N/A"}
-          <span
-            className="text-blue-500 cursor-pointer"
-            onClick={handleEditMobile}
+      <>
+        <tr className="bg-white border-b hover:bg-gray-50">
+          <td className="px-6 py-4">
+            <div className="max-h-32 ">
+              <span className="text-sm font-medium">{order?.orderId}</span>
+            </div>
+          </td>
+          {/* <td
+            title={order?.productDetails?.name}
+            className="cursor-pointer px-6 py-4"
           >
-            <FaRegEdit />
-          </span>
-        </td>
-        <Modal
-          isOpen={isEditMobileModalOpen}
-          onClose={() => setIsEditMobileModalOpen(false)}
-        >
-          <div className="p-4">
-            {/* <h2 className="text-lg font-medium mb-4">Edit Mobile Number</h2> */}
-            <div className="mt-4">
-              <label className="block font-medium text-black">
-                Mobile Number
-              </label>
-              <input
-                type="text"
-                name="mobile"
-                placeholder="Enter mobile number"
-                className="w-full p-2 border border-gray-300 rounded-md"
-                value={updateData.mobile}
-                onChange={handleInputChange}
-              />
+            {order?.productDetails?.name.slice(0, 20)}...
+          </td> */}
+          <td className="px-6 py-4 whitespace-nowrap">
+            {new Date(order.createdAt).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
+          </td>
+          <td className="px-6 py-4 " title={"mobile"}>
+            {order?.mobile || "N/A"}
+          </td>
+          <td className="px-6 py-4  text-nowrap">
+            {order.address ? order?.address?.slice(0, 26) + "..." : "N/A"}
+          </td>
+
+          <td className="px-6 py-4">
+            <span className="text-sm font-medium">
+              {order?.store?.name || "N/A"}
+            </span>
+          </td>
+          <td className="px-6 py-4 text-center">{order?.quantity || "N/A"}</td>
+          <td className="px-6 py-4">
+            <div className="font-medium text-gray-900">
+              ₹{order.totalAmount || 0}
             </div>
-            <div className="mt-4">
-              <label className="block font-medium text-black">Address</label>
-              <textarea
-                name="address"
-                className="w-full p-2 min-h-36 border border-gray-300 rounded-md"
-                value={updateData.address}
-                placeholder="e.g., Northlux Official Outlet"
-                onChange={handleInputChange}
-              />
+          </td>
+          <StatusDropdown
+            currentStatus={paymentStatus}
+            options={paymentOptions}
+            onStatusChange={handlePaymentStatusChange}
+            type="payment"
+          />
+          <StatusDropdown
+            currentStatus={orderStatus}
+            options={getAvailableOrderOptions()}
+            onStatusChange={handleOrderStatusChange}
+            type="order"
+          />
+          <td className="px-6 py-4">
+            <span
+              className="text-blue-500 cursor-pointer"
+              onClick={handleEditMobile}
+            >
+              <FaRegEdit />
+            </span>
+          </td>
+        </tr>
+        <>
+          <Modal
+            isOpen={isEditMobileModalOpen}
+            onClose={() => setIsEditMobileModalOpen(false)}
+          >
+            <div className="p-4">
+              <h2 className="text-lg font-medium mb-4 border-b text-black/90 border-gray-300 pb-3">
+                Update Contact Details
+              </h2>
+              <div className="mt-4">
+                <label className="block font-medium text-black/80">
+                  Mobile Number
+                </label>
+                <input
+                  type="text"
+                  name="mobile"
+                  placeholder="Enter mobile number"
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  value={updateData.mobile}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="mt-4">
+                <label className="block font-medium text-black/80">
+                  Address
+                </label>
+                <textarea
+                  name="address"
+                  className="w-full p-2 min-h-36 border border-gray-300 rounded-md"
+                  value={updateData.address}
+                  placeholder="e.g., Northlux Official Outlet"
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="flex gap-2 justify-end">
+                <button
+                  onClick={() => setIsEditMobileModalOpen(false)}
+                  className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleUpdate}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                >
+                  Update
+                </button>
+              </div>
             </div>
-            <div className="flex gap-2 justify-end">
-              <button
-                // onClick={handleUpdate}
-                className="bg-gray-500 text-white px-4 py-2 rounded-md"
-              >
-                Cancel
-              </button>
-              <button
-                // onClick={handleUpdate}
-                className="bg-blue-500 text-white px-4 py-2 rounded-md"
-              >
-                Update
-              </button>
-            </div>
-          </div>
-        </Modal>
-        <td className="px-6 py-4">
-          <span className="text-sm font-medium">
-            {order?.store?.name || "N/A"}
-          </span>
-        </td>
-        <td className="px-6 py-4 text-center">{order?.quantity || "N/A"}</td>
-        <td className="px-6 py-4">
-          <div className="font-medium text-gray-900">
-            ₹{order.totalAmount || 0}
-          </div>
-        </td>
-        <StatusDropdown
-          currentStatus={paymentStatus}
-          options={paymentOptions}
-          onStatusChange={handlePaymentStatusChange}
-          type="payment"
-        />
-        <StatusDropdown
-          currentStatus={orderStatus}
-          options={getAvailableOrderOptions()}
-          onStatusChange={handleOrderStatusChange}
-          type="order"
-        />
-      </tr>
+          </Modal>
+        </>
+      </>
     );
   };
 
@@ -625,15 +654,15 @@ function Orders({ role }) {
                     Order ID
                   </th>
                   <th scope="col" className="px-6 py-3">
-                    <div className="flex items-center">Product</div>
-                  </th>
-                  <th scope="col" className="px-6 py-3">
                     <div className="flex items-center">Date Placed</div>
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope="col" className="px-6 py-3" title="mobile">
                     <div className="flex items-center">Phone Number</div>
                   </th>
 
+                  <th scope="col" className="px-6 py-3" title="address">
+                    <div className="flex items-center">Address</div>
+                  </th>
                   <th scope="col" className="px-6 py-3">
                     <div className="flex items-center">Store</div>
                   </th>
@@ -649,6 +678,7 @@ function Orders({ role }) {
                   <th scope="col" className="px-6 py-3">
                     <div className="flex items-center">Order Status</div>
                   </th>
+                  <th scope="col" className=""></th>
                 </tr>
               </thead>
               {orders && orders.length > 0 ? (

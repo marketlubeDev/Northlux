@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { axiosInstance } from "../axios/axiosInstance";
 
 export const getOrders = async (queryParams = "") => {
@@ -24,5 +25,14 @@ export const updateOrderStatus = async (orderId, status, type) => {
     .then((res) => res.data)
     .catch((err) => {
       toast.error(err?.response?.data?.message || "Something went wrong");
+    });
+};
+
+export const updateOrder = async (orderId, data) => {
+  return axiosInstance
+    .patch(`/order/update-order/${orderId}`, data)
+    .then((res) => res.data)
+    .catch((err) => {
+      toast.error(err?.response?.data?.message || "Failed to update Contact details");
     });
 };
