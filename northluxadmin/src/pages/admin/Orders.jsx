@@ -17,8 +17,9 @@ import { createPortal } from "react-dom";
 import { useSelector } from "react-redux";
 
 import { FaRegEdit } from "react-icons/fa";
+import { Modal } from "../../components/shared/Modal";
 
-function Orders() {
+function Orders({ role }) {
   const store = useSelector((state) => state.store.store);
   const stores = useSelector((state) => state.adminUtilities.stores);
   const [formUtilites, setFormUtilites] = useState([]);
@@ -329,6 +330,11 @@ function Orders() {
       order.paymentStatus || "pending"
     );
     const [orderStatus, setOrderStatus] = useState(order.status || "pending");
+    const [isEditMobileModalOpen, setIsEditMobileModalOpen] = useState(false);
+    const [updateData, setUpdateData] = useState({
+      mobile: order.phone || null,
+      address: "",
+    });
 
     const paymentOptions = [
       "pending",
@@ -386,6 +392,15 @@ function Orders() {
       return orderOptions;
     };
 
+    const handleEditMobile = () => {
+      setIsEditMobileModalOpen(true);
+      console.log("edit mobile");
+    };
+
+    const handleInputChange = (e) => {
+      setUpdateData({ ...updateData, [e.target.name]: e.target.value });
+    };
+
     return (
       <tr className="bg-white border-b hover:bg-gray-50">
         <td className="px-6 py-4">
@@ -406,16 +421,60 @@ function Orders() {
             day: "numeric",
           })}
         </td>
-        <td className="px-6 py-4 flex items-center gap-2 justify-center">
+        <td className="px-6 py-4 flex items-center gap-2 justify-center ">
           {order?.phone || "N/A"}
           <span
             className="text-blue-500 cursor-pointer"
-            // onClick={handleEditMobile}
+            onClick={handleEditMobile}
           >
             <FaRegEdit />
           </span>
         </td>
-
+        <Modal
+          isOpen={isEditMobileModalOpen}
+          onClose={() => setIsEditMobileModalOpen(false)}
+        >
+          <div className="p-4">
+            {/* <h2 className="text-lg font-medium mb-4">Edit Mobile Number</h2> */}
+            <div className="mt-4">
+              <label className="block font-medium text-black">
+                Mobile Number
+              </label>
+              <input
+                type="text"
+                name="mobile"
+                placeholder="Enter mobile number"
+                className="w-full p-2 border border-gray-300 rounded-md"
+                value={updateData.mobile}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="mt-4">
+              <label className="block font-medium text-black">Address</label>
+              <textarea
+                name="address"
+                className="w-full p-2 min-h-36 border border-gray-300 rounded-md"
+                value={updateData.address}
+                placeholder="e.g., Northlux Official Outlet"
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="flex gap-2 justify-end">
+              <button
+                // onClick={handleUpdate}
+                className="bg-gray-500 text-white px-4 py-2 rounded-md"
+              >
+                Cancel
+              </button>
+              <button
+                // onClick={handleUpdate}
+                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        </Modal>
         <td className="px-6 py-4">
           <span className="text-sm font-medium">
             {order?.store?.name || "N/A"}
