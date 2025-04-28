@@ -6,7 +6,7 @@ const {
   getUserOrders,
   cancelOrder,
   orderStats,
-  editMobile,
+  updateOrder,
 } = require("../../controllers/orderController");
 const autheticateToken = require("../../middlewares/authMiddleware");
 
@@ -41,6 +41,6 @@ orderRouter.post(
   cancelOrder
 );
 
-orderRouter.patch("/edit-mobile", autheticateToken(["admin","store"]), editMobile);
+orderRouter.patch("/update-order/:orderId", autheticateToken(["admin","store"]), updateOrder);
 
 module.exports = orderRouter;

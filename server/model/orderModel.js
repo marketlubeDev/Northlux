@@ -27,6 +27,7 @@ const orderSchema = new Schema(
       default: "pending",
     },
     mobile: { type: String },
+    address: { type: String },
     store: { type: Schema.Types.ObjectId, ref: "Store" },
   },
   { timestamps: true }
