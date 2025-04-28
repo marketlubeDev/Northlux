@@ -12,7 +12,6 @@ const getInventory = catchAsync(async (req, res) => {
     limit = 10,
   } = req.query;
 
-
   const role = req.role;
 
   if (role === "store") {
@@ -80,7 +79,6 @@ const getInventory = catchAsync(async (req, res) => {
       $limit: Number(limit),
     },
   ]);
-  //   console.log(productsWithVariants);
 
   const processedProducts = [];
 
