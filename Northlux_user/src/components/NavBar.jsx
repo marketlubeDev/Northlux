@@ -5,21 +5,47 @@ import { useBrands } from "../hooks/queries/brands";
 
 export const NavBar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [limit, setLimit] = useState(12);
   const [dropdownContent, setDropdownContent] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const navigate = useNavigate();
+  const [currentDropDownParent, setCurrentDropDownParent] = useState({
+    id: null,
+    name: null,
+  });
   // const [navState, setNavState] = useState(null);
 
   const {
     data: categoriesData,
     isLoading: categoriesLoading,
     error: categoriesError,
-  } = useCategories();
+  } = useCategories({ limit: limit });
 
-  const { data: brandsData } = useBrands();
+  const { data: brandsData } = useBrands({ limit: limit });
 
   const categories = categoriesData?.envelop?.data || [];
   const brands = brandsData?.data?.brands || [];
+
+  useEffect(() => {
+    const updateLimitBasedOnScreenSize = () => {
+      if (window.innerWidth < 768) {
+        setLimit(8);
+      } else {
+        setLimit(12);
+      }
+    };
+
+    // Set initial limit based on current screen size
+    updateLimitBasedOnScreenSize();
+
+    // Add event listener to update limit on window resize
+    window.addEventListener("resize", updateLimitBasedOnScreenSize);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", updateLimitBasedOnScreenSize);
+    };
+  }, []);
 
   const handleDropdownHover = (content, parent) => {
     // setNavState(parent);
@@ -49,7 +75,6 @@ export const NavBar = () => {
   };
 
   const handleClickSubCategory = (subCategory) => {
-
     if (dropdownContent?.parent === "subcategories") {
       navigate("/products", {
         state: {
@@ -59,6 +84,21 @@ export const NavBar = () => {
     } else {
       const brandId = subCategory._id;
       navigate(`/brands/${brandId}`);
+    }
+  };
+
+  const handleNavigateToParent = () => {
+    if (dropdownContent?.parent === "brands") {
+      navigate("/brands");
+    } else if (dropdownContent?.parent === "subcategories") {
+      navigate("/products", {
+        state: {
+          selectedCategory: {
+            id: currentDropDownParent.id,
+            name: currentDropDownParent.name,
+          },
+        },
+      });
     }
   };
 
@@ -80,9 +120,13 @@ export const NavBar = () => {
           {categories.map((category) => (
             <li
               key={category._id}
-              onMouseEnter={() =>
-                handleDropdownHover(category.subcategories, "subcategories")
-              }
+              onMouseEnter={() => {
+                handleDropdownHover(category.subcategories, "subcategories");
+                setCurrentDropDownParent({
+                  id: category._id,
+                  name: category.name,
+                });
+              }}
               onClick={() => handleCategoryClick(category)}
               // onMouseLeave={handleDropdownLeave}
             >
@@ -108,10 +152,9 @@ export const NavBar = () => {
             ))}
           </ul>
           <div className="view-all-container">
-            <p>View All</p>
             <button
               className="view-all-container-button"
-              onClick={() => navigate("/brands")}
+              onClick={() => handleNavigateToParent()}
             >
               View All
             </button>
