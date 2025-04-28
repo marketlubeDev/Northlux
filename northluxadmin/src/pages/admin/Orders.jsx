@@ -14,14 +14,13 @@ import { toast } from "react-toastify";
 import { Popover, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { createPortal } from "react-dom";
-import { getStores } from "../../sevices/storeApis";
 import { useSelector } from "react-redux";
-function Orders({ role }) {
-  const store = useSelector((state) => state.store.store);
-  const stores = useSelector((state) => state.adminUtilities.stores);
+
 import { FaRegEdit } from "react-icons/fa";
 
 function Orders() {
+  const store = useSelector((state) => state.store.store);
+  const stores = useSelector((state) => state.adminUtilities.stores);
   const [formUtilites, setFormUtilites] = useState([]);
   const [orders, setOrders] = useState([]);
   const [orderStats, setOrderStats] = useState(null);
