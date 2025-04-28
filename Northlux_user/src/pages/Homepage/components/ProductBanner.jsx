@@ -183,18 +183,25 @@ function ProductBanner({ banners }) {
         resistance={true}
         resistanceRatio={0.85}
       >
-        {banners?.map((post) => (
-          <SwiperSlide>
+        {banners?.map((post, index) => (
+          <SwiperSlide key={index}>
             <div className="product-card">
               <div
                 className="product-card__image"
                 style={{
-                  background: `url(${post.image})`,
-                  backgroundSize: "contain",
                   backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
                 }}
-              ></div>
+              >
+                <img
+                  src={post.image}
+                  alt="offer_banner"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "fill",
+                  }}
+                />
+              </div>
             </div>
           </SwiperSlide>
         ))}
