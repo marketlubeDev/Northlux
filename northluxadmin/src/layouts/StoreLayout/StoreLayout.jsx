@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Logo from "../../components/Logo";
 import { useSelector, useDispatch } from "react-redux";
 import { setStore } from "../../redux/features/storeSlice";
+import { persistor } from "../../redux/store";
 
 function StoreLayout() {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ function StoreLayout() {
 
   const logout = () => {
     localStorage.removeItem("storeToken");
+    persistor.purge();
     dispatch(setStore(null));
     navigate("/");
   };

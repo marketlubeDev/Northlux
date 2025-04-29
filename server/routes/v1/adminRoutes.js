@@ -15,13 +15,10 @@ const {
   editStore,
   getStoreAndProducts,
 } = require("../../controllers/storeController");
+const { searchProducts } = require("../../controllers/productController");
 const adminRouter = require("express").Router();
 
-adminRouter.get(
-  "/getstores",
-
-  getAllStores
-);
+adminRouter.get("/getstores", getAllStores);
 adminRouter.get(
   "/getstoreandproducts/:id",
   autheticateToken(["admin"]),
@@ -45,6 +42,12 @@ adminRouter.post("/logout", adminLogout);
 adminRouter.post("/create-store", autheticateToken(["admin"]), createStore);
 adminRouter.patch("/edit-store/:id", autheticateToken(["admin"]), editStore);
 adminRouter.get("/checkadmin", autheticateToken(["admin"]), checkAdmin);
+
+adminRouter.get(
+  "/product/search",
+  autheticateToken(["admin", "store"]),
+  searchProducts
+);
 
 //sales
 

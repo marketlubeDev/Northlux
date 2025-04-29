@@ -428,10 +428,17 @@ const getDashBoardDetails = (user, role) => {
 //     res.status(200).json({ success: true, data: report });
 // });
 
-const getOrderStats = () => {
+const getOrderStats = (user, role) => {
   return new Promise(async (resolve, reject) => {
     try {
+      const matchCriteria = {};
+      if (role === "store") {
+        matchCriteria.store = new mongoose.Types.ObjectId(user);
+      }
       const statusCounts = await orderModel.aggregate([
+        {
+          $match: matchCriteria,
+        },
         {
           $group: {
             _id: "$status",
@@ -455,7 +462,7 @@ const getOrderStats = () => {
             refunded: 0,
             cancelled: 0,
           }
-        ), // Initialize all statuses with 0
+        ),
       };
 
       resolve(stats);

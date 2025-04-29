@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 
 import { FaRegEdit } from "react-icons/fa";
 import { Modal } from "../../components/shared/Modal";
+import Pagination from "../../components/Admin/Product/components/Pagination/Pagination";
 
 function Orders({ role }) {
   const store = useSelector((state) => state.store.store);
@@ -32,6 +33,8 @@ function Orders({ role }) {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedStore, setSelectedStore] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     if (role === "store") {
@@ -50,15 +53,17 @@ function Orders({ role }) {
   ];
 
   // Move fetchData outside of useEffect so it can be reused
-  const fetchData = async () => {
+  const fetchData = async (page = currentPage) => {
     try {
       setIsLoading(true);
       const [startDate, endDate] = dateRange;
 
       let queryParams = [];
 
+      // Add page to query params
+      queryParams.push(`page=${page}`);
+
       if (startDate && endDate) {
-        // Format dates to start and end of day in UTC
         const formattedStartDate = new Date(
           startDate.setHours(0, 0, 0, 0)
         ).toISOString();
@@ -82,15 +87,17 @@ function Orders({ role }) {
         queryParams.push(`store=${selectedStore}`);
       }
 
-      const queryString =
-        queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
+      const queryString = `?${queryParams.join("&")}`;
 
       const [ordersRes, statsRes] = await Promise.all([
         getOrders(queryString),
         getOrderStats(),
       ]);
+
       setOrders(ordersRes?.data?.orders);
       setOrderStats(statsRes.stats);
+      setTotalPages(ordersRes?.data?.pagination?.totalPages || 1);
+      setCurrentPage(ordersRes?.data?.pagination?.page || 1);
       setErrorMessage("");
     } catch (err) {
       setOrders([]);
@@ -102,7 +109,7 @@ function Orders({ role }) {
 
   // Update useEffect to use the new fetchData function
   useEffect(() => {
-    fetchData();
+    fetchData(1); // Reset to first page when filters change
   }, [dateRange, selectedCategory, selectedStatus, selectedStore]);
 
   useEffect(() => {
@@ -116,6 +123,17 @@ function Orders({ role }) {
     };
     fetchData();
   }, []);
+
+  const handlePageChange = (page) => {
+    if (page !== currentPage) {
+      fetchData(page);
+    }
+  };
+
+  // Reset pagination when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [dateRange, selectedCategory, selectedStatus, selectedStore]);
 
   const ConfirmationPopup = ({ isOpen, onClose, onConfirm, status }) => {
     if (!isOpen) return null;
@@ -414,43 +432,40 @@ function Orders({ role }) {
       }
     };
 
-    console.log(updateData, "updateData");
-
     return (
       <>
         <tr className="bg-white border-b hover:bg-gray-50">
-          <td className="px-6 py-4">
-            <div className="max-h-32 ">
+          <td className="px-3 py-3 lg:px-4">
+            <div className="break-words w-[100px]">
               <span className="text-sm font-medium">{order?.orderId}</span>
             </div>
           </td>
-          {/* <td
-            title={order?.productDetails?.name}
-            className="cursor-pointer px-6 py-4"
-          >
-            {order?.productDetails?.name.slice(0, 20)}...
-          </td> */}
-          <td className="px-6 py-4 whitespace-nowrap">
+          <td className="px-3 py-3 lg:px-4 whitespace-nowrap">
             {new Date(order.createdAt).toLocaleDateString("en-US", {
               year: "numeric",
               month: "short",
               day: "numeric",
             })}
           </td>
-          <td className="px-6 py-4 " title={"mobile"}>
+          <td className="px-3 py-3 lg:px-4" title="mobile">
             {order?.mobile || "N/A"}
           </td>
-          <td className="px-6 py-4  text-nowrap">
-            {order.address ? order?.address?.slice(0, 26) + "..." : "N/A"}
+          <td className="px-3 py-3 lg:px-4">
+            <div className="break-words w-[120px]">
+              {order.address ? order?.address : "N/A"}
+            </div>
           </td>
-
-          <td className="px-6 py-4">
-            <span className="text-sm font-medium">
-              {order?.store?.name || "N/A"}
-            </span>
+          <td className="px-3 py-3 lg:px-4">
+            <div className="break-words w-[100px]">
+              <span className="text-sm font-medium">
+                {order?.store?.name || "N/A"}
+              </span>
+            </div>
           </td>
-          <td className="px-6 py-4 text-center">{order?.quantity || "N/A"}</td>
-          <td className="px-6 py-4">
+          <td className="px-3 py-3 lg:px-4 text-center">
+            {order?.quantity || "N/A"}
+          </td>
+          <td className="px-3 py-3 lg:px-4">
             <div className="font-medium text-gray-900">
               ₹{order.totalAmount || 0}
             </div>
@@ -650,32 +665,31 @@ function Orders({ role }) {
             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                  <th scope="col" className="px-6 py-3">
-                    Order ID
+                  <th scope="col" className="px-3 py-3 lg:px-4">
+                    <div className="w-[100px]">Order ID</div>
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope="col" className="px-3 py-3 lg:px-4">
                     <div className="flex items-center">Date Placed</div>
                   </th>
-                  <th scope="col" className="px-6 py-3" title="mobile">
+                  <th scope="col" className="px-3 py-3 lg:px-4" title="mobile">
                     <div className="flex items-center">Phone Number</div>
                   </th>
-
-                  <th scope="col" className="px-6 py-3" title="address">
-                    <div className="flex items-center">Address</div>
+                  <th scope="col" className="px-3 py-3 lg:px-4" title="address">
+                    <div className="flex items-center w-[120px]">Address</div>
                   </th>
-                  <th scope="col" className="px-6 py-3">
-                    <div className="flex items-center">Store</div>
+                  <th scope="col" className="px-3 py-3 lg:px-4">
+                    <div className="flex items-center w-[100px]">Store</div>
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope="col" className="px-3 py-3 lg:px-4">
                     <div className="flex items-center">Quantity</div>
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope="col" className="px-3 py-3 lg:px-4">
                     <div className="flex items-center">Total Amount</div>
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope="col" className="px-3 py-3 lg:px-4">
                     <div className="flex items-center">Payment Status</div>
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope="col" className="px-3 py-3 lg:px-4">
                     <div className="flex items-center">Order Status</div>
                   </th>
                   <th scope="col" className=""></th>
@@ -720,6 +734,16 @@ function Orders({ role }) {
                 </tbody>
               )}
             </table>
+
+            {orders && orders.length > 0 && (
+              <div className="py-4 px-3 flex justify-end border-t border-gray-200">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </div>
+            )}
           </div>
         </>
       )}

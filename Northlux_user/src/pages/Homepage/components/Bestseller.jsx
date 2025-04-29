@@ -112,7 +112,7 @@ function Bestseller() {
                 "..."
               : currentProduct?.description}
           </p>
-          <div className="buttons">
+          {/* <div className="buttons">
             <button
               className="add-to-cart"
               onClick={() => handleAddToCart("add")}
@@ -131,7 +131,7 @@ function Bestseller() {
             >
               {loadingAction === "buy" ? <ButtonLoadingSpinner /> : "Buy Now"}
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
       <p onClick={handleViewAll} className="view-all mobile-view-all">

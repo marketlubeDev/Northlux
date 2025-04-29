@@ -278,7 +278,7 @@ const filterOrders = catchAsync(async (req, res, next) => {
     filterCriteria.store = new mongoose.Types.ObjectId(store);
   }
 
-  const skip = (page - 1) * limit;
+  const skip = (parseInt(page) - 1) * parseInt(limit);
 
   const aggregationPipeline = [
     // Match stage for initial filtering
@@ -417,7 +417,7 @@ const filterOrders = catchAsync(async (req, res, next) => {
 
   const [countResult] = await orderModel.aggregate(countPipeline);
   const totalOrders = countResult ? countResult.total : 0;
-  const totalPages = Math.ceil(totalOrders / limit);
+  const totalPages = Math.ceil(totalOrders / parseInt(limit));
 
   res.status(200).json({
     status: "success",
@@ -425,8 +425,8 @@ const filterOrders = catchAsync(async (req, res, next) => {
       orders,
       pagination: {
         total: totalOrders,
-        page: page,
-        limit,
+        page: parseInt(page),
+        limit: parseInt(limit),
         totalPages,
       },
     },
@@ -596,7 +596,8 @@ const cancelOrder = catchAsync(async (req, res, next) => {
 // });
 
 const orderStats = catchAsync(async (req, res, next) => {
-  const stats = await getOrderStats();
+  const { user, role } = req;
+  const stats = await getOrderStats(user, role);
   res.status(200).json({
     message: "Order statistics retrieved successfully",
     stats,
@@ -610,7 +611,9 @@ const updateOrder = catchAsync(async (req, res, next) => {
   // Validate mobile number
   const mobileRegex = /^\d{10}$/;
   if (mobile && !mobileRegex.test(mobile)) {
-    return next(new AppError("Invalid mobile number. It must be 10 digits.", 400));
+    return next(
+      new AppError("Invalid mobile number. It must be 10 digits.", 400)
+    );
   }
 
   const order = await orderModel.findByIdAndUpdate(

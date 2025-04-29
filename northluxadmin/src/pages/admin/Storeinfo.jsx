@@ -220,7 +220,13 @@ function Storeinfo() {
                           alt="product"
                           className=" w-10 h-10 rounded-full"
                         />
-                        {product?.name}
+                        <span
+                          title={product?.name}
+                          className="text-sm font-medium cursor-pointer"
+                        >
+                          {product?.name.slice(0, 40)}
+                          {product?.name.length > 40 && "..."}
+                        </span>
                       </td>
                       <td className="p-2">{product?.brand?.name}</td>
                       <td className="p-2">{product?.category?.name}</td>

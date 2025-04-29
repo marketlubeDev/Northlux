@@ -2,6 +2,7 @@ import React from "react";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   // Generate page numbers with ellipsis for large page counts
+  console.log(currentPage, totalPages);
   const getPageNumbers = () => {
     const pageNumbers = [];
     const maxVisiblePages = 5;
@@ -54,7 +55,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         <li>
           <button
             onClick={() => onPageChange(currentPage - 1)}
-            disabled={currentPage === 1}
+            disabled={currentPage == 1}
             className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Previous
@@ -70,7 +71,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
               <button
                 onClick={() => onPageChange(pageNumber)}
                 className={`flex items-center justify-center px-3 h-8 leading-tight ${
-                  currentPage === pageNumber
+                  currentPage == pageNumber
                     ? "text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700"
                     : "text-gray-500 bg-white hover:bg-gray-100 hover:text-gray-700"
                 } border border-gray-300`}
@@ -83,7 +84,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         <li>
           <button
             onClick={() => onPageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
+            disabled={currentPage == totalPages}
             className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next

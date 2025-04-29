@@ -19,7 +19,7 @@ export const getProductById = (id) => {
 
 export const searchProducts = async ({ keyword, page = 1, limit = 3 }) => {
   try {
-    const response = await axiosInstance.get(`product/search`, {
+    const response = await axiosInstance.get(`admin/product/search`, {
       params: {
         keyword,
         page,

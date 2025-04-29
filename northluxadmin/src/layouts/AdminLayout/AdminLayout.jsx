@@ -4,6 +4,8 @@ import Logo from "../../components/Logo";
 import { adminLogout } from "../../sevices/adminApis";
 import { useSelector, useDispatch } from "react-redux";
 import { setStore } from "../../redux/features/storeSlice";
+import { persistor } from "../../redux/store";
+
 function AdminLayout() {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.store.store);
@@ -27,6 +29,8 @@ function AdminLayout() {
 
   const logout = () => {
     localStorage.removeItem("adminToken");
+    persistor.purge();
+    dispatch(setStore(null));
     navigate("/");
   };
   return (

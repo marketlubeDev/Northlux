@@ -501,6 +501,7 @@ function Addproduct({ role }) {
       formData.append("price", productData.price);
       formData.append("offerPrice", productData.offerPrice);
       formData.append("grossPrice", productData.grossPrice);
+      // formData.append("");
       // Convert stock to number if it's a numeric string, otherwise use 0
       const stockNumber = productData.stock
         ? parseInt(productData.stock, 10)

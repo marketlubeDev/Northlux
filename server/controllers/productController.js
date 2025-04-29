@@ -136,6 +136,7 @@ const addProduct = catchAsync(async (req, res, next) => {
     stockStatus,
     store,
     grossPrice,
+    priority,
   };
 
   if (variantsArray && variantsArray.length > 0) {
@@ -347,7 +348,7 @@ const listProducts = catchAsync(async (req, res, next) => {
           ? { effectivePrice: -1 }
           : { createdAt: -1 },
     },
-    { $sort: { priority: -1 } },
+    { $sort: { priority: -1, updatedAt: -1 } },
     { $skip: skip },
     { $limit: limit },
   ];
@@ -662,6 +663,14 @@ const searchProducts = catchAsync(async (req, res, next) => {
   limit = parseInt(limit) || 3;
   const skip = (page - 1) * limit;
 
+  const filter = {
+    isDeleted: { $ne: true },
+  };
+
+  if (req.role === "store") {
+    filter.store = new mongoose.Types.ObjectId(req.user);
+  }
+
   // Create aggregation pipeline for better search
   const aggregationPipeline = [
     {
@@ -673,15 +682,14 @@ const searchProducts = catchAsync(async (req, res, next) => {
       },
     },
     {
-      $match: keyword
-        ? {
-            $or: [
-              { name: { $regex: keyword, $options: "i" } },
-              // { description: { $regex: keyword, $options: "i" } },
-              { "variantsData.sku": { $regex: keyword, $options: "i" } },
-            ],
-          }
-        : {},
+      $match: {
+        ...filter,
+        $or: [
+          { name: { $regex: keyword, $options: "i" } },
+          // { description: { $regex: keyword, $options: "i" } },
+          { "variantsData.sku": { $regex: keyword, $options: "i" } },
+        ],
+      },
     },
     {
       $lookup: {

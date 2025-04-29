@@ -7,14 +7,28 @@ import { getStores } from "../../sevices/storeApis";
 import LoadingSpinner from "../../components/spinner/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { setStores } from "../../redux/features/AdminUtilities";
+import { useDispatch } from "react-redux";
 function Store() {
-  const stores = useSelector((state) => state.adminUtilities.stores);
+  const dispatch = useDispatch();
+  // const stores = useSelector((state) => state.adminUtilities.stores);
+  const [stores, setStoress] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStore, setSelectedStore] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState("");
-  const [filteredStores, setFilteredStores] = useState(stores);
+  const [refetch, setRefetch] = useState(false);
+  // const [filteredStores, setFilteredStores] = useState(stores);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchStores = async () => {
+      const response = await getStores();
+      setStoress(response?.stores);
+      dispatch(setStores(response?.stores));
+    };
+    fetchStores();
+  }, [refetch]);
 
   useEffect(() => {
     setSearch("");
@@ -31,11 +45,11 @@ function Store() {
   };
 
   useEffect(() => {
-    setFilteredStores(
-      stores?.filter((store) =>
-        store?.store_name?.toLowerCase().includes(search.toLowerCase())
-      )
-    );
+    // setFilteredStores(
+    //   stores?.filter((store) =>
+    //     store?.store_name?.toLowerCase().includes(search.toLowerCase())
+    //   )
+    // );
   }, [search]);
 
   return (
@@ -79,12 +93,12 @@ function Store() {
               </div>
 
               <div className="overflow-x-auto">
-                <div className="w-full">
-                  <div className="grid grid-cols-8 bg-[#25996026] text-xs uppercase text-gray-700 py-3 px-4 rounded-t-lg">
-                    <div className="flex items-center gap-1">
+                <div className="w-full min-w-[1000px]">
+                  <div className="grid grid-cols-8 bg-[#25996026] text-xs uppercase text-gray-700 py-3 px-4 rounded-t-lg gap-3">
+                    <div className="flex items-center gap-1 col-span-1">
                       Store Name <FaSort className="text-gray-400 ml-1" />
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 col-span-1">
                       Email <FaSort className="text-gray-400 ml-1" />
                     </div>
                     <div className="flex items-center gap-1">
@@ -106,7 +120,7 @@ function Store() {
                   </div>
 
                   <div className="bg-white">
-                    {filteredStores?.map((store) => (
+                    {stores?.map((store) => (
                       <div
                         key={store?._id}
                         onClick={() =>
@@ -114,17 +128,23 @@ function Store() {
                             state: { store, stores },
                           })
                         }
-                        className="grid grid-cols-8 py-4 px-4 text-sm border-b hover:bg-[#637a6f26] cursor-pointer"
+                        className="grid grid-cols-8 py-4 px-4 text-sm border-b hover:bg-[#637a6f26] cursor-pointer gap-3 items-center"
                       >
-                        <div className="font-medium text-gray-900 whitespace-nowrap">
+                        <div className="font-medium text-gray-900 break-words col-span-1">
                           {store?.store_name}
                         </div>
-                        <div>{store?.email}</div>
-                        <div>{store?.store_number}</div>
-                        <div>568</div>
-                        <div className="text-red-500">₹28,820 -3%</div>
-                        <div className="text-red-500">₹12,330 -3%</div>
-                        <div>
+                        <div className="break-words col-span-1 overflow-hidden">
+                          {store?.email}
+                        </div>
+                        <div className="break-all">{store?.store_number}</div>
+                        <div className="text-center">568</div>
+                        <div className="text-red-500 whitespace-nowrap">
+                          ₹28,820 -3%
+                        </div>
+                        <div className="text-red-500 whitespace-nowrap">
+                          ₹12,330 -3%
+                        </div>
+                        <div className="whitespace-nowrap">
                           {new Date(store?.updatedAt).toLocaleDateString()}
                         </div>
                         <div>
@@ -151,6 +171,7 @@ function Store() {
             onClose={handleCloseModal}
             editData={selectedStore}
             stores={stores}
+            setRefetch={setRefetch}
           />
         </div>
       )}

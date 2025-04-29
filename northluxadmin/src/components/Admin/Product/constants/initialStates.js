@@ -11,6 +11,7 @@ export const initialProductState = {
   grossPrice: "",
   store: "",
   variants: [],
+  priority: 0,
 };
 
 export const initialVariantState = {

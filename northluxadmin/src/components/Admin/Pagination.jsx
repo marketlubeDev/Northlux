@@ -2,6 +2,7 @@ import React from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+  console.log(currentPage, totalPages);
   // Generate page numbers to display
   const getPageNumbers = () => {
     const pageNumbers = [];
