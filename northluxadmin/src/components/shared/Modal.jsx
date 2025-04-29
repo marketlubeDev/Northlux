@@ -37,7 +37,12 @@ export const Modal = ({ children, ...props }) => {
             "linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3))",
         }}
       >
-        <div className="transform md:translate-x-1/4  bg-white shadow-2xl max-h-[94vh] drop-shadow-2xl rounded-lg p-6 w-full max-w-lg overflow-y-auto">
+        <div
+          className="transform md:translate-x-1/4 translate-y-10   bg-white shadow-2xl max-h-[90vh]  drop-shadow-2xl rounded-lg p-6 w-full max-w-lg overflow-y-auto"
+          style={{
+            scrollBehavior: "smooth",
+          }}
+        >
           <button
             onClick={props?.onClose}
             className="absolute text-2xl top-0 right-0 mt-4 mr-4 text-gray-500 hover:text-gray-700"

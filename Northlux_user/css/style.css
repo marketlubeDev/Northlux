@@ -6168,7 +6168,7 @@ input[required]::placeholder::after {
   opacity: 1;
 }
 .nav-bar-container .nav-bar-list li:hover .arrow-icon {
-  transform: rotate(220deg);
+  transform: rotate(225deg);
 }
 .nav-bar-container .nav-bar-list li .arrow-icon {
   margin-left: 8px;

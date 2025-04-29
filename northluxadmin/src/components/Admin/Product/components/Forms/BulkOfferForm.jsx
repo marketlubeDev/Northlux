@@ -9,6 +9,7 @@ export const BulkOfferForm = ({
   isProductSelected,
   selectedProducts,
   setPageRender,
+  clearSelectedProducts,
 }) => {
   const [formData, setFormData] = useState({
     offerType: isProductSelected ? "group" : "category",
@@ -72,6 +73,7 @@ export const BulkOfferForm = ({
       onClose();
       toast.success("Offer applied successfully");
       setPageRender((prev) => prev + 1);
+      clearSelectedProducts();
     } catch (error) {
       toast.error("Error applying offer");
     } finally {
@@ -113,7 +115,7 @@ export const BulkOfferForm = ({
   };
 
   return (
-    <div>
+    <div className="">
       <h2 className="text-xl font-bold mb-4">Add Bulk Offer</h2>
       <p className="text-sm text-gray-600 mb-6">
         Create a special offer for a category, brand, or a specific combination
@@ -227,7 +229,11 @@ export const BulkOfferForm = ({
             </label>
             <input
               type="number"
-              placeholder="Enter Discount Value (in %)"
+              placeholder={
+                formData.offerMetric === "fixed"
+                  ? "Enter Discount Value (in ₹)"
+                  : "Enter Discount Value (in %)"
+              }
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               value={formData.offerValue}
               name="offerValue"
@@ -250,6 +256,7 @@ export const BulkOfferForm = ({
               name="startDate"
               required
               onChange={handleInputChange}
+              min={new Date().toISOString().split("T")[0]}
             />
           </div>
 
@@ -265,6 +272,7 @@ export const BulkOfferForm = ({
               name="endDate"
               required
               onChange={handleInputChange}
+              min={formData.startDate}
             />
           </div>
         </div>
@@ -308,6 +316,7 @@ export const BulkOfferForm = ({
 
         <div className="flex justify-end space-x-2">
           <button
+            type="reset"
             onClick={onClose}
             className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
           >

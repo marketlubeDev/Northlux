@@ -142,17 +142,26 @@ function Products({ role }) {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    setSelectedProducts([]);
-    setIsProductSelected(false);
+    // setSelectedProducts([]);
+    // setIsProductSelected(false);
   };
 
   // Handle All products checkbox selection
-  const handleSelectAll = (e) => {
+  const handleSelectAll = (e, currentPage) => {
     if (e.target.checked) {
-      setSelectedProducts(products.map((product) => product._id));
+      // Select all products on the current page
+      setSelectedProducts((prevSelected) => [
+        ...prevSelected,
+        ...products.map((product) => product._id),
+      ]);
       setIsProductSelected(true);
     } else {
-      setSelectedProducts([]);
+      // Deselect only the products from the current page
+      setSelectedProducts((prevSelected) =>
+        prevSelected.filter(
+          (productId) => !products.some((product) => product._id === productId)
+        )
+      );
       setIsProductSelected(false);
     }
   };
@@ -170,6 +179,11 @@ function Products({ role }) {
       debouncedSearch.cancel();
     };
   }, [debouncedSearch]);
+
+  const clearSelectedProducts = () => {
+    setSelectedProducts([]);
+    setIsProductSelected(false);
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 relative">
@@ -289,6 +303,7 @@ function Products({ role }) {
               isProductSelected={isProductSelected}
               selectedProducts={selectedProducts}
               setPageRender={setPageRender}
+              clearSelectedProducts={clearSelectedProducts}
             />
           </Modal>
 
@@ -312,14 +327,15 @@ function Products({ role }) {
                 isProductSelected={isProductSelected}
                 selectedProductsCount={selectedProductsCount}
                 role={role}
+                currentPage={currentPage}
               />
             )}
           </div>
 
           {/* Pagination */}
           {!isLoading && totalPages > 1 && (
-            <div className="sticky bottom-0 flex items-center justify-between p-4 bg-white border-t">
-              <div className="flex items-center gap-4">
+            <div className="sticky bottom-0 flex items-center justify-end p-4 bg-white border-t">
+              {/* <div className="flex items-center gap-4">
                 <p className="text-sm text-gray-700">
                   Showing page {currentPage} of {totalPages}
                 </p>
@@ -339,7 +355,7 @@ function Products({ role }) {
                     <option value={50}>50</option>
                   </select>
                 </div>
-              </div>
+              </div> */}
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}

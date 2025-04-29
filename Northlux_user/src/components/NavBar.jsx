@@ -14,7 +14,10 @@ export const NavBar = () => {
     name: null,
   });
   const dropdownRef = useRef(null);
-  // const [navState, setNavState] = useState(null);
+  const navBarRef = useRef(null);
+  const [openCategoryId, setOpenCategoryId] = useState(null);
+
+  console.log(openCategoryId, "openCategoryId");
 
   const {
     data: categoriesData,
@@ -50,8 +53,14 @@ export const NavBar = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (
+        dropdownRef.current &&
+        navBarRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        !navBarRef.current.contains(event.target)
+      ) {
         setDropdownOpen(false);
+        setOpenCategoryId(null);
       }
     };
 
@@ -62,25 +71,37 @@ export const NavBar = () => {
     };
   }, []);
 
-  const handleDropdownHover = (content, parent) => {
-    // setNavState(parent);
-    // if (window.innerWidth >= 768) {
-    setDropdownContent({ content, parent });
-    setDropdownOpen(true);
-    // }
+  const handleCategoryHover = (content, parent, categoryId) => {
+    if (window.innerWidth >= 768) {
+      setDropdownContent({ content, parent });
+      setDropdownOpen(true);
+      setOpenCategoryId(categoryId);
+    }
+  };
+  const handleCategoryClickOnMobile = (content, parent, categoryId) => {
+    if (window.innerWidth < 768) {
+      setDropdownContent({ content, parent });
+      setDropdownOpen((prev) => !prev);
+      setOpenCategoryId((prev) => (prev === categoryId ? null : categoryId));
+    }
   };
 
+  console.log(dropdownOpen, "dropdownOpen");
+
   const handleDropdownLeave = () => {
-    // if (window.innerWidth >= 768) {
-    setDropdownOpen(false);
-    // }
+    if (window.innerWidth >= 768) {
+      setDropdownOpen(false);
+      setOpenCategoryId(null);
+    }
   };
 
   const handleCategoryClick = (category) => {
     if (selectedCategory?._id === category._id) {
       setSelectedCategory(null);
+      setOpenCategoryId(null);
     } else {
       setSelectedCategory(category);
+      setOpenCategoryId(category._id);
     }
 
     setDropdownOpen(false);
@@ -131,7 +152,7 @@ export const NavBar = () => {
     <div
       className="nav-bar-container"
       onMouseLeave={handleDropdownLeave}
-      ref={dropdownRef}
+      ref={navBarRef}
     >
       {categories && (
         <ul className="nav-bar-list">
@@ -139,30 +160,50 @@ export const NavBar = () => {
             All
           </li>
           <li
-            onMouseEnter={() => handleDropdownHover(brands, "brands")}
-            onClick={() => window.innerWidth >= 768 && navigate("/brands")}
-            // onMouseLeave={handleDropdownLeave}
+            onMouseEnter={() => handleCategoryHover(brands, "brands", "brands")}
+            onClick={() =>
+              window.innerWidth >= 768
+                ? navigate("/brands")
+                : handleCategoryClickOnMobile(brands, "brands", "brands")
+            }
           >
             Brands
-            <span className="arrow-icon"></span>
+            <span
+              className="arrow-icon"
+              style={{
+                transform: openCategoryId === "brands" ? "rotate(225deg)" : "rotate(45deg)",
+                transition: "transform 0.3s ease",
+              }}
+            ></span>
           </li>
           {categories.map((category) => (
             <li
               key={category._id}
               onMouseEnter={() => {
-                handleDropdownHover(category.subcategories, "subcategories");
+                handleCategoryHover(category.subcategories, "subcategories", category._id);
                 setCurrentDropDownParent({
                   id: category._id,
                   name: category.name,
                 });
               }}
               onClick={() =>
-                window.innerWidth >= 768 && handleCategoryClick(category)
+                window.innerWidth >= 768
+                  ? handleCategoryClick(category)
+                  : handleCategoryClickOnMobile(
+                      category.subcategories,
+                      "subcategories",
+                      category._id
+                    )
               }
-              // onMouseLeave={handleDropdownLeave}
             >
               {category.name}
-              <span className="arrow-icon"></span>
+              <span
+                className="arrow-icon"
+                style={{
+                  transform: openCategoryId === category._id ? "rotate(225deg)" : "rotate(45deg)",
+                  transition: "transform 0.3s ease",
+                }}
+              ></span>
             </li>
           ))}
         </ul>
