@@ -6,170 +6,109 @@ const Product = require("../model/productModel");
 const mongoose = require("mongoose");
 const Variant = require("../model/variantsModel");
 
-const buildAggregationPipeline = (newOffer, query) => {
-  const aggregationPipeline = [query];
-  return aggregationPipeline;
-};
-
 const createOffer = catchAsync(async (req, res, next) => {
   const { bannerImage, ...offerData } = req.body;
-  let hasVariants = false;
+  console.log(offerData, "================offerData");
 
   if (typeof offerData.products === "string") {
     try {
       offerData.products = JSON.parse(offerData.products);
-    } catch (error) {
-      console.error("Error parsing products JSON:", error);
-
-      offerData.products = [offerData.products];
+    } catch (e) {
+      offerData.products = [offerData.products]; // fallback: single id as string
     }
   }
 
-  // Cast offerValue to Number
-  offerData.offerValue = Number(offerData.offerValue);
-
-  if (req.files && req.files.length > 0) {
-    const imageFile = req.files[0];
-    const uploadedImage = await uploadToCloudinary(imageFile.buffer);
-    offerData.bannerImage = uploadedImage;
-  }
+  // if (req.files && req.files.length > 0) {
+  //   const imageFile = req.files[0];
+  //   const uploadedImage = await uploadToCloudinary(imageFile.buffer);
+  //   offerData.bannerImage = uploadedImage;
+  // }
 
   const newOffer = await Offer.create(offerData);
-  let productsCount = 0;
 
-  const aggregationPipeline = buildAggregationPipeline(newOffer, {});
+  let matchQuery = {};
 
   // for category
-  if (newOffer.offerType === "category") {
-    aggregationPipeline[0] = {
-      $match: { category: new mongoose.Types.ObjectId(newOffer.category) },
-    };
+  if (offerData.offerType === "category") {
+    matchQuery = { category: new mongoose.Types.ObjectId(offerData.category) };
   }
 
   // for brand
-  if (newOffer.offerType === "brand") {
-    aggregationPipeline[0] = {
-      $match: { brand: new mongoose.Types.ObjectId(newOffer.brand) },
-    };
+  if (offerData.offerType === "brand") {
+    matchQuery = { brand: new mongoose.Types.ObjectId(offerData.brand) };
   }
 
   // for group
-  if (newOffer.offerType === "group") {
-    aggregationPipeline[0] = {
-      $match: {
-        _id: {
-          $in: newOffer.products.map((id) => new mongoose.Types.ObjectId(id)),
-        },
+  if (offerData.offerType === "group") {
+    matchQuery = {
+      _id: {
+        $in: offerData.products.map((id) => new mongoose.Types.ObjectId(id)),
       },
     };
   }
 
   // for brandCategory
-  if (newOffer.offerType === "brandCategory") {
-    aggregationPipeline[0] = {
-      $match: { brand: newOffer.brand, category: newOffer.category },
+  if (offerData.offerType === "brandCategory") {
+    matchQuery = {
+      brand: new mongoose.Types.ObjectId(offerData.brand),
+      category: new mongoose.Types.ObjectId(offerData.category),
     };
   }
 
+  const aggregationPipeline = [{ $match: matchQuery }];
+
   const products = await Product.aggregate(aggregationPipeline);
-  productsCount = products.length;
-  newOffer.productsCount = productsCount;
-  await newOffer.save();
 
-  if (
-    products.some(
-      (product) => product?.variants && product?.variants?.length > 0
-    )
-  ) {
-    hasVariants = true;
-  } else {
-    hasVariants = false;
-  }
-
-  //bulk operation for product if has NO VARIANTS
-  if (!hasVariants) {
-    const bulkOpsProduct = products?.map((product) => ({
-      updateOne: {
-        filter: { _id: product._id },
-        update: [
-          {
-            $set: {
-              offerPrice:
-                newOffer.offerMetric === "percentage"
-                  ? {
-                      $subtract: [
-                        "$price",
-                        {
-                          $multiply: [
-                            "$price",
-                            Number(newOffer.offerValue) / 100,
-                          ],
-                        },
-                      ],
-                    }
-                  : { $subtract: ["$price", newOffer.offerValue] },
-              offer: newOffer._id,
+  for (const product of products) {
+    if (product.variants && product.variants.length > 0) {
+      // Update all variants for this product
+      await Variant.updateMany({ _id: { $in: product.variants } }, [
+        {
+          $set: {
+            offerPrice: {
+              $cond: [
+                { $eq: [offerData.offerMetric, "percentage"] },
+                {
+                  $subtract: [
+                    "$price",
+                    {
+                      $multiply: ["$price", Number(offerData.offerValue) / 100],
+                    },
+                  ],
+                },
+                { $subtract: ["$price", Number(offerData.offerValue)] },
+              ],
             },
+            offer: newOffer._id,
           },
-        ],
-      },
-    }));
-
-    // Step 3: Execute bulk operations
-    if (bulkOpsProduct.length > 0) {
-      await Product.bulkWrite(bulkOpsProduct);
-    }
-  }
-
-  //bulk operation for Variant if product has variants
-  if (hasVariants) {
-    const bulkOpsVariant = products.flatMap((product) => {
-      // Store offer reference in product model
-      const productUpdate = {
-        updateOne: {
-          filter: { _id: product._id },
-          update: { $set: { offer: newOffer._id } },
         },
-      };
-
-      const variantUpdates = product.variants.map((variant) => ({
-        updateOne: {
-          filter: { _id: variant._id },
-          update: [
-            {
-              $set: {
-                offerPrice:
-                  newOffer.offerMetric === "percentage"
-                    ? {
-                        $subtract: [
-                          "$price",
-                          {
-                            $multiply: [
-                              "$price",
-                              Number(newOffer.offerValue) / 100,
-                            ],
-                          },
-                        ],
-                      }
-                    : { $subtract: ["$price", newOffer.offerValue] },
-                offer: newOffer._id,
-              },
-            },
-          ],
-        },
-      }));
-
-      return [productUpdate, ...variantUpdates];
-    });
-
-    if (bulkOpsVariant.length > 0) {
-      await Variant.bulkWrite(bulkOpsVariant);
+      ]);
+      // Update product's offer reference
+      await Product.updateOne(
+        { _id: product._id },
+        { $set: { offer: newOffer._id } }
+      );
+    } else {
+      // No variants: update product directly
+      await Product.updateOne(
+        { _id: product._id },
+        {
+          $set: {
+            offerPrice:
+              offerData.offerMetric === "percentage"
+                ? product.price -
+                  (product.price * Number(offerData.offerValue)) / 100
+                : product.price - Number(offerData.offerValue),
+            offer: newOffer._id,
+          },
+        }
+      );
     }
   }
 
   res.status(201).json({
     status: "success",
-    data: { newOffer, productsCount },
+    data: { newOffer },
   });
 });
 
@@ -183,6 +122,7 @@ const getAllOffers = catchAsync(async (req, res, next) => {
 
 const deleteOffer = catchAsync(async (req, res, next) => {
   const { id } = req.params;
+  console.log(id, "================id");
   const offer = await Offer.findById(id);
 
   if (!offer) {
@@ -192,58 +132,30 @@ const deleteOffer = catchAsync(async (req, res, next) => {
   // Find products associated with the offer
   const products = await Product.find({ offer: offer._id });
 
-
-
-  // Check if any product has variants
-  const hasVariants = products.some(
-    (product) => product?.variants && product?.variants?.length > 0
-  );
-
-  
-
-  // Reset offerPrice for products without variants
-  if (!hasVariants) {
-    const bulkOpsProduct = products.map((product) => ({
-      updateOne: {
-        filter: { _id: product._id },
-        update: {
-          $set: { offerPrice: product.price }, // Set offerPrice to the original price
-          $unset: { offer: "" },
-        },
-      },
-    }));
-
-    if (bulkOpsProduct.length > 0) {
-      await Product.bulkWrite(bulkOpsProduct);
-    }
-  }
-
-  // Reset offerPrice for variants if products have variants
-  if (hasVariants) {
-    const bulkOpsVariant = products.flatMap((product) => {
-      // Update the product to unset the offer reference
-      const productUpdate = {
-        updateOne: {
-          filter: { _id: product._id },
-          update: { $unset: { offer: "" } },
-        },
-      };
-
-      const variantUpdates = product.variants.map((variant) => ({
-        updateOne: {
-          filter: { _id: variant._id },
-          update: {
-            $set: { offerPrice: variant.price }, // Set offerPrice to the original price
-            $unset: { offer: "" },
+  for (const product of products) {
+    if (product.variants && product.variants.length > 0) {
+      // Update all variants for this product
+      await Variant.updateMany({ _id: { $in: product.variants } }, [
+        {
+          $set: {
+            offerPrice: "$price",
+            offer: null,
           },
         },
-      }));
-
-      return [productUpdate, ...variantUpdates];
-    });
-
-    if (bulkOpsVariant.length > 0) {
-      await Variant.bulkWrite(bulkOpsVariant);
+      ]);
+      // Update product's offer reference
+      await Product.updateOne({ _id: product._id }, { $set: { offer: null } });
+    } else {
+      // No variants: update product directly
+      await Product.updateOne(
+        { _id: product._id },
+        {
+          $set: {
+            offerPrice: product.price,
+            offer: null,
+          },
+        }
+      );
     }
   }
 

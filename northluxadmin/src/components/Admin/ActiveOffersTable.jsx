@@ -63,50 +63,56 @@ export const ActiveOffersTable = ({ offers, fetchData, loading }) => {
             </tr>
           ) : (
             <>
-              {offers.map((offer, index) => (
-                <tr key={index} className="text-center border-b">
-                  <td className="py-2 px-4 font-medium text-gray-800">
-                    {offer.offerName}
-                  </td>
-                  <td className="py-2 px-4">
-                    <img
-                      src={offer.bannerImage}
-                      alt={offer.offerName}
-                      className="h-10 mx-auto"
-                    />
-                  </td>
-                  <td className="py-2 px-4">{offer.offerType}</td>
-                  <td className="py-2 px-4">
-                    {offer.products.map((product) => product.name).join(", ")}
-                  </td>
-                  <td className="py-2 px-4 text-green-500 font-medium">
-                    {offer.offerValue}{" "}
-                    {offer.offerMetric === "percentage" ? "%" : "₹"}
-                  </td>
-                  <td className="py-2 px-4">
-                    {new Date(offer.startDate).toLocaleDateString("en-IN", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </td>
-                  <td className="py-2 px-4">
-                    {new Date(offer.endDate).toLocaleDateString("en-IN", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </td>
-                  <td className="py-2 px-4">
-                    <button
-                      className="text-red-500 font-extrabold"
-                      onClick={() => confirmDelete(offer._id)}
-                    >
-                      <GoTrash />
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {!loading && offers.length === 0 ? (
+                <div className="text-center py-4 text-gray-500 font-medium w-full">
+                  No Offers found
+                </div>
+              ) : (
+                offers.map((offer, index) => (
+                  <tr key={index} className="text-center border-b">
+                    <td className="py-2 px-4 font-medium text-gray-800">
+                      {offer.offerName}
+                    </td>
+                    <td className="py-2 px-4">
+                      <img
+                        src={offer.bannerImage}
+                        alt={offer.offerName}
+                        className="h-10 mx-auto"
+                      />
+                    </td>
+                    <td className="py-2 px-4">{offer.offerType}</td>
+                    <td className="py-2 px-4">
+                      {offer.products.map((product) => product.name).join(", ")}
+                    </td>
+                    <td className="py-2 px-4 text-green-500 font-medium">
+                      {offer.offerValue}{" "}
+                      {offer.offerMetric === "percentage" ? "%" : "₹"}
+                    </td>
+                    <td className="py-2 px-4">
+                      {new Date(offer.startDate).toLocaleDateString("en-IN", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </td>
+                    <td className="py-2 px-4">
+                      {new Date(offer.endDate).toLocaleDateString("en-IN", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </td>
+                    <td className="py-2 px-4">
+                      <button
+                        className="text-red-500 font-extrabold"
+                        onClick={() => confirmDelete(offer._id)}
+                      >
+                        <GoTrash />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </>
           )}
         </tbody>

@@ -42,7 +42,7 @@ export const BulkOfferForm = ({
   // handle apply offer
   const handleApplyOffer = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    // setIsLoading(true);
 
     if (
       !formData.bannerImage ||
