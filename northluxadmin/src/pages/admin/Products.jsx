@@ -142,8 +142,6 @@ function Products({ role }) {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    // setSelectedProducts([]);
-    // setIsProductSelected(false);
   };
 
   // Handle All products checkbox selection
@@ -192,7 +190,10 @@ function Products({ role }) {
         <div className="text-sm text-gray-600 space-y-1">
           <select
             value={selectedStore}
-            onChange={(e) => setSelectedStore(e.target.value)}
+            onChange={(e) => {
+              setSelectedStore(e.target.value);
+              setCurrentPage(1);
+            }}
             className="border border-gray-300 rounded-md px-4 py-2 w-60"
             disabled={role === "store"}
           >
@@ -207,7 +208,10 @@ function Products({ role }) {
         <div className="text-sm text-gray-600 space-y-1">
           <select
             value={selectedBrand}
-            onChange={(e) => setSelectedBrand(e.target.value)}
+            onChange={(e) => {
+              setSelectedBrand(e.target.value);
+              setCurrentPage(1);
+            }}
             className="border border-gray-300 rounded-md px-4 py-2 w-60"
           >
             <option value="All Brands">All Brands</option>
@@ -221,7 +225,10 @@ function Products({ role }) {
         <div className="text-sm text-gray-600 space-y-1">
           <select
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            onChange={(e) => {
+              setSelectedCategory(e.target.value);
+              setCurrentPage(1);
+            }}
             className="border border-gray-300 rounded-md px-4 py-2 w-60"
           >
             <option value="All Categories">All Categories</option>
