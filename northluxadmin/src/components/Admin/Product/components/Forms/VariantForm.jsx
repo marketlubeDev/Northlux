@@ -14,7 +14,7 @@ const VariantForm = ({ handleVariantChange, currentVariantData, errors }) => (
             errors?.price ? "border-red-500" : "border-gray-300"
           } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
           onChange={handleVariantChange}
-          value={currentVariantData.price}
+          value={currentVariantData?.price}
         />
         <ErrorMessage error={errors?.price} />
       </div>
@@ -29,7 +29,7 @@ const VariantForm = ({ handleVariantChange, currentVariantData, errors }) => (
             errors?.offerPrice ? "border-red-500" : "border-gray-300"
           } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
           onChange={handleVariantChange}
-          value={currentVariantData.offerPrice}
+          value={currentVariantData?.offerPrice}
         />
         <ErrorMessage error={errors?.offerPrice} />
       </div>
@@ -44,7 +44,7 @@ const VariantForm = ({ handleVariantChange, currentVariantData, errors }) => (
             errors?.grossPrice ? "border-red-500" : "border-gray-300"
           } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
           onChange={handleVariantChange}
-          value={currentVariantData.grossPrice}
+          value={currentVariantData?.grossPrice}
         />
         <ErrorMessage error={errors?.grossPrice} />
       </div>
@@ -61,7 +61,7 @@ const VariantForm = ({ handleVariantChange, currentVariantData, errors }) => (
             errors?.stock ? "border-red-500" : "border-gray-300"
           } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
           onChange={handleVariantChange}
-          value={currentVariantData.stock}
+          value={currentVariantData?.stock}
         />
         <ErrorMessage error={errors?.stock} />
       </div>
@@ -75,7 +75,7 @@ const VariantForm = ({ handleVariantChange, currentVariantData, errors }) => (
             errors?.stockStatus ? "border-red-500" : "border-gray-300"
           } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
           onChange={handleVariantChange}
-          value={currentVariantData.stockStatus}
+          value={currentVariantData?.stockStatus}
         >
           <option value="">Select Status</option>
           <option value="instock">In stock</option>
@@ -96,7 +96,7 @@ const VariantForm = ({ handleVariantChange, currentVariantData, errors }) => (
         } focus:ring-blue-500 focus:border-blue-500`}
         placeholder="Write your thoughts here..."
         onChange={handleVariantChange}
-        value={currentVariantData.attributes.description}
+        value={currentVariantData?.attributes?.description}
       />
       <ErrorMessage error={errors?.description} />
     </div>

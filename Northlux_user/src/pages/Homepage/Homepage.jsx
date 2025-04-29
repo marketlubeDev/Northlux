@@ -8,10 +8,15 @@ import Trending from "./components/Trending";
 import ShopBy from "./components/ShopBy";
 import ProductBanner from "./components/ProductBanner";
 import { useBanners } from "../../hooks/queries/banner";
-
+import { useActiveOffers } from "../../hooks/queries/activeOffer";
 function Homepage() {
   const { allBanners, isLoading, error } = useBanners();
-
+  const {
+    activeOffers,
+    isLoading: activeOffersLoading,
+    error: activeOffersError,
+  } = useActiveOffers();
+  console.log(activeOffers, "================activeOffers");
   return (
     <div>
       <Carousel
@@ -19,11 +24,7 @@ function Homepage() {
         isLoading={isLoading}
       />
       <ShopBy />
-      <ProductBanner
-        banners={allBanners?.filter(
-          (banner) => banner?.bannerFor === "product"
-        )}
-      />
+      <ProductBanner banners={activeOffers} loading={activeOffersLoading} />
       <Clearance />
       <Bestseller />
       <Offer />

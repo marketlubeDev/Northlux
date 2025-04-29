@@ -19,29 +19,6 @@ import { useLocation } from "react-router-dom";
 import Pagination from "../../components/Pagination";
 import { useBanners } from "../../hooks/queries/banner";
 
-const data = [
-  {
-    image: "/images/carousel/carousel-1.png",
-    alt: "carousel-1",
-    heading: `Strength in Every Tool.
-       in Every Task.`,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    image: "/images/carousel/carousel-1.png",
-    alt: "carousel-2",
-    heading: "The Best Tools for the Job",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    image: "/images/carousel/carousel-1.png",
-    alt: "carousel-3",
-    heading: "The Best Tools for the Job",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-];
-
 // Separate the content into a new component
 function AllProductsContent() {
   const location = useLocation();
@@ -66,6 +43,7 @@ function AllProductsContent() {
     },
     labelId: null,
     sort: "newest",
+    offerId: null,
   });
   const [selectedNames, setSelectedNames] = useState({
     categoryName: "",
@@ -95,6 +73,7 @@ function AllProductsContent() {
     sort: selectedFilters.sort,
     page: currentPage,
     limit: ITEMS_PER_PAGE,
+    offerId: selectedFilters.offerId,
   });
 
   const {
@@ -142,8 +121,7 @@ function AllProductsContent() {
     const categoryFromHeader = location.state?.selectedCategory;
     const subCategoryFromHeader = location.state?.selectedSubCategory;
     const labelFromHomePage = location.state?.selectedLabel;
-
-   
+    const offerFromHomePage = location.state?.selectedOffer;
 
     if (categoryFromHeader) {
       setSelectedFilters((prev) => ({
@@ -173,6 +151,16 @@ function AllProductsContent() {
       setSelectedNames((prev) => ({
         ...prev,
         labelName: labelFromHomePage.name,
+      }));
+    }
+    if (offerFromHomePage) {
+      setSelectedFilters((prev) => ({
+        ...prev,
+        offerId: offerFromHomePage._id,
+      }));
+      setSelectedNames((prev) => ({
+        ...prev,
+        offerName: offerFromHomePage.name,
       }));
     }
   }, [location.state]);
@@ -367,6 +355,24 @@ function AllProductsContent() {
       );
     }
 
+    if (selectedFilters.offerId && selectedNames.offerName) {
+      active.push(
+        <div key="offer" className="active-filter">
+          <span className="filter-type">Offer:</span>
+          {selectedNames.offerName}
+          <button
+            onClick={() => {
+              setSelectedFilters((prev) => ({
+                ...prev,
+                offerId: null,
+              }));
+            }}
+          >
+            ×
+          </button>
+        </div>
+      );
+    }
     // Add price range filter
     if (priceRange.min > 0 || priceRange.max !== Infinity) {
       const priceText =
@@ -457,7 +463,7 @@ function AllProductsContent() {
         <div className="product-header">
           <div className="header-left">
             <h1>
-              All Products <span>({response?.data?.totalProducts})</span>
+              Products <span>({response?.data?.totalProducts})</span>
             </h1>
           </div>
           <div className="header-right">

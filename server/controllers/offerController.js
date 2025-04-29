@@ -8,7 +8,6 @@ const Variant = require("../model/variantsModel");
 
 const createOffer = catchAsync(async (req, res, next) => {
   const { bannerImage, ...offerData } = req.body;
-  console.log(offerData, "================offerData");
 
   if (typeof offerData.products === "string") {
     try {
@@ -18,15 +17,21 @@ const createOffer = catchAsync(async (req, res, next) => {
     }
   }
 
-  // if (req.files && req.files.length > 0) {
-  //   const imageFile = req.files[0];
-  //   const uploadedImage = await uploadToCloudinary(imageFile.buffer);
-  //   offerData.bannerImage = uploadedImage;
-  // }
+  if (req.files && req.files.length > 0) {
+    const imageFile = req.files[0];
+    const uploadedImage = await uploadToCloudinary(imageFile.buffer);
+    offerData.bannerImage = uploadedImage;
+  }
 
   const newOffer = await Offer.create(offerData);
 
+  const user = req.user;
+  const role = req.role;
   let matchQuery = {};
+
+  if (role === "store") {
+    matchQuery = { store: new mongoose.Types.ObjectId(user.id) };
+  }
 
   // for category
   if (offerData.offerType === "category") {
@@ -122,7 +127,6 @@ const getAllOffers = catchAsync(async (req, res, next) => {
 
 const deleteOffer = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  console.log(id, "================id");
   const offer = await Offer.findById(id);
 
   if (!offer) {

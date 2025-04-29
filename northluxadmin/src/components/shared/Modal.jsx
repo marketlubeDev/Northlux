@@ -33,7 +33,8 @@ export const Modal = ({ children, ...props }) => {
         onClick={handleBackdropClick}
         className="fixed inset-0 z-10   backdrop-blur-sm drop-shadow-lg shadow-2xl px-8 bg-opacity-50 flex items-center justify-center"
         style={{
-          background: "linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3))"
+          background:
+            "linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3))",
         }}
       >
         <div className="transform md:translate-x-1/4  bg-white shadow-2xl max-h-[94vh] drop-shadow-2xl rounded-lg p-6 w-full max-w-lg overflow-y-auto">
@@ -44,7 +45,8 @@ export const Modal = ({ children, ...props }) => {
           >
             &times;
           </button>
-          {React.cloneElement(children, { onClose: props?.onClose })}
+          {/* {React.cloneElement(children, { onClose: props?.onClose })} */}
+          {children}
         </div>
       </div>
     )

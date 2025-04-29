@@ -25,6 +25,7 @@ async function getProducts(filters) {
   if (filters.maxPrice) params.append("maxPrice", filters.maxPrice);
   if (filters.labelId) params.append("labelId", filters.labelId);
   if (filters.brandId) params.append("brandId", filters.brandId);
+  if (filters.offerId) params.append("offerId", filters.offerId);
 
   if (filters.sort) {
     switch (filters.sort) {
@@ -47,6 +48,7 @@ async function getProducts(filters) {
     const response = await apiClient.get(url);
     return response.data;
   } catch (error) {
+    console.log(error);
     if (error.response?.status === 500) {
       throw new Error(
         "Server error while fetching products. Please try again later."

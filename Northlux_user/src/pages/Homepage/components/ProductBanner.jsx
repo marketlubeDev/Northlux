@@ -5,8 +5,10 @@ import "swiper/css/autoplay";
 import { FreeMode, Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function ProductBanner({ banners }) {
+  const navigate = useNavigate();
   return (
     <div className="product-banner-container">
       <Swiper
@@ -39,7 +41,19 @@ function ProductBanner({ banners }) {
       >
         {banners?.map((post, index) => (
           <SwiperSlide key={index}>
-            <div className="product-card">
+            <div
+              className="product-card"
+              onClick={() => {
+                navigate(`/products`, {
+                  state: {
+                    selectedOffer: {
+                      _id: post._id,
+                      name: post.offerName,
+                    },
+                  },
+                });
+              }}
+            >
               <div
                 className="product-card__image"
                 style={{
@@ -47,12 +61,12 @@ function ProductBanner({ banners }) {
                 }}
               >
                 <img
-                  src={post.image}
+                  src={post.bannerImage}
                   alt="offer_banner"
                   style={{
                     width: "100%",
                     height: "100%",
-                    objectFit: "fill",
+                    objectFit: "cover",
                   }}
                 />
               </div>

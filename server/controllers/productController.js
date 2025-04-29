@@ -216,6 +216,7 @@ const listProducts = catchAsync(async (req, res, next) => {
     store,
     brand,
     category,
+    offerId,
   } = req.query;
 
   page = parseInt(page) || 1;
@@ -226,6 +227,10 @@ const listProducts = catchAsync(async (req, res, next) => {
   const filter = {
     isDeleted: { $ne: true },
   };
+
+  if (offerId) {
+    filter.offer = new mongoose.Types.ObjectId(offerId);
+  }
 
   if (req.role === "store") {
     filter.store = new mongoose.Types.ObjectId(req.user);

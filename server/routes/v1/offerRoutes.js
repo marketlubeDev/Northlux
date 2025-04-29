@@ -11,10 +11,12 @@ const offerRouter = require("express").Router();
 
 offerRouter
   .route("/")
-  .post(autheticateToken(["admin"]), upload.any(), createOffer)
+  .post(autheticateToken(["admin", "store"]), upload.any(), createOffer)
   .get(getAllOffers);
 
-offerRouter.route("/:id").delete(autheticateToken(["admin"]), deleteOffer);
+offerRouter
+  .route("/:id")
+  .delete(autheticateToken(["admin", "store"]), deleteOffer);
 // Add patch route for updating offers if needed
 // .patch(autheticateToken(["admin"]), upload.any(), updateOffer);
 
