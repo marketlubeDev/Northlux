@@ -9,6 +9,7 @@ const ProductTable = ({
   setSelectedProducts,
   role,
   selectedProductsCount,
+  currentPage,
 }) => (
   <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
     <div className="pb-4 bg-white dark:bg-gray-900"></div>
@@ -16,6 +17,9 @@ const ProductTable = ({
       <ProductTableHeader
         onSelectAll={onSelectAll}
         selectedProductsCount={selectedProductsCount}
+        products={products}
+        currentPage={currentPage}
+        selectedProducts={selectedProducts}
       />
       <tbody>
         {products?.map((product) => (

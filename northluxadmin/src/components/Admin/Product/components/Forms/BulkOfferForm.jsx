@@ -9,6 +9,7 @@ export const BulkOfferForm = ({
   isProductSelected,
   selectedProducts,
   setPageRender,
+  clearSelectedProducts,
 }) => {
   const [formData, setFormData] = useState({
     offerType: isProductSelected ? "group" : "category",
@@ -72,6 +73,8 @@ export const BulkOfferForm = ({
       onClose();
       toast.success("Offer applied successfully");
       setPageRender((prev) => prev + 1);
+      clearSelectedProducts();
+
     } catch (error) {
       toast.error("Error applying offer");
     } finally {
