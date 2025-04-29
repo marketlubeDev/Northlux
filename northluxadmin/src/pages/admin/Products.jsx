@@ -299,6 +299,7 @@ function Products({ role }) {
             onClose={() => setShowBulkOfferModal(false)}
           >
             <BulkOfferForm
+              onClose={() => setShowBulkOfferModal(false)}
               isProductSelected={isProductSelected}
               selectedProducts={selectedProducts}
               setPageRender={setPageRender}
