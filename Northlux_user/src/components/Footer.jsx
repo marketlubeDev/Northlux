@@ -1,8 +1,17 @@
 import React from "react";
 import { FaTwitter, FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
 import Logo from "../assets/Logo.svg";
+import { useCategories } from "../hooks/queries/categories";
+import { useState } from "react";
+import { useEffect } from "react";
 
 function Footer() {
+  const [categories, setCategories] = useState([]);
+  const { data: categoriesData } = useCategories();
+  console.log(categoriesData, "categoriesData");
+  useEffect(() => {
+    setCategories(categoriesData?.envelop?.data);
+  }, [categoriesData]);
   return (
     <footer className="footer">
       {/* Newsletter Section */}

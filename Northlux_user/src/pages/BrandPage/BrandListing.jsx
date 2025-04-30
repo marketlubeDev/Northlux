@@ -46,6 +46,13 @@ export const BrandListing = () => {
   //   }
   // }, [searchQuery]);
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, []);
+
   const {
     data: brandsData,
     isLoading: brandsLoading,

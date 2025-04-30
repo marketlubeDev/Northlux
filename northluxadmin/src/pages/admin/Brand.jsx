@@ -179,6 +179,19 @@ function Brand() {
     setBannerImagePreview(null);
   };
 
+  // Add useEffect for handling body scroll
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [showModal]);
+
   const handleCloseModal = () => {
     setShowModal(false);
     resetForm();
@@ -364,7 +377,7 @@ function Brand() {
 
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md my-8">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">
                 {editingBrand ? "Edit Brand" : "Add New Brand"}

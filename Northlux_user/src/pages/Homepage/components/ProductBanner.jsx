@@ -16,7 +16,7 @@ function ProductBanner({ banners }) {
         centeredSlides={true}
         spaceBetween={0}
         loop={true}
-        loopedSlides={banners?.length}
+        loopedSlides={banners?.length > 3 ? 3 : banners?.length}
         pagination={{
           clickable: true,
         }}

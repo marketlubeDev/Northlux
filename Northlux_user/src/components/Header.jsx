@@ -39,6 +39,8 @@ export default function Header() {
   console.log(searchProducts, "searchProducts");
 
   const toggleSearch = () => {
+    setSearchQuery("");
+    setSearchResults([]);
     setIsSearchOpen(!isSearchOpen);
   };
 
@@ -255,7 +257,7 @@ export default function Header() {
               <FiX className="icon" />
             </button>
           </div>
-          {searchResults?.length > 0 && (
+          {searchQuery && searchResults?.length > 0 && (
             <div className="mobile-search-results">
               {searchResults?.map((product) => (
                 <div
