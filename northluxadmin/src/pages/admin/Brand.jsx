@@ -263,7 +263,11 @@ function Brand() {
             </div>
           </div>
 
-          <div className="overflow-y-auto flex-1">
+          <div
+            className={`${
+              showModal ? "overflow-hidden" : "overflow-y-auto"
+            } flex-1`}
+          >
             <table className="w-full text-sm text-left text-gray-500">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-10">
                 <tr>
@@ -359,7 +363,7 @@ function Brand() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">

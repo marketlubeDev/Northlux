@@ -4,8 +4,7 @@ import { TiCancel } from "react-icons/ti";
 import { MdOutlineSettingsBackupRestore } from "react-icons/md";
 import { BiTime } from "react-icons/bi";
 import { TbCreditCardRefund } from "react-icons/tb";
-// import { RiRefund2Line } from "react-icons/ri";
-
+import { GiConfirmed } from "react-icons/gi";
 function Ordercards({ data, count }) {
   const Icon = () => {
     switch (data) {
@@ -49,6 +48,12 @@ function Ordercards({ data, count }) {
         return (
           <div className="bg-[#EF4444] p-2 flex items-center">
             <TiCancel className="text-2xl text-white" />
+          </div>
+        );
+      case "Confirmed Orders":
+        return (
+          <div className="bg-[#3B82F6] p-2 flex items-center">
+            <GiConfirmed className="text-xl text-white" />
           </div>
         );
       default:

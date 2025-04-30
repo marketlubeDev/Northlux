@@ -364,6 +364,7 @@ function Orders({ role }) {
     ];
     const orderOptions = [
       "pending",
+      "confirmed",
       "processed",
       "shipped",
       "delivered",
@@ -438,6 +439,34 @@ function Orders({ role }) {
           <td className="px-3 py-3 lg:px-4">
             <div className="break-words w-[100px]">
               <span className="text-sm font-medium">{order?.orderId}</span>
+            </div>
+          </td>
+          <td className="px-3 py-3 lg:px-4 whitespace-nowrap">
+            <div className="flex items-center">
+              <img
+                src={order?.productDetails?.images[0]}
+                alt={order?.product?.name}
+                className="w-10 h-10 rounded-full"
+              />
+              <span
+                title={
+                  order?.productDetails?.hasVariant
+                    ? order?.productDetails?.name +
+                      " - " +
+                      order?.productDetails?.variantName
+                    : order?.productDetails?.name
+                }
+                className="text-sm font-medium cursor-pointer"
+              >
+                {order?.productDetails?.hasVariant
+                  ? (
+                      order?.productDetails?.name +
+                      " - " +
+                      order?.productDetails?.variantName
+                    ).slice(0, 20)
+                  : order?.productDetails?.name.slice(0, 20)}
+                {order?.productDetails?.hasVariant && "..."}
+              </span>
             </div>
           </td>
           <td className="px-3 py-3 lg:px-4 whitespace-nowrap">
@@ -601,6 +630,11 @@ function Orders({ role }) {
                     color="#FFA500"
                   />
                   <Ordercards
+                    data="Confirmed Orders"
+                    count={orderStats.statusCounts?.confirmed || 0}
+                    color="#3B82F6"
+                  />
+                  <Ordercards
                     data="Processing Orders"
                     count={orderStats.statusCounts?.processed || 0}
                     color="#3B82F6"
@@ -667,6 +701,9 @@ function Orders({ role }) {
                 <tr>
                   <th scope="col" className="px-3 py-3 lg:px-4">
                     <div className="w-[100px]">Order ID</div>
+                  </th>
+                  <th>
+                    <div className="flex items-center">Product</div>
                   </th>
                   <th scope="col" className="px-3 py-3 lg:px-4">
                     <div className="flex items-center">Date Placed</div>

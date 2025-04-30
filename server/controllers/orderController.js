@@ -198,6 +198,7 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
   const validStatuses = {
     order: [
       "pending",
+      "confirmed",
       "processed",
       "shipped",
       "delivered",
@@ -227,16 +228,58 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
 
   const updateField = type === "order" ? { status } : { paymentStatus: status };
 
+  // Find the order first to get product/variant details
+  const order = await orderModel.findById(orderId);
+  if (!order) {
+    return next(new AppError("Order not found.", 404));
+  }
+
+  // If order status is being updated to confirmed, reduce stock
+  if (type === "order" && status === "confirmed") {
+    // Check if order was previously confirmed to avoid double stock reduction
+    if (order.status === "confirmed") {
+      return next(new AppError("Order is already confirmed.", 400));
+    }
+
+    // Get the product and variant details
+    const product = await productModel.findById(order.product);
+    if (!product) {
+      return next(new AppError("Product not found.", 404));
+    }
+
+    // Check if there's enough stock
+    if (order.variant) {
+      // Handle variant stock
+      const variant = product.variants.find(
+        (v) => v._id.toString() === order.variant.toString()
+      );
+      if (!variant) {
+        return next(new AppError("Variant not found.", 404));
+      }
+      if (variant.stock < order.quantity) {
+        return next(new AppError("Insufficient stock for variant.", 400));
+      }
+      // Reduce variant stock
+      variant.stock -= order.quantity;
+      await product.save();
+    } else {
+      // Handle main product stock
+      if (product.stock < order.quantity) {
+        return next(new AppError("Insufficient stock for product.", 400));
+      }
+      // Reduce product stock
+      product.stock -= order.quantity;
+      await product.save();
+    }
+  }
+
+  // Update the order status
   const updatedOrder = await orderModel
     .findByIdAndUpdate(orderId, updateField, { new: true })
     .populate({
       path: "product",
       select: "name images price category",
     });
-
-  if (!updatedOrder) {
-    return next(new AppError("Order not found.", 404));
-  }
 
   return res.status(200).json({
     success: true,
