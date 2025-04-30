@@ -220,6 +220,8 @@ const listProducts = catchAsync(async (req, res, next) => {
     offerId,
   } = req.query;
 
+  console.log(req.query, "req.query");
+
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 10;
   const skip = (page - 1) * limit;
@@ -284,9 +286,56 @@ const listProducts = catchAsync(async (req, res, next) => {
       $addFields: {
         effectivePrice: {
           $cond: {
+            if: { $eq: [sort, "price-high"] },
+            then: {
+              $cond: {
+                if: { $gt: [{ $size: "$variantsData" }, 0] },
+                then: { $max: "$variantsData.offerPrice" },
+                else: "$offerPrice",
+              },
+            },
+            else: {
+              $cond: {
+                if: { $gt: [{ $size: "$variantsData" }, 0] },
+                then: { $min: "$variantsData.offerPrice" },
+                else: "$offerPrice",
+              },
+            },
+          },
+        },
+        sortedVariants: {
+          $cond: {
             if: { $gt: [{ $size: "$variantsData" }, 0] },
-            then: { $min: "$variantsData.offerPrice" },
-            else: "$offerPrice",
+            then: {
+              $cond: {
+                if: { $eq: [sort, "price-high"] },
+                then: {
+                  $sortArray: {
+                    input: "$variantsData",
+                    sortBy: { offerPrice: -1 },
+                  },
+                },
+                else: {
+                  $sortArray: {
+                    input: "$variantsData",
+                    sortBy: { offerPrice: 1 },
+                  },
+                },
+              },
+            },
+            else: [],
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        // Select the first variant after sorting
+        selectedVariant: {
+          $cond: {
+            if: { $gt: [{ $size: "$sortedVariants" }, 0] },
+            then: { $first: "$sortedVariants" },
+            else: null,
           },
         },
       },
@@ -342,15 +391,50 @@ const listProducts = catchAsync(async (req, res, next) => {
     { $unwind: { path: "$createdBy", preserveNullAndEmptyArrays: true } },
     {
       $sort:
-        sort === "price-low"
+        sort == "price-low"
           ? { effectivePrice: 1 }
-          : sort === "price-high"
+          : sort == "price-high"
           ? { effectivePrice: -1 }
-          : { createdAt: -1 },
+          : { priority: -1, updatedAt: -1 },
     },
-    { $sort: { priority: -1, updatedAt: -1 } },
     { $skip: skip },
     { $limit: limit },
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        brand: 1,
+        category: 1,
+        description: 1,
+        store: 1,
+        sku: 1,
+        price: 1,
+        offerPrice: 1,
+        stock: 1,
+        size: 1,
+        images: 1,
+        createdBy: 1,
+        label: 1,
+        averageRating: 1,
+        totalRatings: 1,
+        isDeleted: 1,
+        stockStatus: 1,
+        grossPrice: 1,
+        offer: 1,
+        priority: 1,
+        createdAt: 1,
+        updatedAt: 1,
+        effectivePrice: 1,
+        // Include only the selected variant instead of all variants
+        variantsData: {
+          $cond: {
+            if: { $gt: [{ $size: "$sortedVariants" }, 0] },
+            then: ["$selectedVariant"],
+            else: [],
+          },
+        },
+      },
+    },
   ];
 
   const countPipeline = [

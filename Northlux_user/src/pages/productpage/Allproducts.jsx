@@ -290,10 +290,12 @@ function AllProductsContent() {
   // Handle sort change
   const handleSortChange = (e) => {
     const sortValue = e.target.value;
+
     setSelectedFilters((prev) => ({
       ...prev,
       sort: sortValue,
     }));
+    console.log(sortValue, "sortValue");
   };
 
   // Modified renderActiveFilters to show all active filters

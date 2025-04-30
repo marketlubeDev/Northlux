@@ -30,16 +30,16 @@ async function getProducts(filters) {
   if (filters.sort) {
     switch (filters.sort) {
       case "newest":
-        params.append("sort", "-createdAt");
+        params.append("sort", "createdAt");
         break;
       case "price-low":
         params.append("sort", "price-low");
         break;
       case "price-high":
-        params.append("sort", "-price-high");
+        params.append("sort", "price-high");
         break;
       default:
-        params.append("sort", "-createdAt");
+        params.append("sort", "createdAt");
     }
   }
 

@@ -18,7 +18,7 @@ function AdminLayout() {
     { name: "Categories", path: "category" },
     { name: "Brands", path: "brand" },
     { name: "Labels", path: "label" },
-    { name: "Customers", path: "customer" },
+    // { name: "Customers", path: "customer" },
     { name: "Banners", path: "banner" },
     { name: "Offer Banners", path: "offer-banner" },
     { name: "Active Offers", path: "active-offer" },
