@@ -165,6 +165,13 @@ function AllProductsContent() {
     }
   }, [location.state]);
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [location.state]);
+
   if (isLoading || categoriesLoading || labelsLoading)
     return <LoadingSpinner />;
   if (error || categoriesError) {
@@ -404,7 +411,7 @@ function AllProductsContent() {
     return active;
   };
 
-  const SLIDER_MAX = 10000;
+  const SLIDER_MAX = 100000;
 
   // Update the getTrackStyle function
   const getTrackStyle = () => {
