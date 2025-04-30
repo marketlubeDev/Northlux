@@ -323,9 +323,9 @@ function OfferBanner() {
                 </button>
               </div>
               <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className="text-left">
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 text-left">
                       Banner Image
                     </label>
                     <div
@@ -367,7 +367,7 @@ function OfferBanner() {
                   </div>
 
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1 text-left">
                       Title
                     </label>
                     <input
@@ -387,7 +387,7 @@ function OfferBanner() {
                   </div>
 
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1 text-left">
                       Subtitle
                     </label>
                     <input
@@ -407,7 +407,7 @@ function OfferBanner() {
                   </div>
 
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1 text-left">
                       Description
                     </label>
                     <textarea
@@ -430,7 +430,7 @@ function OfferBanner() {
 
                   <div className="mb-4 flex gap-4">
                     <div className="flex-1">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-1 text-left">
                         Offer Value
                       </label>
                       <input
@@ -451,7 +451,7 @@ function OfferBanner() {
                       )}
                     </div>
                     <div className="flex-1">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-1 text-left">
                         Offer Type
                       </label>
                       <select
@@ -479,7 +479,7 @@ function OfferBanner() {
                   </div>
 
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1 text-left">
                       Link
                     </label>
                     <input
