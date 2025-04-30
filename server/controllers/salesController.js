@@ -102,6 +102,7 @@ const salesReport = catchAsync(async (req, res, next) => {
         // Find orders for this variant
         const variantOrders = await Order.find({
           variant: variant._id,
+          status: "delivered",
           ...(matchConditions.createdAt
             ? { createdAt: matchConditions.createdAt }
             : {}),
@@ -150,7 +151,7 @@ const salesReport = catchAsync(async (req, res, next) => {
       // For products without variants, use the product's direct properties
       const productOrders = await Order.find({
         product: product._id,
-        // variant: { $exists: false },
+        status: "delivered",
         ...(matchConditions.createdAt
           ? { createdAt: matchConditions.createdAt }
           : {}),

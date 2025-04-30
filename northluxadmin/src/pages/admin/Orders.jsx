@@ -294,18 +294,19 @@ function Orders({ role }) {
                             spaceAbove > spaceBelow
                           ) {
                             return {
-                              bottom:
-                                window.innerHeight -
-                                (buttonRect.top + window.scrollY) +
-                                8,
-                              left: buttonRect.left + window.scrollX,
+                              bottom: `${
+                                window.innerHeight - buttonRect.top
+                              }px`,
+                              left: `${buttonRect.left}px`,
+                              transform: "translateY(-8px)",
                             };
                           }
 
                           // Default position (below)
                           return {
-                            top: buttonRect.bottom + window.scrollY + 8,
-                            left: buttonRect.left + window.scrollX,
+                            top: `${buttonRect.bottom}px`,
+                            left: `${buttonRect.left}px`,
+                            transform: "translateY(8px)",
                           };
                         })(),
                       }}
