@@ -11,7 +11,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { logout } from "../redux/features/user/userSlice";
 import { useDispatch } from "react-redux";
-import { useProducts } from "../hooks/queries/products";
+import { useProducts, useSearchProducts } from "../hooks/queries/products";
 import { NavBar } from "./NavBar";
 
 export default function Header() {
@@ -29,21 +29,14 @@ export default function Header() {
   const [isBrandsListOpen, setIsBrandsListOpen] = useState(false);
 
   const { data: products } = useProducts();
+  const { data: searchProducts, isLoading: searchProductsLoading } =
+    useSearchProducts(searchQuery);
 
   useEffect(() => {
-    if (searchQuery) {
-      const filteredProducts = products?.data?.products.filter(
-        (product) =>
-          product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          product.category.name
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase())
-      );
-      setSearchResults(filteredProducts);
-    } else {
-      setSearchResults([]);
-    }
-  }, [searchQuery, products]);
+    setSearchResults(searchProducts?.data?.products);
+  }, [searchProducts]);
+
+  console.log(searchProducts, "searchProducts");
 
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
@@ -155,7 +148,7 @@ export default function Header() {
               <FiSearch className="search-icon" />
             </button>
           </div>
-          {searchResults?.length > 0 && (
+          {searchQuery && searchResults?.length > 0 && (
             <div className="search-results">
               {searchResults?.map((product) => (
                 <div

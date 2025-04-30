@@ -64,3 +64,10 @@ export const useProductById = (id) => {
     queryFn: () => productService.getProductById(id),
   });
 };
+
+export const useSearchProducts = (keyword) => {
+  return useQuery({
+    queryKey: ["searchProducts", keyword],
+    queryFn: () => productService.searchProducts(keyword),
+  });
+};

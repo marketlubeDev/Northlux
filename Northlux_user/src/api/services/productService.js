@@ -9,4 +9,8 @@ export const productService = {
     const response = await apiClient.get(`/product/get-product/${id}`);
     return response.data;
   },
+  searchProducts: async (keyword) => {
+    const response = await apiClient.get(`/product/search?keyword=${keyword}`);
+    return response.data;
+  },
 };

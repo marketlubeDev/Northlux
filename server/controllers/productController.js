@@ -660,7 +660,7 @@ const searchProducts = catchAsync(async (req, res, next) => {
   let { keyword, page, limit } = req.query;
 
   page = parseInt(page) || 1;
-  limit = parseInt(limit) || 3;
+  limit = parseInt(limit) || 100;
   const skip = (page - 1) * limit;
 
   const filter = {

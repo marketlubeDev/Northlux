@@ -38,7 +38,7 @@ function ProductDetailsContent() {
   useEffect(() => {
     setSelectedVariant(null);
     setSelectedImage(null);
-
+    setQuantity(1);
     if (product?.variants?.length > 0) {
       setSelectedVariant(product.variants[0]);
       setSelectedImage(product.variants[0].images[0]);
@@ -76,6 +76,7 @@ function ProductDetailsContent() {
 
       placeOrder(productToAdd, {
         onSuccess: (data) => {
+          setQuantity(1);
           const orderDetails = data?.data?.order;
           const message =
             `*ORDER DETAILS*%0a%0a` +
