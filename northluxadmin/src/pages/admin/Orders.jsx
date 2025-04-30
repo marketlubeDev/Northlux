@@ -170,7 +170,8 @@ function Orders({ role }) {
     const buttonRef = useRef(null);
 
     // Check if status changes should be disabled
-    const isStatusChangeDisabled = currentStatus === "delivered";
+    // const isStatusChangeDisabled = currentStatus === "delivered";
+    const isStatusChangeDisabled = false;
 
     const handleStatusClick = (status) => {
       if (isStatusChangeDisabled) return;
@@ -407,9 +408,9 @@ function Orders({ role }) {
     };
 
     const getAvailableOrderOptions = () => {
-      if (orderStatus === "delivered") {
-        return ["delivered"]; // Only show current status if delivered
-      }
+      // if (orderStatus === "delivered") {
+      //   return ["delivered"]; // Only show current status if delivered
+      // }
       return orderOptions;
     };
 

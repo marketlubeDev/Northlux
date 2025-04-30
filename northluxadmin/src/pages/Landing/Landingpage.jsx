@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import admin from "../../assets/admin.png";
 import store from "../../assets/store.png";
 import Logo from "../../components/Logo";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setStores,
   setBrands,
@@ -15,6 +15,7 @@ import { getAllCategories } from "../../sevices/categoryApis";
 import { toast } from "react-toastify";
 
 const Landingpage = () => {
+  const loggedInUser = useSelector((state) => state.store.store);
   const [selectedRole, setSelectedRole] = useState(null);
   const navigate = useNavigate();
 
@@ -32,13 +33,17 @@ const Landingpage = () => {
         dispatch(setBrands(brandsRes.data.brands));
         dispatch(setCategories(categoriesRes.envelop.data));
       } catch (error) {
-        console.error("Error fetching data:", error);
         toast.error("Failed to fetch initial data");
       }
     };
 
     fetchAllData();
   }, [dispatch]);
+
+  // Separate useEffect to track store changes
+  useEffect(() => {
+    console.log(loggedInUser, "loggedInUser in landing page");
+  }, [loggedInUser]);
 
   const roles = [
     {
