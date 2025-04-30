@@ -581,211 +581,218 @@ function Orders({ role }) {
     <div>
       <PageHeader content={"Orders"} />
 
-      {isLoading ? (
-        <LoadingSpinner color="primary" text="Loading orders..." fullScreen />
-      ) : (
-        <>
-          <div className="flex gap-[3rem]">
-            <div className="w-1/3 space-y-2">
-              <p className="font-medium text-sm">Sales Period</p>
-              <div className="w-full">
-                <DateRangePicker
-                  dateRange={dateRange}
-                  setDateRange={setDateRange}
-                />
-              </div>
-              <div className="w-full flex flex-col gap-2">
-                <select
-                  value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                >
-                  <option value="">Filter by Status</option>
-                  {orderStatuses.map((status) => (
-                    <option key={status} value={status}>
-                      {status}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  value={selectedStore}
-                  onChange={(e) => setSelectedStore(e.target.value)}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  disabled={role === "store"}
-                >
-                  <option value="">Filter by Store</option>
-                  {stores?.map((store) => (
-                    <option key={store._id} value={store._id}>
-                      {store.store_name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+      <>
+        <div className="flex gap-[3rem]">
+          <div className="w-1/3 space-y-2">
+            <p className="font-medium text-sm">Sales Period</p>
+            <div className="w-full">
+              <DateRangePicker
+                dateRange={dateRange}
+                setDateRange={setDateRange}
+              />
             </div>
-
-            <div className="flex gap-2 items-center flex-wrap">
-              {orderStats && (
-                <>
-                  <Ordercards
-                    data="Pending Orders"
-                    count={orderStats.statusCounts?.pending || 0}
-                    color="#FFA500"
-                  />
-                  <Ordercards
-                    data="Confirmed Orders"
-                    count={orderStats.statusCounts?.confirmed || 0}
-                    color="#3B82F6"
-                  />
-                  <Ordercards
-                    data="Processing Orders"
-                    count={orderStats.statusCounts?.processed || 0}
-                    color="#3B82F6"
-                  />
-                  <Ordercards
-                    data="Shipped Orders"
-                    count={orderStats.statusCounts?.shipped || 0}
-                    color="#8B5CF6"
-                  />
-                  <Ordercards
-                    data="Delivered Orders"
-                    count={orderStats.statusCounts?.delivered || 0}
-                    color="#10B981"
-                  />
-                  <Ordercards
-                    data="On Refund Orders"
-                    count={orderStats.statusCounts?.onrefund || 0}
-                    color="#F59E0B"
-                  />
-                  <Ordercards
-                    data="Refunded Orders"
-                    count={orderStats.statusCounts?.refunded || 0}
-                    color="#6B7280"
-                  />
-                  <Ordercards
-                    data="Cancelled Orders"
-                    count={orderStats.statusCounts?.cancelled || 0}
-                    color="#EF4444"
-                  />
-                </>
-              )}
-            </div>
-          </div>
-          <div className="flex justify-end mt-4 mb-2 mr-4">
-            {(selectedCategory ||
-              selectedStatus ||
-              (dateRange[0] && dateRange[1])) && (
-              <button
-                onClick={() => {
-                  setSelectedCategory("");
-                  setSelectedStatus("");
-                  setDateRange([null, null]);
-                }}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            <div className="w-full flex flex-col gap-2">
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               >
-                <TfiReload className="w-4 h-4" />
-                <span>Reset Filters</span>
-                <span className="ml-1 text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">
-                  {[
-                    selectedCategory && "Category",
-                    selectedStatus && "Status",
-                    dateRange[0] && dateRange[1] && "Date",
-                  ]
-                    .filter(Boolean)
-                    .join(", ")}
-                </span>
-              </button>
-            )}
+                <option value="">Filter by Status</option>
+                {orderStatuses.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={selectedStore}
+                onChange={(e) => setSelectedStore(e.target.value)}
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                disabled={role === "store"}
+              >
+                <option value="">Filter by Store</option>
+                {stores?.map((store) => (
+                  <option key={store._id} value={store._id}>
+                    {store.store_name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-5">
-            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                  <th scope="col" className="px-3 py-3 lg:px-4">
-                    <div className="w-[100px]">Order ID</div>
-                  </th>
-                  <th>
-                    <div className="flex items-center">Product</div>
-                  </th>
-                  <th scope="col" className="px-3 py-3 lg:px-4">
-                    <div className="flex items-center">Date Placed</div>
-                  </th>
-                  <th scope="col" className="px-3 py-3 lg:px-4" title="mobile">
-                    <div className="flex items-center">Phone Number</div>
-                  </th>
-                  <th scope="col" className="px-3 py-3 lg:px-4" title="address">
-                    <div className="flex items-center w-[120px]">Address</div>
-                  </th>
-                  <th scope="col" className="px-3 py-3 lg:px-4">
-                    <div className="flex items-center w-[100px]">Store</div>
-                  </th>
-                  <th scope="col" className="px-3 py-3 lg:px-4">
-                    <div className="flex items-center">Quantity</div>
-                  </th>
-                  <th scope="col" className="px-3 py-3 lg:px-4">
-                    <div className="flex items-center">Total Amount</div>
-                  </th>
-                  <th scope="col" className="px-3 py-3 lg:px-4">
-                    <div className="flex items-center">Payment Status</div>
-                  </th>
-                  <th scope="col" className="px-3 py-3 lg:px-4">
-                    <div className="flex items-center">Order Status</div>
-                  </th>
-                  <th scope="col" className=""></th>
-                </tr>
-              </thead>
-              {orders && orders.length > 0 ? (
-                <tbody>
-                  {orders.map((order) => (
-                    <TableRow key={order._id} order={order} />
-                  ))}
-                </tbody>
-              ) : (
-                <tbody>
-                  <tr>
-                    <td
-                      colSpan="9"
-                      className="px-6 py-12 text-center text-gray-500 bg-gray-50"
-                    >
-                      <div className="flex flex-col items-center justify-center">
-                        <svg
-                          className="w-12 h-12 mb-4 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                          />
-                        </svg>
-                        <p className="text-lg font-medium">No orders found</p>
-                        {dateRange[0] && dateRange[1] && (
-                          <p className="mt-1 text-sm text-gray-400">
-                            Try selecting a different date range
-                          </p>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              )}
-            </table>
-
-            {orders && orders.length > 0 && (
-              <div className="py-4 px-3 flex justify-end border-t border-gray-200">
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={handlePageChange}
+          <div className="flex gap-2 items-center flex-wrap">
+            {orderStats && (
+              <>
+                <Ordercards
+                  data="Pending Orders"
+                  count={orderStats.statusCounts?.pending || 0}
+                  color="#FFA500"
                 />
-              </div>
+                <Ordercards
+                  data="Confirmed Orders"
+                  count={orderStats.statusCounts?.confirmed || 0}
+                  color="#3B82F6"
+                />
+                <Ordercards
+                  data="Processing Orders"
+                  count={orderStats.statusCounts?.processed || 0}
+                  color="#3B82F6"
+                />
+                <Ordercards
+                  data="Shipped Orders"
+                  count={orderStats.statusCounts?.shipped || 0}
+                  color="#8B5CF6"
+                />
+                <Ordercards
+                  data="Delivered Orders"
+                  count={orderStats.statusCounts?.delivered || 0}
+                  color="#10B981"
+                />
+                <Ordercards
+                  data="On Refund Orders"
+                  count={orderStats.statusCounts?.onrefund || 0}
+                  color="#F59E0B"
+                />
+                <Ordercards
+                  data="Refunded Orders"
+                  count={orderStats.statusCounts?.refunded || 0}
+                  color="#6B7280"
+                />
+                <Ordercards
+                  data="Cancelled Orders"
+                  count={orderStats.statusCounts?.cancelled || 0}
+                  color="#EF4444"
+                />
+              </>
             )}
           </div>
-        </>
-      )}
+        </div>
+        <div className="flex justify-end mt-4 mb-2 mr-4">
+          {(selectedCategory ||
+            selectedStatus ||
+            (dateRange[0] && dateRange[1])) && (
+            <button
+              onClick={() => {
+                setSelectedCategory("");
+                setSelectedStatus("");
+                setDateRange([null, null]);
+              }}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            >
+              <TfiReload className="w-4 h-4" />
+              <span>Reset Filters</span>
+              <span className="ml-1 text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">
+                {[
+                  selectedCategory && "Category",
+                  selectedStatus && "Status",
+                  dateRange[0] && dateRange[1] && "Date",
+                ]
+                  .filter(Boolean)
+                  .join(", ")}
+              </span>
+            </button>
+          )}
+        </div>
+
+        <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-5">
+          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                <th scope="col" className="px-3 py-3 lg:px-4">
+                  <div className="w-[100px]">Order ID</div>
+                </th>
+                <th>
+                  <div className="flex items-center">Product</div>
+                </th>
+                <th scope="col" className="px-3 py-3 lg:px-4">
+                  <div className="flex items-center">Date Placed</div>
+                </th>
+                <th scope="col" className="px-3 py-3 lg:px-4" title="mobile">
+                  <div className="flex items-center">Phone Number</div>
+                </th>
+                <th scope="col" className="px-3 py-3 lg:px-4" title="address">
+                  <div className="flex items-center w-[120px]">Address</div>
+                </th>
+                <th scope="col" className="px-3 py-3 lg:px-4">
+                  <div className="flex items-center w-[100px]">Store</div>
+                </th>
+                <th scope="col" className="px-3 py-3 lg:px-4">
+                  <div className="flex items-center">Quantity</div>
+                </th>
+                <th scope="col" className="px-3 py-3 lg:px-4">
+                  <div className="flex items-center">Total Amount</div>
+                </th>
+                <th scope="col" className="px-3 py-3 lg:px-4">
+                  <div className="flex items-center">Payment Status</div>
+                </th>
+                <th scope="col" className="px-3 py-3 lg:px-4">
+                  <div className="flex items-center">Order Status</div>
+                </th>
+                <th scope="col" className=""></th>
+              </tr>
+            </thead>
+            {isLoading ? (
+              <tbody>
+                <tr>
+                  <td
+                    colSpan="9"
+                    className="px-6 py-12 text-center text-gray-500 bg-gray-50"
+                  >
+                    <LoadingSpinner color="primary" text="Loading orders..." />
+                  </td>
+                </tr>
+              </tbody>
+            ) : orders && orders.length > 0 ? (
+              <tbody>
+                {orders.map((order) => (
+                  <TableRow key={order._id} order={order} />
+                ))}
+              </tbody>
+            ) : (
+              <tbody>
+                <tr>
+                  <td
+                    colSpan="9"
+                    className="px-6 py-12 text-center text-gray-500 bg-gray-50"
+                  >
+                    <div className="flex flex-col items-center justify-center">
+                      <svg
+                        className="w-12 h-12 mb-4 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                        />
+                      </svg>
+                      <p className="text-lg font-medium">No orders found</p>
+                      {dateRange[0] && dateRange[1] && (
+                        <p className="mt-1 text-sm text-gray-400">
+                          Try selecting a different date range
+                        </p>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            )}
+          </table>
+
+          {orders && orders.length > 0 && (
+            <div className="py-4 px-3 flex justify-end border-t border-gray-200">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          )}
+        </div>
+      </>
     </div>
   );
 }
