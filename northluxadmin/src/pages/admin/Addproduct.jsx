@@ -97,6 +97,7 @@ function Addproduct({ role }) {
           description: !hasVariants ? res?.data?.description : "",
           grossPrice: !hasVariants ? res?.data?.grossPrice : "",
           priority: res?.data?.priority || 0,
+          activeStatus: res?.data?.activeStatus || false,
           // units: res.data.units,
           price: !hasVariants ? res.data.price : "",
           offerPrice: !hasVariants ? res.data.offerPrice : "",
@@ -417,6 +418,7 @@ function Addproduct({ role }) {
     formData.append("label", productData.label);
     formData.append("store", productData.store);
     formData.append("priority", productData.priority);
+    formData.append("activeStatus", productData.activeStatus);
     // formData.append("units", productData.units);
 
     if (selectedVariant === "hasVariants") {
@@ -575,6 +577,15 @@ function Addproduct({ role }) {
     }));
   };
 
+  const handleActiveStatusChange = (activeStatus) => {
+    console.log(activeStatus, "activeStatus");
+    setProductData((prev) => ({
+      ...prev,
+      activeStatus: activeStatus,
+    }));
+    console.log(productData, "productData");
+  };
+
   return (
     <div className="space-y-3 w-full bg-white p-3 flex flex-col min-h-full">
       <PageHeader content={"Products"} />
@@ -602,6 +613,8 @@ function Addproduct({ role }) {
                 errors={errors}
                 priority={productData.priority}
                 onPriorityChange={handlePriorityChange}
+                activeStatus={productData.activeStatus}
+                onActiveStatusChange={handleActiveStatusChange}
               />
 
               <div className="flex gap-2">

@@ -47,7 +47,8 @@ const ProductTableRow = ({
       </td>
       <th
         scope="row"
-        className="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white flex items-center gap-2"
+        className="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white flex items-center gap-2 cursor-pointer"
+        title={product?.name}
       >
         <span
           className={`w-2 h-2 block rounded-full ${

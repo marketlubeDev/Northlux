@@ -13,6 +13,7 @@ const productSchema = new Schema(
       ref: "Store",
       required: true,
     },
+    activeStatus: { type: Boolean, default: true },
     // References to Variant documents
     // Fields for non-variant products
     sku: { type: String, unique: true, sparse: true },

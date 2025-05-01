@@ -29,6 +29,7 @@ const addProduct = catchAsync(async (req, res, next) => {
     store,
     grossPrice,
     priority,
+    activeStatus,
   } = req.body;
 
   if (stockStatus === "outofstock" && stock > 0) {
@@ -137,6 +138,7 @@ const addProduct = catchAsync(async (req, res, next) => {
     store,
     grossPrice,
     priority,
+    activeStatus,
   };
 
   if (variantsArray && variantsArray.length > 0) {
@@ -220,16 +222,20 @@ const listProducts = catchAsync(async (req, res, next) => {
     offerId,
   } = req.query;
 
-  console.log(req.query, "req.query");
-
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 10;
   const skip = (page - 1) * limit;
+
+  const Role = req.role;
 
   // Build base filter object
   const filter = {
     isDeleted: { $ne: true },
   };
+
+  if (!Role) {
+    filter.activeStatus = true;
+  }
 
   if (offerId) {
     filter.offer = new mongoose.Types.ObjectId(offerId);
@@ -747,11 +753,17 @@ const searchProducts = catchAsync(async (req, res, next) => {
   limit = parseInt(limit) || 100;
   const skip = (page - 1) * limit;
 
+  const Role = req.role;
+
   const filter = {
     isDeleted: { $ne: true },
   };
 
-  if (req.role === "store") {
+  if (!Role) {
+    filter.activeStatus = true;
+  }
+
+  if (Role === "store") {
     filter.store = new mongoose.Types.ObjectId(req.user);
   }
 

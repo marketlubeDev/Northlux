@@ -12,6 +12,7 @@ export const initialProductState = {
   store: "",
   variants: [],
   priority: 0,
+  activeStatus: true,
 };
 
 export const initialVariantState = {
