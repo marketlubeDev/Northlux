@@ -17,8 +17,9 @@ export const validateVariant = (variant) => {
   if (isNaN(variant.stock)) errors.stock = "Stock must be a number";
 
   // Price logic
-  if (Number(variant.offerPrice) >= Number(variant.price)) {
-    errors.offerPrice = "Offer price must be less than regular price";
+  if (Number(variant.offerPrice) > Number(variant.price)) {
+    errors.offerPrice =
+      "Offer price must be less than or equal to regular price";
   }
 
   // Image validation
