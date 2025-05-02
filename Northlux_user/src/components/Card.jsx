@@ -16,6 +16,7 @@ function Card({ product }) {
     width,
     height,
     _id,
+    stockStatus,
   } = product;
 
   const navigate = useNavigate();
@@ -23,7 +24,16 @@ function Card({ product }) {
     <div className="product-card" onClick={() => navigate(`/products/${_id}`)}>
       <div className="product-card_image">
         {discount && <span className="discount-tag">{discount}</span>}
-        <img src={mainImage} alt={name} />
+        {/* if stockStatus is outofstock then fade the image*/}
+        {stockStatus === "outofstock" ? (
+          <img
+            src={mainImage}
+            alt={name}
+            className="product-card_image_outofstock"
+          />
+        ) : (
+          <img src={mainImage} alt={name} />
+        )}
         <div className="wishlist-btn-wrapper">
           {/* <button className="wishlist-btn">
             <FiHeart />
@@ -40,6 +50,9 @@ function Card({ product }) {
         <div className="price">
           <span className="current-price">₹{offerPrice}</span>
           <span className="original-price">₹{price}</span>
+          {stockStatus === "outofstock" && (
+            <span className="out-of-stock">Currently unavailable</span>
+          )}
         </div>
         {/* <div className="rating">
           {"★".repeat(Math.floor(averageRating))}

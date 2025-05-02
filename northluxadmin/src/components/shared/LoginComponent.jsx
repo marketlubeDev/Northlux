@@ -50,6 +50,12 @@ function LoginComponent({ role }) {
     }
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !isLoading) {
+      onlogin();
+    }
+  };
+
   return (
     <div className="h-screen flex items-center w-full">
       <div className="w-1/2 bg-[#FFF2AE] h-full hidden md:flex  items-center justify-center">
@@ -61,7 +67,7 @@ function LoginComponent({ role }) {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Welcome Back!
             </h1>
-            <form className="space-y-4 md:space-y-6" action="#">
+            <form className="space-y-4 md:space-y-6" onKeyDown={handleKeyPress}>
               <div>
                 <label
                   htmlFor="email"

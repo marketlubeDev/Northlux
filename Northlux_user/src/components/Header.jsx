@@ -36,7 +36,7 @@ export default function Header() {
     setSearchResults(searchProducts?.data?.products);
   }, [searchProducts]);
 
-  console.log(searchProducts, "searchProducts");
+
 
   const toggleSearch = () => {
     setSearchQuery("");

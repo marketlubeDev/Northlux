@@ -10,7 +10,6 @@ function Footer() {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const { data: categoriesData } = useCategories();
-  console.log(categoriesData, "categoriesData");
   useEffect(() => {
     setCategories(categoriesData?.envelop?.data);
   }, [categoriesData]);

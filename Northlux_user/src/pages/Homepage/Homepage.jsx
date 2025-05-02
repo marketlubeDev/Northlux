@@ -16,7 +16,6 @@ function Homepage() {
     isLoading: activeOffersLoading,
     error: activeOffersError,
   } = useActiveOffers();
-  console.log(activeOffers, "================activeOffers");
   return (
     <div>
       <Carousel

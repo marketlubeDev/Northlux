@@ -262,6 +262,9 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
         }
         // Reduce variant stock
         variant.stock -= order.quantity;
+        if (variant.stock === 0) {
+          variant.stockStatus = "outofstock";
+        }
       } else {
         // Handle main product stock
         if (product.stock < order.quantity) {
@@ -269,6 +272,9 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
         }
         // Reduce product stock
         product.stock -= order.quantity;
+        if (product.stock === 0) {
+          product.stockStatus = "outofstock";
+        }
       }
     } else if (["cancelled", "refunded"].includes(status)) {
       // Only increase stock if the order was previously confirmed

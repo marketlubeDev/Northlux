@@ -17,7 +17,7 @@ export const NavBar = () => {
   const navBarRef = useRef(null);
   const [openCategoryId, setOpenCategoryId] = useState(null);
 
-  console.log(openCategoryId, "openCategoryId");
+
 
   const {
     data: categoriesData,
@@ -86,7 +86,7 @@ export const NavBar = () => {
     }
   };
 
-  console.log(dropdownOpen, "dropdownOpen");
+
 
   const handleDropdownLeave = () => {
     if (window.innerWidth >= 768) {

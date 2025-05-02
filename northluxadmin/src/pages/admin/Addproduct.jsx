@@ -286,15 +286,15 @@ function Addproduct({ role }) {
       images: [...images],
     };
 
-    if (
-      variantData.stockStatus === "outofstock" &&
-      parseInt(variantData.stock) > 0
-    ) {
-      toast.error(
-        "Variant stock status cannot be out of stock when stock quantity is greater than 0"
-      );
-      return;
-    }
+    // if (
+    //   variantData.stockStatus === "outofstock" &&
+    //   parseInt(variantData.stock) > 0
+    // ) {
+    //   toast.error(
+    //     "Variant stock status cannot be out of stock when stock quantity is greater than 0"
+    //   );
+    //   return;
+    // }
 
     // Validate variant before saving
     const validationErrors = validateVariant(variantData);

@@ -35,6 +35,7 @@ function ProductDetailsContent() {
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [outOfStock, setOutOfStock] = useState(false);
   useEffect(() => {
     setSelectedVariant(null);
     setSelectedImage(null);
@@ -51,6 +52,17 @@ function ProductDetailsContent() {
       behavior: "smooth",
     });
   }, [product, id]);
+
+  useEffect(() => {
+    if (
+      selectedVariant?.stockStatus == "outofstock" ||
+      product?.stockStatus == "outofstock"
+    ) {
+      setOutOfStock(true);
+    } else {
+      setOutOfStock(false);
+    }
+  }, [selectedVariant, product]);
 
   if (isLoading) return <LoadingSpinner />;
   if (error) return <div>Error: {error.message}</div>;
@@ -265,58 +277,69 @@ function ProductDetailsContent() {
               </span>
             </div>
             <div className="buy-buttons">
-              <button
-                className="buy-now"
-                onClick={() => handleConnectToWhatsapp()}
-                disabled={isPlacingOrder}
-              >
-                {isPlacingOrder ? (
-                  <ButtonLoadingSpinner />
-                ) : (
-                  <div className="buy-now-button">
-                    <FaWhatsapp
-                      style={{ color: "white", fontSize: "1.5rem" }}
-                    />
-                    Buy Now
-                  </div>
-                )}
-              </button>
-              <div className="quantity-container">
-                <span>Qty:</span>
-                <input
-                  type="text"
-                  className="quantity-input"
-                  value={quantity.toString()}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === "") {
-                      setQuantity("");
-                    } else {
-                      const parsed = parseInt(value);
-                      if (!isNaN(parsed) && parsed >= 0) {
-                        setQuantity(parsed);
+              {
+                <button
+                  className="buy-now"
+                  onClick={() => handleConnectToWhatsapp()}
+                  disabled={isPlacingOrder || outOfStock}
+                  style={{ opacity: outOfStock ? 0.5 : 1 }}
+                >
+                  {isPlacingOrder ? (
+                    <ButtonLoadingSpinner />
+                  ) : (
+                    // if outof stock then disable the button and fade the button style
+                    <div className="buy-now-button">
+                      <FaWhatsapp
+                        style={{ color: "white", fontSize: "1.5rem" }}
+                      />
+                      Buy Now
+                    </div>
+                  )}
+                </button>
+              }
+              {!outOfStock && (
+                <div className="quantity-container">
+                  <span>Qty:</span>
+                  <input
+                    type="text"
+                    className="quantity-input"
+                    value={quantity.toString()}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === "") {
+                        setQuantity("");
+                      } else {
+                        const parsed = parseInt(value);
+                        if (!isNaN(parsed) && parsed >= 0) {
+                          setQuantity(parsed);
+                        }
                       }
-                    }
-                  }}
-                  onBlur={() => {
-                    if (quantity === "" || quantity < 1) {
-                      setQuantity(1);
-                    }
-                  }}
-                />
-                <div className="quantity-buttons">
-                  <IoIosArrowUp
-                    size={30}
-                    onClick={() => setQuantity((prev) => prev + 1)}
+                    }}
+                    onBlur={() => {
+                      if (quantity === "" || quantity < 1) {
+                        setQuantity(1);
+                      }
+                    }}
                   />
-                  <IoIosArrowDown
-                    size={30}
-                    onClick={() =>
-                      quantity > 1 && setQuantity((prev) => prev - 1)
-                    }
-                  />
+                  <div className="quantity-buttons">
+                    <IoIosArrowUp
+                      size={30}
+                      onClick={() => setQuantity((prev) => prev + 1)}
+                    />
+                    <IoIosArrowDown
+                      size={30}
+                      onClick={() =>
+                        quantity > 1 && setQuantity((prev) => prev - 1)
+                      }
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
+              {outOfStock && (
+                <span className="product-out-of-stock">
+                  Currently Unavailable
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -354,40 +377,44 @@ function ProductDetailsContent() {
           className="buy-buttons"
           style={{ display: "flex", alignItems: "center", gap: "1rem" }}
         >
-          <div className="quantity-container" style={{ flex: 1 }}>
-            <span>Qty:</span>
-            <input
-              type="text"
-              className="quantity-input"
-              value={quantity.toString()}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value === "") {
-                  setQuantity("");
-                } else {
-                  const parsed = parseInt(value);
-                  if (!isNaN(parsed) && parsed >= 0) {
-                    setQuantity(parsed);
+          {
+            <div className="quantity-container" style={{ flex: 1 }}>
+              <span>Qty:</span>
+              <input
+                type="text"
+                className="quantity-input"
+                value={quantity.toString()}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === "") {
+                    setQuantity("");
+                  } else {
+                    const parsed = parseInt(value);
+                    if (!isNaN(parsed) && parsed >= 0) {
+                      setQuantity(parsed);
+                    }
                   }
-                }
-              }}
-              onBlur={() => {
-                if (quantity === "" || quantity < 1) {
-                  setQuantity(1);
-                }
-              }}
-            />
-            <div className="quantity-buttons">
-              <IoIosArrowUp
-                size={30}
-                onClick={() => setQuantity((prev) => prev + 1)}
+                }}
+                onBlur={() => {
+                  if (quantity === "" || quantity < 1) {
+                    setQuantity(1);
+                  }
+                }}
               />
-              <IoIosArrowDown
-                size={30}
-                onClick={() => quantity > 1 && setQuantity((prev) => prev - 1)}
-              />
+              <div className="quantity-buttons">
+                <IoIosArrowUp
+                  size={30}
+                  onClick={() => setQuantity((prev) => prev + 1)}
+                />
+                <IoIosArrowDown
+                  size={30}
+                  onClick={() =>
+                    quantity > 1 && setQuantity((prev) => prev - 1)
+                  }
+                />
+              </div>
             </div>
-          </div>
+          }
           <button className="buy-now" onClick={() => handleConnectToWhatsapp()}>
             <div className="buy-now-button">
               <FaWhatsapp style={{ color: "white", fontSize: "1.5rem" }} />

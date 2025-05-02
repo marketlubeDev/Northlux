@@ -588,18 +588,18 @@ const updateProduct = catchAsync(async (req, res, next) => {
   }
 
   // Add stock validation for variants
-  if (updateData.variants) {
-    for (const variant of updateData.variants) {
-      if (variant.stockStatus === "outofstock" && variant.stock > 0) {
-        return next(
-          new AppError(
-            "Variant stock status cannot be out of stock when stock quantity is greater than 0",
-            400
-          )
-        );
-      }
-    }
-  }
+  // if (updateData.variants) {
+  //   for (const variant of updateData.variants) {
+  //     if (variant.stockStatus === "outofstock" && variant.stock > 0) {
+  //       return next(
+  //         new AppError(
+  //           "Variant stock status cannot be out of stock when stock quantity is greater than 0",
+  //           400
+  //         )
+  //       );
+  //     }
+  //   }
+  // }
 
   const product = await Product.findById(productId).populate("variants");
 

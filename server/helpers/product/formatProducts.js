@@ -61,6 +61,15 @@ const formatProductResponse = (product) => {
     totalRatings: product.totalRatings,
     createdAt: product.createdAt,
     updatedAt: product.updatedAt,
+
+    stockStatus: hasVariants
+      ? //check all variants stock status if all are out of stock then return out of stock else return in stock also  check more than one variant is there becuase if there is only one variant then return that variant stock status.
+        variants.length > 1
+        ? variants.every((variant) => variant.stockStatus === "outofstock")
+          ? "outofstock"
+          : "instock"
+        : variants[0].stockStatus
+      : product.stockStatus,
   };
 };
 

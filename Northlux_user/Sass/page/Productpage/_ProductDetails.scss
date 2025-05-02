@@ -412,6 +412,7 @@
         display: flex;
         gap: 1rem;
         width: fit-content;
+        align-items: center;
 
         button {
           width: 140px;
@@ -430,12 +431,22 @@
           background: var.$color-primary;
           color: white;
           border: none;
+          // if this button is disabled then avoid cursor pointer
+          &:disabled {
+            cursor: not-allowed;
+          }
         }
 
         .add-cart {
           background: white;
           border: 1px solid var.$color-primary;
           color: var.$color-primary;
+        }
+
+        .product-out-of-stock {
+          color: #f00;
+          font-size: 0.875rem;
+          font-weight: 500;
         }
 
         @media (max-width: 768px) {

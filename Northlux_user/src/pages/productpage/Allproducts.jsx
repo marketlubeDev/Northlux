@@ -302,7 +302,6 @@ function AllProductsContent() {
       ...prev,
       sort: sortValue,
     }));
-    console.log(sortValue, "sortValue");
   };
 
   // Modified renderActiveFilters to show all active filters
