@@ -271,6 +271,7 @@ function Addproduct({ role }) {
   };
 
   const handleSaveVariant = () => {
+  
     const variantData = {
       _id: currentVariant?._id || "",
       sku: currentVariant?.sku || "",
@@ -280,7 +281,7 @@ function Addproduct({ role }) {
       },
       price: currentVariant?.price || "",
       offerPrice: currentVariant?.offerPrice || "",
-      stock: currentVariant?.stock || "",
+      stock: currentVariant?.stock || 0,
       stockStatus: currentVariant?.stockStatus || "",
       grossPrice: currentVariant?.grossPrice || "",
       images: [...images],
@@ -578,12 +579,10 @@ function Addproduct({ role }) {
   };
 
   const handleActiveStatusChange = (activeStatus) => {
-    console.log(activeStatus, "activeStatus");
     setProductData((prev) => ({
       ...prev,
       activeStatus: activeStatus,
     }));
-    console.log(productData, "productData");
   };
 
   return (

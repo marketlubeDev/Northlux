@@ -2,7 +2,7 @@ import React from "react";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   // Generate page numbers with ellipsis for large page counts
-  console.log(currentPage, totalPages);
+
   const getPageNumbers = () => {
     const pageNumbers = [];
     const maxVisiblePages = 5;

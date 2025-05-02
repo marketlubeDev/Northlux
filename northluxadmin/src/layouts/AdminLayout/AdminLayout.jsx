@@ -9,7 +9,6 @@ import { persistor } from "../../redux/store";
 function AdminLayout() {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.store.store);
-  console.log(store, "store");
 
   const menuItems = [
     { name: "Dashboard", path: "/admin" },

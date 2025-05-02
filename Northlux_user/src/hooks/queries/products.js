@@ -48,7 +48,6 @@ async function getProducts(filters) {
     const response = await apiClient.get(url);
     return response.data;
   } catch (error) {
-    console.log(error);
     if (error.response?.status === 500) {
       throw new Error(
         "Server error while fetching products. Please try again later."

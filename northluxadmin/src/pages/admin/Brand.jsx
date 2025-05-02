@@ -38,7 +38,7 @@ function Brand() {
 
   useEffect(() => {
     fetchBrands();
-    console.log(brands, "brands");
+    
   }, []);
 
   const fetchBrands = async () => {

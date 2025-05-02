@@ -41,9 +41,7 @@ const Landingpage = () => {
   }, [dispatch]);
 
   // Separate useEffect to track store changes
-  useEffect(() => {
-    console.log(loggedInUser, "loggedInUser in landing page");
-  }, [loggedInUser]);
+  useEffect(() => {}, [loggedInUser]);
 
   const roles = [
     {

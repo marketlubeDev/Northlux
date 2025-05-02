@@ -10,7 +10,6 @@ const ProductNameInput = ({
   activeStatus,
   onActiveStatusChange,
 }) => {
-  console.log(activeStatus, "activeStatus");
   return (
     <div className="mb-5">
       <div className="flex items-center justify-between mb-2">

@@ -1,4 +1,5 @@
 export const validateVariant = (variant) => {
+  
   const errors = {};
 
   if (!variant.sku?.trim()) errors.sku = "SKU is required";
@@ -7,7 +8,12 @@ export const validateVariant = (variant) => {
     errors.description = "Description is required";
   if (!variant.price) errors.price = "Price is required";
   if (!variant.offerPrice) errors.offerPrice = "Offer price is required";
-  if (!variant.stock) errors.stock = "Stock is required";
+  if (
+    variant.stock === undefined ||
+    variant.stock === null ||
+    variant.stock === ""
+  )
+    errors.stock = "Stock is required";
   if (!variant.stockStatus) errors.stockStatus = "Stock status is required";
 
   // Numeric validation

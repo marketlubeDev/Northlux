@@ -268,10 +268,10 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
         if (variant.stock < order.quantity) {
           return next(new AppError("Insufficient stock for variant.", 400));
         }
-        console.log(variant.stock, order.quantity, "variant stock");
+
         // Reduce variant stock
         variant.stock -= order.quantity;
-        console.log(variant.stock, "variant stock after");
+       
         if (variant.stock === 0) {
           variant.stockStatus = "outofstock";
         }
