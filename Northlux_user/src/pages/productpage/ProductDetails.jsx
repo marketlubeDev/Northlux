@@ -56,7 +56,9 @@ function ProductDetailsContent() {
   useEffect(() => {
     if (
       selectedVariant?.stockStatus == "outofstock" ||
-      product?.stockStatus == "outofstock"
+      product?.stockStatus == "outofstock" ||
+      selectedVariant?.stock === 0 ||
+      product?.stock === 0
     ) {
       setOutOfStock(true);
     } else {
@@ -204,8 +206,15 @@ function ProductDetailsContent() {
               : product?.name}
           </h1>
 
+          {(product?.variants?.length > 0
+            ? selectedVariant?.stock < 5 && selectedVariant?.stock > 0
+            : product?.stock < 5 && product?.stock > 0) && (
+            <span className="product-stock-left">
+              ( only {selectedVariant ? selectedVariant?.stock : product?.stock}{" "}
+              left)
+            </span>
+          )}
           <div className="section description">
-            <h3>Description</h3>
             <p>
               {truncateDescription(
                 selectedVariant
@@ -276,6 +285,7 @@ function ProductDetailsContent() {
                 % off
               </span>
             </div>
+
             <div className="buy-buttons">
               {
                 <button

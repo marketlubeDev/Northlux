@@ -2730,12 +2730,16 @@ body.filter-open {
 .product-details .product-container .product-info .product-title {
   font-size: 1.5rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
 }
 @media (max-width: 768px) {
   .product-details .product-container .product-info .product-title {
     font-size: 1.25rem;
   }
+}
+.product-details .product-container .product-info .product-stock-left {
+  font-size: 0.875rem;
+  color: #f00;
+  margin-bottom: 1rem;
 }
 .product-details .product-container .product-info .rating-summary {
   display: flex;
@@ -2765,6 +2769,7 @@ body.filter-open {
   color: #666;
   font-size: 0.875rem;
   line-height: 1.5;
+  margin-top: 1rem;
 }
 .product-details .product-container .product-info .description p .read-more {
   color: #2eb5af;
