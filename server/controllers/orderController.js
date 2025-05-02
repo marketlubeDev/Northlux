@@ -1,9 +1,10 @@
-const mongoose = require("mongoose");
 const AppError = require("../utilities/errorHandlings/appError");
 const orderModel = require("../model/orderModel");
 const productModel = require("../model/productModel");
+const variantModel = require("../model/variantsModel");
 const catchAsync = require("../utilities/errorHandlings/catchAsync");
 const { getOrderStats } = require("../helpers/aggregation/aggregations");
+const { default: mongoose } = require("mongoose");
 
 //     const userId = req.user
 //     const { products, address, paymentMethod, transactionId } = req.body
@@ -142,6 +143,13 @@ const placeOrder = catchAsync(async (req, res, next) => {
   ];
 
   const [product] = await productModel.aggregate(aggregationPipeline);
+  //also check if the product or variant is out of stock
+  if (product.stock < quantity) {
+    return next(new AppError("Product is out of stock", 400));
+  }
+  if (product.variants.stock < quantity) {
+    return next(new AppError("Variant is out of stock", 400));
+  }
 
   if (!product) {
     return next(new AppError("Product not found", 404));
@@ -251,20 +259,21 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
       // Check if there's enough stock and reduce it
       if (order.variant) {
         // Handle variant stock
-        const variant = product.variants.find(
-          (v) => v._id.toString() === order.variant.toString()
-        );
+        const variant = await variantModel.findById(order.variant);
         if (!variant) {
           return next(new AppError("Variant not found.", 404));
         }
         if (variant.stock < order.quantity) {
           return next(new AppError("Insufficient stock for variant.", 400));
         }
+        console.log(variant.stock, order.quantity, "variant stock");
         // Reduce variant stock
         variant.stock -= order.quantity;
+        console.log(variant.stock, "variant stock after");
         if (variant.stock === 0) {
           variant.stockStatus = "outofstock";
         }
+        await variant.save();
       } else {
         // Handle main product stock
         if (product.stock < order.quantity) {
