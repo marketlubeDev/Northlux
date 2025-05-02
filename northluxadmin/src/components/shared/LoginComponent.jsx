@@ -31,7 +31,8 @@ function LoginComponent({ role }) {
     try {
       if (loginType === "admin") {
         const res = await adminLogin(values);
-
+        console.log(res, "res");
+        dispatch(setStore({}));
         toast.success(res?.data?.message);
         localStorage.setItem("adminToken", res?.data?.token);
         navigate("/admin");
