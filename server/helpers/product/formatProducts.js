@@ -70,6 +70,7 @@ const formatProductResponse = (product) => {
           : "instock"
         : variants[0].stockStatus
       : product.stockStatus,
+    activeStatus: product.activeStatus,
   };
 };
 

@@ -220,6 +220,7 @@ const listProducts = catchAsync(async (req, res, next) => {
     brand,
     category,
     offerId,
+    activeStatus,
   } = req.query;
 
   page = parseInt(page) || 1;
@@ -276,6 +277,9 @@ const listProducts = catchAsync(async (req, res, next) => {
     filter.label = {
       $in: labelId.split(",").map((id) => new mongoose.Types.ObjectId(id)),
     };
+  }
+  if (activeStatus && activeStatus !== "all") {
+    filter.activeStatus = activeStatus === "active" ? true : false;
   }
 
   // Use aggregation pipeline for proper price handling
@@ -431,6 +435,7 @@ const listProducts = catchAsync(async (req, res, next) => {
         createdAt: 1,
         updatedAt: 1,
         effectivePrice: 1,
+        activeStatus: 1,
         // Include only the selected variant instead of all variants
         variantsData: {
           $cond: {

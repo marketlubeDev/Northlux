@@ -62,6 +62,17 @@ const ProductTableRow = ({
       </th>
       <td className="px-6 py-4">{product?.brand?.name}</td>
       <td className="px-6 py-4">{product?.category?.name}</td>
+      <td className="px-6 py-4 ">
+        {product?.activeStatus ? (
+          <span className="bg-green-500 text-white px-2 py-1 rounded-md w-16 inline-block text-center">
+            Active
+          </span>
+        ) : (
+          <span className="bg-red-500 text-white px-2 py-1 rounded-md w-16 inline-block text-center">
+            Inactive
+          </span>
+        )}
+      </td>
       <td className="px-6 py-4">
         {new Date(product?.updatedAt).toLocaleDateString()}
       </td>

@@ -28,6 +28,7 @@ function Products({ role }) {
   const [selectedStore, setSelectedStore] = useState(store?._id);
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedActiveStatus, setSelectedActiveStatus] = useState("all");
   const navigate = useNavigate();
 
   const [showBulkOfferModal, setShowBulkOfferModal] = useState(false);
@@ -58,6 +59,9 @@ function Products({ role }) {
     if (selectedCategory) {
       filter.category = selectedCategory;
     }
+    if (selectedActiveStatus) {
+      filter.activeStatus = selectedActiveStatus;
+    }
     if (searchKeyword) {
       performSearch(searchKeyword, currentPage, filter);
     } else {
@@ -70,6 +74,7 @@ function Products({ role }) {
     selectedStore,
     selectedBrand,
     selectedCategory,
+    selectedActiveStatus,
   ]);
 
   const fetchProducts = async (page, filter) => {
@@ -237,6 +242,20 @@ function Products({ role }) {
                 {category?.name}
               </option>
             ))}
+          </select>
+        </div>
+        <div className="text-sm text-gray-600 space-y-1">
+          <select
+            className="border border-gray-300 rounded-md px-4 py-2 w-60"
+            value={selectedActiveStatus}
+            onChange={(e) => {
+              setSelectedActiveStatus(e.target.value);
+              setCurrentPage(1);
+            }}
+          >
+            <option value="all">Active/Inactive</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
           </select>
         </div>
       </div>
