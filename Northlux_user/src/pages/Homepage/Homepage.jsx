@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import Carousel from "../../components/Carousel";
 import Clearance from "./components/Clearance";
@@ -9,6 +9,7 @@ import ShopBy from "./components/ShopBy";
 import ProductBanner from "./components/ProductBanner";
 import { useBanners } from "../../hooks/queries/banner";
 import { useActiveOffers } from "../../hooks/queries/activeOffer";
+
 function Homepage() {
   const { allBanners, isLoading, error } = useBanners();
   const {
@@ -16,12 +17,29 @@ function Homepage() {
     isLoading: activeOffersLoading,
     error: activeOffersError,
   } = useActiveOffers();
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    handleResize(); // Initial check
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const heroBanners = allBanners
+    ?.filter((banner) => banner?.bannerFor === "hero")
+    .map((banner) => ({
+      ...banner,
+      displayImage: isMobile && banner.mobileImage ? banner.mobileImage : banner.image,
+    }));
+
   return (
     <div>
-      <Carousel
-        data={allBanners?.filter((banner) => banner?.bannerFor === "hero")}
-        isLoading={isLoading}
-      />
+      <Carousel data={heroBanners} isLoading={isLoading} />
       <ShopBy />
       <ProductBanner banners={activeOffers} loading={activeOffersLoading} />
       <Clearance />

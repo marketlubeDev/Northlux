@@ -4,7 +4,7 @@ import LoadingSpinner from "../../../components/LoadingSpinner";
 import { useCategories } from "../../../hooks/queries/categories";
 import { Link, useNavigate } from "react-router-dom";
 const ShopBy = () => {
-  const [activeTab, setActiveTab] = useState("brands");
+  const [activeTab, setActiveTab] = useState("categories");
   const navigate = useNavigate();
   const {
     data: brandsData,
@@ -36,16 +36,16 @@ const ShopBy = () => {
       <h2>Shop By</h2>
       <div className="tabs">
         <button
-          className={`tab-btn ${activeTab === "brands" ? "active" : ""}`}
-          onClick={() => setActiveTab("brands")}
-        >
-          Brands
-        </button>
-        <button
           className={`tab-btn ${activeTab === "categories" ? "active" : ""}`}
           onClick={() => setActiveTab("categories")}
         >
           Categories
+        </button>
+        <button
+          className={`tab-btn ${activeTab === "brands" ? "active" : ""}`}
+          onClick={() => setActiveTab("brands")}
+        >
+          Brands
         </button>
       </div>
       {/* <div className="content"> */}
@@ -73,7 +73,7 @@ const ShopBy = () => {
         )
       ) : (
         <div className="content">
-          {categories.map((category, index) => (
+          {categories?.map((category, index) => (
             <div
               key={index}
               className="content-item"

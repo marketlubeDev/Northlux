@@ -27,15 +27,13 @@ const createBanner = catchAsync(async (req, res, next) => {
     const imageFile = req.files[0];
     const uploadedImage = await uploadToCloudinary(imageFile.buffer);
     bannerData.image = uploadedImage;
-  }
-
-  const newBanner = await Banner.create(bannerData);
+    bannerData.mobileImage = uploner.create(bannerData);
 
   res.status(201).json({
     status: "success",
     data: newBanner,
   });
-});
+}})
 
 const getAllBanners = catchAsync(async (req, res, next) => {
   const banners = await Banner.find();

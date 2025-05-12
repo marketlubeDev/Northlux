@@ -12,9 +12,12 @@ function Banner() {
     title: "",
     bannerFor: "",
     image: null,
+    mobileImage: null,
   });
   const fileInputRef = useRef(null);
   const [banners, setBanners] = useState([]);
+  const [mobileImagePreview, setMobileImagePreview] = useState(null);
+  const mobileFileInputRef = useRef(null);
 
   useEffect(() => {
     fetchBanners();
@@ -53,6 +56,9 @@ function Banner() {
       if (formData.image) {
         formDataToSend.append("image", formData.image);
       }
+      if (formData.mobileImage) {
+        formDataToSend.append("mobileImage", formData.mobileImage);
+      }
       if (editingBanner) {
         await editBanner(editingBanner._id, formDataToSend);
         toast.success("Banner updated successfully");
@@ -76,8 +82,10 @@ function Banner() {
       title: banner.title,
       bannerFor: banner.bannerFor,
       image: null,
+      mobileImage: null,
     });
     setImagePreview(banner.image);
+    setMobileImagePreview(banner.mobileImage);
     setShowModal(true);
   };
 
@@ -86,8 +94,10 @@ function Banner() {
       title: "",
       bannerFor: "",
       image: null,
+      mobileImage: null,
     });
     setImagePreview(null);
+    setMobileImagePreview(null);
     setEditingBanner(null);
   };
   const handleInputChange = (e) => {
@@ -114,6 +124,22 @@ function Banner() {
       toast.error("Failed to delete banner");
     }
   };
+
+  const handleMobileImageClick = () => {
+    mobileFileInputRef.current.click();
+  };
+
+  const handleMobileImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        mobileImage: file,
+      }));
+      setMobileImagePreview(URL.createObjectURL(file));
+    }
+  };
+
   return (
     <>
       <PageHeader content="Banner" />
@@ -174,8 +200,8 @@ function Banner() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+        <div className="fixed  inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full h-[600px] overflow-y-auto max-w-md">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">
                 {editingBanner ? "Edit Banner" : "Add New Banner"}
@@ -200,7 +226,7 @@ function Banner() {
               </button>
             </div>
             <form onSubmit={handleSubmit}>
-              <div className="mb-4">
+              <div className="mb-4 ">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Banner Image
                 </label>
@@ -230,6 +256,40 @@ function Banner() {
                   type="file"
                   ref={fileInputRef}
                   onChange={handleImageChange}
+                  accept="image/*"
+                  className="hidden"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Mobile Banner Image
+                </label>
+                <div
+  onClick={handleMobileImageClick}
+  className="relative w-full aspect-[4/3] border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors"
+>
+                  {mobileImagePreview ? (
+                    <div className="relative w-full h-full">
+                      <img
+                        src={mobileImagePreview}
+                        alt="Mobile banner preview"
+                        className="w-full h-full object-contain rounded-lg"
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                        <FaCamera className="text-white text-3xl" />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center">
+                      <FaCamera className="mx-auto text-gray-400 text-3xl mb-2" />
+                      <p className="text-gray-500">Click to upload mobile image</p>
+                    </div>
+                  )}
+                </div>
+                <input
+                  type="file"
+                  ref={mobileFileInputRef}
+                  onChange={handleMobileImageChange}
                   accept="image/*"
                   className="hidden"
                 />
