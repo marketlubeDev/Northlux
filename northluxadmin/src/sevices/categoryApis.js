@@ -1,7 +1,7 @@
 import { axiosInstance } from "../axios/axiosInstance";
 
 export const getAllCategories = async () => {
-  const response = await axiosInstance.get("/category/allcategories");
+  const response = await axiosInstance.get("/category/allcategories?isAdmin=true");
   return response.data;
 };
 
