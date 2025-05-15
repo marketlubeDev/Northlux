@@ -69,16 +69,16 @@ function Footer() {
             <h4>Company</h4>
             <ul>
               <li>
-                <a href="/about">About us</a>
+                <a href="#">About us</a>
               </li>
               <li>
-                <a href="/blog">Blog</a>
+                <a href="#">Blog</a>
               </li>
               <li>
-                <a href="/gift-vouchers">Gift vouchers</a>
+                <a href="#">Gift vouchers</a>
               </li>
               <li>
-                <a href="/policy">Our policy</a>
+                <a href="#">Our policy</a>
               </li>
             </ul>
           </div>
@@ -88,7 +88,7 @@ function Footer() {
             <h4>Contact</h4>
             <ul>
               <li>
-                <a href="/contact">Contact us</a>
+                <a href="#">Contact us</a>
               </li>
               <li className="address">
                 123 Fashion Street,
@@ -101,7 +101,7 @@ function Footer() {
                 <a href="mailto:Lorem@gmail.com">Lorem@gmail.com</a>
               </li>
               <li>
-                <a href="/support">Support & FAQ</a>
+                <a href="#">Support & FAQ</a>
               </li>
             </ul>
           </div>
