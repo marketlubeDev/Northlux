@@ -29,6 +29,7 @@ export const validateProduct = (productData, selectedVariant, images) => {
       errors.description = "Description is required";
     if (!productData.stockStatus)
       errors.stockStatus = "Stock status is required";
+    if(!productData.grossPrice) errors.grossPrice = "Gross price is required";
     // Numeric validation
     if (isNaN(productData.price)) errors.price = "Price must be a number";
     if (isNaN(productData.offerPrice))
