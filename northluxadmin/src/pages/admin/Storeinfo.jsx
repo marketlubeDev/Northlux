@@ -215,11 +215,11 @@ function Storeinfo() {
                       className="border-b hover:bg-gray-50"
                     >
                       <td className="p-2 flex items-center gap-2 ">
-                        <img
+                        {/* <img
                           src={product?.mainImage}
                           alt="product"
                           className=" w-10 h-10 rounded-full"
-                        />
+                        /> */}
                         <span
                           title={product?.name}
                           className="text-sm font-medium cursor-pointer"

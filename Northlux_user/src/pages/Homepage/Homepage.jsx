@@ -34,9 +34,10 @@ function Homepage() {
     ?.filter((banner) => banner?.bannerFor === "hero")
     .map((banner) => ({
       ...banner,
-      displayImage: isMobile && banner.mobileImage ? banner.mobileImage : banner.image,
+      image: isMobile && banner?.mobileImage ? banner?.mobileImage : banner?.image,
     }));
 
+    
   return (
     <div>
       <Carousel data={heroBanners} isLoading={isLoading} />

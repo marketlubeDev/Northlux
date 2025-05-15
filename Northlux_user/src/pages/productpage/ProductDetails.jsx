@@ -97,6 +97,8 @@ function ProductDetailsContent() {
             `*Order ID:* ${orderDetails?.orderId}%0a%0a` +
             `*Product Details*%0a` +
             `• Name: ${orderDetails?.productName}%0a` +
+            `• SKU: ${orderDetails?.sku}%0a` +
+            `• Brand: ${orderDetails?.brandName}%0a` +
             `${
               orderDetails?.variantName
                 ? `• Variant: ${orderDetails?.variantName}%0a`
@@ -109,7 +111,8 @@ function ProductDetailsContent() {
             `• ${orderDetails?.storeName}%0a` +
             `• Contact: ${orderDetails?.storeNumber}%0a%0a` +
             `*Product Image*%0a` +
-            `${orderDetails?.productImage}%0a%0a`;
+            `${orderDetails?.productImage}%0a%0a` ;
+            
 
           const whatsappUrl = `https://wa.me/+91${orderDetails?.storeNumber}?text=${message}`;
           window.open(whatsappUrl, "_blank");

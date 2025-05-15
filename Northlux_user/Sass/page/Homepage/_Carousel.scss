@@ -9,9 +9,13 @@
 
   @include responsive.respond(phone) {
     padding: 0;
+    height: auto;
+    aspect-ratio: 4/3;
   }
   @include responsive.respond(smallPhone) {
     padding: 0;
+    height: auto;
+    aspect-ratio: 4/3;
   }
 
   .custom-dots {
@@ -42,8 +46,17 @@
   // Update image styles
   .carousel-image {
     width: 100%;
-    height: calc(100vh - var.$header-height - 2.5rem); // Match container heigh
+    height: calc(100vh - var.$header-height - 2.5rem); // Match container height
     object-fit: cover;
+
+    @include responsive.respond(phone) {
+      height: 100%;
+      aspect-ratio: 4/3;
+    }
+    @include responsive.respond(smallPhone) {
+      height: 100%;
+      aspect-ratio: 4/3;
+    }
   }
 
   // Make sure the slide container takes full height
@@ -166,7 +179,8 @@
     }
 
     .carousel-image {
-      height: calc(100vh - var.$header-height - 5rem);
+      height: 100%;
+      aspect-ratio: 4/3;
     }
 
     .carousel-content {
@@ -198,7 +212,7 @@
     }
 
     .custom-dots {
-      bottom: 5rem;
+      bottom:0.5rem;
     }
   }
 }

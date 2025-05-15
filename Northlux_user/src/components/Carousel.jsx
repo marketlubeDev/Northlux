@@ -12,6 +12,7 @@ function Carousel({
   showButton = true,
   isLoading = false,
 }) {
+  console.log(data);
   const settings = {
     dots: true,
     infinite: true,

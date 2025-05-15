@@ -24,16 +24,22 @@ const createBanner = catchAsync(async (req, res, next) => {
   }
 
   if (req.files && req.files.length > 0) {
+    console.log(req.files);
     const imageFile = req.files[0];
-    const uploadedImage = await uploadToCloudinary(imageFile.buffer);
-    bannerData.image = uploadedImage;
-    bannerData.mobileImage = uploner.create(bannerData);
+    const mobileImageFile = req.files[1];
+    const uploadedImageForDesktop = await uploadToCloudinary(imageFile.buffer);
+    bannerData.image = uploadedImageForDesktop;
+    const uploadedImageForMobile = await uploadToCloudinary(mobileImageFile.buffer);
+    bannerData.mobileImage = uploadedImageForMobile;
+  }
+
+  const newBanner = await Banner.create(bannerData);
 
   res.status(201).json({
     status: "success",
     data: newBanner,
   });
-}})
+});
 
 const getAllBanners = catchAsync(async (req, res, next) => {
   const banners = await Banner.find();
@@ -113,7 +119,7 @@ const getAllBannersByCategory = catchAsync(async (req, res, next) => {
   res.status(200).json({ status: "success", data: banners });
 });
 
-module.exports = {
+module.exports = {  
   createBanner,
   getAllBanners,
   deleteBanner,

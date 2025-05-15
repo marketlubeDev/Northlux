@@ -51,6 +51,8 @@ function AllProductsContent() {
     labelName: "",
   });
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
   const MAX_PRICE_VALUE = 999999999;
 
   // Add pagination state
@@ -171,6 +173,18 @@ function AllProductsContent() {
       behavior: "smooth",
     });
   }, [location.state]);
+
+
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    handleResize(); // Initial check
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   if (isLoading || categoriesLoading || labelsLoading)
     return <LoadingSpinner />;
@@ -456,10 +470,19 @@ function AllProductsContent() {
     });
   };
 
+
+
+  const productBanners = allBanners
+  ?.filter((banner) => banner?.bannerFor === "hero")
+  .map((banner) => ({
+    ...banner,
+    image: isMobile && banner?.mobileImage ? banner?.mobileImage : banner?.image,
+  }));  
+
   return (
     <div className="product-page">
       <Carousel
-        data={allBanners?.filter((banner) => banner?.bannerFor === "hero")}
+        data={productBanners}
         maxHeight="25rem"
         showButton={false}
       />
