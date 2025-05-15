@@ -19,6 +19,7 @@ import {
   FaCamera,
 } from "react-icons/fa";
 
+
 function Category() {
   const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
