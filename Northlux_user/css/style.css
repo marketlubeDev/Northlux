@@ -484,14 +484,12 @@ ul {
   .carousel-container {
     padding: 0;
     height: auto;
-    aspect-ratio: 4/3;
   }
 }
 @media only screen and (max-width: 575.98px) {
   .carousel-container {
     padding: 0;
     height: auto;
-    aspect-ratio: 4/3;
   }
 }
 .carousel-container .custom-dots {
@@ -514,7 +512,6 @@ ul {
   transition: all 0.3s ease;
 }
 .carousel-container .carousel-image-wrapper {
-  aspect-ratio: 4/3;
   width: 100%;
   overflow: hidden;
   background: #eee;
@@ -615,7 +612,6 @@ ul {
   }
   .carousel-container .carousel-image {
     height: 100%;
-    aspect-ratio: 4/3;
   }
   .carousel-container .carousel-content {
     left: 50%;

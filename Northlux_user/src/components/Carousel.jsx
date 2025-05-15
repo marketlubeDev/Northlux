@@ -12,6 +12,8 @@ function Carousel({
   showButton = true,
   isLoading = false,
 }) {
+
+  
   const settings = {
     dots: true,
     infinite: true,
@@ -34,7 +36,7 @@ function Carousel({
         {data?.map((item, index) => (
           <div key={index}>
             <img
-              src={isBrand ? item?.brand?.bannerImage : item?.image}
+              src={item?.image}
               alt={item?.alt}
               className="carousel-image"
             />

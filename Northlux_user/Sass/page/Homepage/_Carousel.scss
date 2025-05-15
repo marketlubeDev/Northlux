@@ -10,12 +10,10 @@
   @include responsive.respond(phone) {
     padding: 0;
     height: auto;
-    aspect-ratio: 4/3;
   }
   @include responsive.respond(smallPhone) {
     padding: 0;
     height: auto;
-    aspect-ratio: 4/3;
   }
 
   .custom-dots {
@@ -45,7 +43,6 @@
 
   // Update image styles
   .carousel-image-wrapper {
-    aspect-ratio: 4 / 3;
     width: 100%;
     overflow: hidden;
     background: #eee;
@@ -180,7 +177,6 @@
 
     .carousel-image {
       height: 100%;
-      aspect-ratio: 4/3;
     }
 
     .carousel-content {

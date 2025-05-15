@@ -26,15 +26,21 @@ function Brand() {
     isPriority: false,
     image: null,
     bannerImage: null,
+    mobileBannerImage: null,
+    mobileImage: null,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [bannerImagePreview, setBannerImagePreview] = useState(null);
+  const [mobileBannerImagePreview, setMobileBannerImagePreview] = useState(null);
   const fileInputRef = useRef(null);
   const bannerFileInputRef = useRef(null);
+  const mobileBannerFileInputRef = useRef(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [brandToDelete, setBrandToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [mobileImagePreview, setMobileImagePreview] = useState(null);
+  const mobileFileInputRef = useRef(null);
 
   useEffect(() => {
     fetchBrands();
@@ -120,6 +126,30 @@ function Brand() {
     }
   };
 
+  const handleMobileImageClick = () => {
+    mobileFileInputRef.current.click();
+  };
+
+  const handleMobileImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({ ...prev, mobileImage: file }));
+      setMobileImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleMobileBannerImageClick = () => {
+    mobileBannerFileInputRef.current.click();
+  };
+
+  const handleMobileBannerImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({ ...prev, mobileBannerImage: file }));
+      setMobileBannerImagePreview(URL.createObjectURL(file));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -135,6 +165,12 @@ function Brand() {
       }
       if (formData.bannerImage) {
         formDataToSend.append("bannerImage", formData.bannerImage);
+      }
+      if (formData.mobileBannerImage) {
+        formDataToSend.append("mobileBannerImage", formData.mobileBannerImage);
+      }
+      if (formData.mobileImage) {
+        formDataToSend.append("mobileImage", formData.mobileImage);
       }
 
       if (editingBrand) {
@@ -161,10 +197,14 @@ function Brand() {
       description: brand.description,
       image: null,
       bannerImage: null,
+      mobileBannerImage: null,
+      mobileImage: null,
       isPriority: brand.isPriority,
     });
     setImagePreview(brand.image);
     setBannerImagePreview(brand.bannerImage);
+    setMobileBannerImagePreview(brand.mobileBannerImage);
+    setMobileImagePreview(brand.mobileImage);
     setShowModal(true);
   };
 
@@ -174,10 +214,14 @@ function Brand() {
       description: "",
       image: null,
       bannerImage: null,
+      mobileBannerImage: null,
+      mobileImage: null,
     });
     setEditingBrand(null);
     setImagePreview(null);
     setBannerImagePreview(null);
+    setMobileBannerImagePreview(null);
+    setMobileImagePreview(null);
   };
 
   // Add useEffect for handling body scroll
@@ -405,7 +449,7 @@ function Brand() {
               </div>
               <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
                 <form onSubmit={handleSubmit}>
-                  <div className="mb-4">
+                  <div className="mb-4 text-left">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Brand Image
                     </label>
@@ -440,7 +484,7 @@ function Brand() {
                     />
                   </div>
                   <div>
-                    <div className="mb-4">
+                    <div className="mb-4 text-left">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Banner Image
                       </label>
@@ -467,8 +511,35 @@ function Brand() {
                       />
                     </div>
                   </div>
-
-                  <div className="mb-4">
+                  <div>
+                    <div className="mb-4 text-left">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Banner Image For Mobile
+                      </label>
+                      <div
+                        onClick={handleMobileBannerImageClick}
+                        className="relative w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors"
+                      >
+                        {mobileBannerImagePreview ? (
+                          <img
+                            src={mobileBannerImagePreview}
+                            alt="Mobile banner preview"
+                            className="w-full h-full object-contain rounded-lg"
+                          />
+                        ) : (
+                          <p className="text-gray-500">Click to upload mobile banner image</p>
+                        )}
+                      </div>
+                      <input
+                        type="file"
+                        ref={mobileBannerFileInputRef}
+                        onChange={handleMobileBannerImageChange}
+                        accept="image/*"
+                        className="hidden"
+                      />
+                    </div>
+                  </div>
+                  <div className="mb-4 text-left">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Brand Name
                     </label>
@@ -481,7 +552,7 @@ function Brand() {
                       required
                     />
                   </div>
-                  <div className="mb-4">
+                  <div className="mb-4 text-left">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Brand Description
                     </label>

@@ -290,6 +290,7 @@ const listProducts = catchAsync(async (req, res, next) => {
     filter.$or = [
       { name: { $regex: search, $options: "i" } },
       { description: { $regex: search, $options: "i" } },
+      { sku: { $regex: search, $options: "i" } },
     ];
   }
 

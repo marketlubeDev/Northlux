@@ -6,6 +6,7 @@ import ShopByCategory from "./components/ShopByCategory";
 import { useBanners } from "../../hooks/queries/banner";
 import { useParams } from "react-router-dom";
 import { useBrand, useBrands } from "../../hooks/queries/brands";
+import { useState } from "react";
 
 export default function BrandPage() {
   const { allBanners, isLoading, error } = useBanners();
@@ -13,6 +14,9 @@ export default function BrandPage() {
 
 
   const { brand, isLoading: brandLoading, error: brandError } = useBrand(id);
+  const [brandData, setBrandData] = useState([{
+    image: brand?.brand?.bannerImage,
+  }]);
 
 
 
@@ -31,9 +35,35 @@ export default function BrandPage() {
   }
 
 
+  const [isMobile, setIsMobile] = useState(false);
+
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    handleResize(); // Initial check
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+      if(isMobile){
+        setBrandData([{
+          image: brand?.brand?.mobileBannerImage,
+        }]);
+      }else{
+        setBrandData([{
+          image: brand?.brand?.bannerImage,
+        }]);
+      }
+  }, [isMobile , brand]);
+
+
   return (
     <div>
-      <Carousel data={[brand]} maxHeight="500px" isBrand={true} />
+      <Carousel data={brandData} maxHeight={'30rem'} isBrand={true} />
       <ExclusiveSale id={id} />
       {/* <ProductBanner
         banners={allBanners?.filter(
