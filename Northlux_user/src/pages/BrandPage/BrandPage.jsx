@@ -21,9 +21,9 @@ export default function BrandPage() {
   }, []);
 
   // Handle loading states
-  if (isLoading || brandLoading) {
-    return <div>Loading...</div>;
-  }
+  // if (isLoading || brandLoading) {
+  //   return <div>Loading...</div>;
+  // }
 
   // Handle error states
   if (error || brandError) {

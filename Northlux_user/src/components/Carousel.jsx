@@ -12,7 +12,6 @@ function Carousel({
   showButton = true,
   isLoading = false,
 }) {
-  console.log(data);
   const settings = {
     dots: true,
     infinite: true,
@@ -33,13 +32,13 @@ function Carousel({
     <div className="carousel-container" style={{ maxHeight: maxHeight }}>
       <Slider {...settings}>
         {data?.map((item, index) => (
-          <div key={isBrand ? item.brand.bannerImage : item.image}>
+          <div key={index}>
             <img
-              src={isBrand ? item.brand.bannerImage : item.image}
-              alt={item.alt}
+              src={isBrand ? item?.brand?.bannerImage : item?.image}
+              alt={item?.alt}
               className="carousel-image"
             />
-            {!isBrand && (
+            {!isBrand && showButton && (
               <div className="carousel-content">
                 <h1>{item?.heading || item?.title || ""}</h1>
                 <p>

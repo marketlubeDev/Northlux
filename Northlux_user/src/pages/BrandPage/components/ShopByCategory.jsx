@@ -3,6 +3,7 @@ import { useProducts } from "../../../hooks/queries/products";
 import Card from "../../../components/Card";
 import Pagination from "../../../components/Pagination";
 import { useCategories } from "../../../hooks/queries/categories";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 
 const ShopByCategory = ({ id }) => {
   const [activeTab, setActiveTab] = useState("");
@@ -18,6 +19,8 @@ const ShopByCategory = ({ id }) => {
   // const categories = ["sholder bags", "t-shirts", "shoes", "bags", "sneakers"];
 
 const allCategories = categories?.envelop?.data || [];
+
+console.log(allCategories , "allCategories");
 
 
 
@@ -37,7 +40,7 @@ const allCategories = categories?.envelop?.data || [];
           </button>
         ))}
       </div>
-      { isLoading ? <div>Loading...</div> : data?.data?.products?.length > 0 ? (
+      { isLoading ? <LoadingSpinner /> : data?.data?.products?.length > 0 ? (
         <div className="content">
           {data?.data?.products?.map((product, index) => (
             <Card product={product} key={index} />
@@ -54,10 +57,10 @@ const allCategories = categories?.envelop?.data || [];
       )} */}
 
       {/* </div> */}
-      <div className="shop-all">
+      {/* <div className="shop-all">
         <p>Discover More from The Collection.</p>
         <a href="#">shop all →</a>
-      </div>
+      </div> */}
     </section>
   );
 };

@@ -473,7 +473,7 @@ function AllProductsContent() {
 
 
   const productBanners = allBanners
-  ?.filter((banner) => banner?.bannerFor === "hero")
+  ?.filter((banner) => banner?.bannerFor === "product")
   .map((banner) => ({
     ...banner,
     image: isMobile && banner?.mobileImage ? banner?.mobileImage : banner?.image,
@@ -483,7 +483,7 @@ function AllProductsContent() {
     <div className="product-page">
       <Carousel
         data={productBanners}
-        maxHeight="25rem"
+        maxHeight="32rem"
         showButton={false}
       />
       <div className="product-section">

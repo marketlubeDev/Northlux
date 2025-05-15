@@ -44,19 +44,19 @@
   }
 
   // Update image styles
+  .carousel-image-wrapper {
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    overflow: hidden;
+    background: #eee;
+    display: block;
+  }
+
   .carousel-image {
     width: 100%;
-    height: calc(100vh - var.$header-height - 2.5rem); // Match container height
+    height: 100%;
     object-fit: cover;
-
-    @include responsive.respond(phone) {
-      height: 100%;
-      aspect-ratio: 4/3;
-    }
-    @include responsive.respond(smallPhone) {
-      height: 100%;
-      aspect-ratio: 4/3;
-    }
+    display: block;
   }
 
   // Make sure the slide container takes full height

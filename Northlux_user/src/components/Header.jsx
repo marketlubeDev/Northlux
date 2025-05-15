@@ -110,7 +110,7 @@ export default function Header() {
   return (
     <>
       <header className="header">
-        <Link to="/">
+        <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
           <div className="header-logo">
             <img
               src={"/logo/Logo.svg"}

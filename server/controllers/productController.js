@@ -267,8 +267,13 @@ const listProducts = catchAsync(async (req, res, next) => {
       parent: new mongoose.Types.ObjectId(categoryId),
     });
     if (subcategories.length > 0) {
-      filter.category = { $in: subcategories.map((subcategory) => subcategory._id) };
-    }else{
+      filter.category = {
+        $in: [
+          new mongoose.Types.ObjectId(categoryId),
+          ...subcategories.map((subcategory) => subcategory._id)
+        ]
+      };
+    } else {
       filter.category = new mongoose.Types.ObjectId(categoryId);
     }
   }

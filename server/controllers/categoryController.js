@@ -69,6 +69,7 @@ const getAllCategories = catchAsync(async (req, res) => {
       $or: [
         { _id: { $in: brandProducts } },
         { parent: { $in: brandProducts } },
+        { _id: { $in: await Category.find({ _id: { $in: brandProducts }, isSubcategory: true }).distinct('parent') } }
       ],
     }).populate({
       path: "subcategories",
