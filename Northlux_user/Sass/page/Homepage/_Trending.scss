@@ -6,6 +6,10 @@
   background: #fff;
   margin: 2rem 0;
 
+  @media (max-width: 768px) {
+    margin: 0.8rem 0;
+  }
+
   .trending-header {
     display: flex;
     justify-content: space-between;
@@ -106,7 +110,7 @@
     padding: 1rem;
 
     .trending-header {
-      padding: 0 var.$default-padding;
+     margin-bottom: 0.8rem;
 
       .desktop-view-all {
         display: none;

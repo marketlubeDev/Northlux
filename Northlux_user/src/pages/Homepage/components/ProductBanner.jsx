@@ -29,7 +29,7 @@ function ProductBanner({ banners }) {
         speed={700}
         loopFillGroupWithBlank={true}
         loopAdditionalSlides={banners?.length > 3 ? 3 : banners?.length}
-        centeredSlidesBounds={false}
+        centeredSlidesBounds={true}
         watchSlidesProgress={true}
         observer={true}
         observeParents={true}
@@ -38,10 +38,12 @@ function ProductBanner({ banners }) {
         spaceBetween={0}
         slidesPerView={1}
         centeredSlides={true}
+        initialSlide={0}
         breakpoints={{
           768: {
             slidesPerView: 1.5,
             centeredSlides: true,
+            spaceBetween: 20,
           }
         }}
       >

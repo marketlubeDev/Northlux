@@ -14,7 +14,7 @@
   .tabs {
     display: flex;
     justify-content: center;
-    gap: 24px;
+    gap: 12px;
     margin-bottom: 32px;
 
     .tab-btn {
@@ -50,10 +50,11 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 16px;
-    margin-bottom: 32px;
+    margin-bottom: 2rem;
 
     @media screen and (max-width: 768px) {
       grid-template-columns: repeat(2, 1fr);
+      margin-bottom: 0.8rem;
     }
 
     .brands {
@@ -143,6 +144,12 @@
     align-items: center;
     gap: 16px;
     margin-top: 2rem;
+
+    @media (max-width: 768px) {
+      margin-top: 0.8rem;
+    }
+
+   
 
     p {
       color: #000;

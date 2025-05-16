@@ -791,6 +791,11 @@ ul {
   background-color: #fff;
   margin: 2rem 0;
 }
+@media (max-width: 768px) {
+  .bestseller-container {
+    margin: 0.8rem 0;
+  }
+}
 .bestseller-container .bestseller-header {
   display: flex;
   justify-content: space-between;
@@ -1214,6 +1219,11 @@ ul {
   background: #fff;
   margin: 2rem 0;
 }
+@media (max-width: 768px) {
+  .trending-container {
+    margin: 0.8rem 0;
+  }
+}
 .trending-container .trending-header {
   display: flex;
   justify-content: space-between;
@@ -1299,7 +1309,7 @@ ul {
     padding: 1rem;
   }
   .trending-container .trending-header {
-    padding: 0 0 10%;
+    margin-bottom: 0.8rem;
   }
   .trending-container .trending-header .desktop-view-all {
     display: none;
@@ -1545,6 +1555,11 @@ ul {
   display: none;
   justify-content: center;
   margin-top: 1.5rem;
+}
+@media (max-width: 768px) {
+  .mobile-view-all {
+    margin-top: 0.8rem;
+  }
 }
 
 .shop-by-category {
@@ -5044,7 +5059,7 @@ body.modal-open {
 .shop-by .tabs {
   display: flex;
   justify-content: center;
-  gap: 24px;
+  gap: 12px;
   margin-bottom: 32px;
 }
 .shop-by .tabs .tab-btn {
@@ -5075,11 +5090,12 @@ body.modal-open {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 16px;
-  margin-bottom: 32px;
+  margin-bottom: 2rem;
 }
 @media screen and (max-width: 768px) {
   .shop-by .content {
     grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 0.8rem;
   }
 }
 .shop-by .content .brands {
@@ -5154,6 +5170,11 @@ body.modal-open {
   align-items: center;
   gap: 16px;
   margin-top: 2rem;
+}
+@media (max-width: 768px) {
+  .shop-by .browse-all {
+    margin-top: 0.8rem;
+  }
 }
 .shop-by .browse-all p {
   color: #000;
