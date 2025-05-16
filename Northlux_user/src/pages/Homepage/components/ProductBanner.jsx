@@ -12,9 +12,10 @@ function ProductBanner({ banners }) {
   return (
     <div className="product-banner-container">
       <Swiper
-        slidesPerView={1.5}
-        centeredSlides={true}
-        spaceBetween={0}
+        modules={[FreeMode, Autoplay]}
+        className="mySwiper"
+        wrapperClass="swiper-wrapper"
+        cssMode={false}
         loop={true}
         loopedSlides={banners?.length > 3 ? 3 : banners?.length}
         pagination={{
@@ -26,10 +27,6 @@ function ProductBanner({ banners }) {
           pauseOnMouseEnter: true,
         }}
         speed={700}
-        modules={[FreeMode, Autoplay]}
-        className="mySwiper"
-        wrapperClass="swiper-wrapper"
-        cssMode={false}
         loopFillGroupWithBlank={true}
         loopAdditionalSlides={banners?.length > 3 ? 3 : banners?.length}
         centeredSlidesBounds={false}
@@ -38,6 +35,15 @@ function ProductBanner({ banners }) {
         observeParents={true}
         resistance={true}
         resistanceRatio={0.85}
+        spaceBetween={0}
+        slidesPerView={1}
+        centeredSlides={true}
+        breakpoints={{
+          768: {
+            slidesPerView: 1.5,
+            centeredSlides: true,
+          }
+        }}
       >
         {banners?.map((post, index) => (
           <SwiperSlide key={index}>

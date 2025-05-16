@@ -54,6 +54,7 @@ function Homepage() {
       <Clearance />
       <Bestseller />
       <Offer />
+      <ProductBanner banners={activeOffers} loading={activeOffersLoading} />
       <Trending />
     </div>
   );

@@ -88,7 +88,6 @@
     display: flex;
     gap: 1.5rem;
     overflow-x: auto;
-    padding: 1rem 0;
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
@@ -100,8 +99,8 @@
     -ms-overflow-style: none;
 
     .product-card {
-      flex: 0 0 calc((100% - 4.5rem) / 4.5);
-      min-width: calc((100% - 4.5rem) / 4.5);
+      flex: 0 0 calc((100% - 4.5rem) / 6);
+      min-width: calc((100% - 4.5rem) / 6);
       scroll-snap-align: start;
     }
 

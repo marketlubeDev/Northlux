@@ -3,6 +3,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
 import LoadingSpinner from "./LoadingSpinner";
+import { useNavigate } from "react-router-dom";
 
 function Carousel({
   data,
@@ -10,10 +11,10 @@ function Carousel({
   width,
   isBrand = false,
   showButton = true,
-  isLoading = false,
-}) {
+    isLoading = false,
+  }) {
 
-  
+  const navigate = useNavigate();
   const settings = {
     dots: true,
     infinite: true,
@@ -39,8 +40,9 @@ function Carousel({
               src={item?.image}
               alt={item?.alt}
               className="carousel-image"
+              onClick={() => navigate(`/products`)}
             />
-            {!isBrand && showButton && (
+            {/* {!isBrand && showButton && (
               <div className="carousel-content">
                 <h1>{item?.heading || item?.title || ""}</h1>
                 <p>
@@ -57,7 +59,7 @@ function Carousel({
                   </Link>
                 )}
               </div>
-            )}
+            )} */}
           </div>
         ))}
       </Slider>

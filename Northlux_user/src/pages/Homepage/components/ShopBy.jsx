@@ -54,7 +54,7 @@ const ShopBy = () => {
           <LoadingSpinner />
         ) : (
           <div className="content">
-            {brands?.slice(0, 8)?.map((brand, index) => (
+            {brands?.slice(0, 10)?.map((brand, index) => (
               <div
                 onClick={() => navigate(`/brands/${brand._id}`)}
                 key={index}
@@ -93,10 +93,13 @@ const ShopBy = () => {
         </div>
       )}
       {/* </div> */}
-      <div className="browse-all">
-        <p>Shop Smart – All Brands & Wears, One Click!</p>
-        <Link to="/brands">Browse all →</Link>
-      </div>
+      {activeTab === "brands" && (
+        <div className="browse-all">
+          <button onClick={() => navigate("/brands")} className="browse-button">
+            Browse all Brands →
+          </button>
+        </div>
+      )}
     </section>
   );
 };

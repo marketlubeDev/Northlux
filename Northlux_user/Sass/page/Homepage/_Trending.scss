@@ -92,8 +92,8 @@
     -ms-overflow-style: none;
 
     .product-card {
-      flex: 0 0 calc((100% - 4.5rem) / 4.5);
-      min-width: calc((100% - 4.5rem) / 4.5);
+      flex: 0 0 calc((100% - 4.5rem) / 6);
+      min-width: calc((100% - 4.5rem) / 6);
       scroll-snap-align: start;
     }
 
