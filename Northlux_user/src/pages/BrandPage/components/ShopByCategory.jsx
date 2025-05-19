@@ -20,7 +20,6 @@ const ShopByCategory = ({ id }) => {
 
 const allCategories = categories?.envelop?.data || [];
 
-console.log(allCategories , "allCategories");
 
 
 
