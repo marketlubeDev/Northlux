@@ -21,6 +21,12 @@ function Storeinfo() {
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+  const [cardState, setCardState] = useState({
+    TotalSales: 0,
+    MonthlyRevenue: 0,
+    Profit: 0,
+    TotalStoreValue: 0,
+  });
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -47,6 +53,13 @@ function Storeinfo() {
       );
       setProducts(response?.data?.products);
       setTotalPages(response?.data?.totalPages);
+      setCardState({
+        TotalSales: response?.data?.cardStats?.totalSales,
+        MonthlyRevenue: response?.data?.cardStats?.monthlyRevenue,
+        Profit: response?.data?.cardStats?.monthlyProfit,
+        TotalStoreValue: response?.data?.cardStats?.totalStoreValue,
+      });
+      
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong");
     } finally {
@@ -132,7 +145,7 @@ function Storeinfo() {
               <div>
                 <p className="text-xs text-gray-500 font-medium">Total Sales</p>
                 <p className="font-bold text-lg">
-                  1280 <span className="text-green-600 text-sm">+10</span>
+                    {cardState?.TotalSales}
                 </p>
               </div>
             </div>
@@ -143,7 +156,7 @@ function Storeinfo() {
                   Monthly Revenue
                 </p>
                 <p className="font-bold text-lg">
-                  ₹34,351 <span className="text-red-500 text-sm">-4%</span>
+                  ₹{cardState?.MonthlyRevenue}
                 </p>
               </div>
             </div>
@@ -152,7 +165,7 @@ function Storeinfo() {
               <div>
                 <p className="text-xs text-gray-500 font-medium">Profit</p>
                 <p className="font-bold text-lg">
-                  ₹20,351 <span className="text-red-500 text-sm">-6%</span>
+                    ₹{cardState?.Profit}
                 </p>
               </div>
             </div>
@@ -162,7 +175,7 @@ function Storeinfo() {
                 <p className="text-xs text-gray-500 font-medium">
                   Total store value
                 </p>
-                <p className="font-bold text-lg">₹ 56,780</p>
+                <p className="font-bold text-lg">₹{cardState?.TotalStoreValue}</p>
               </div>
             </div>
           </div>

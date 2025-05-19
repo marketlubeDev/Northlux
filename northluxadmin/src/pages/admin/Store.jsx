@@ -137,12 +137,12 @@ function Store() {
                           {store?.email}
                         </div>
                         <div className="break-all">{store?.store_number}</div>
-                        <div className="text-center">568</div>
+                        <div className="text-center">{store?.totalProducts}</div>
                         <div className="text-red-500 whitespace-nowrap">
-                          ₹28,820 -3%
+                          ₹{store?.totalRevenue} 
                         </div>
                         <div className="text-red-500 whitespace-nowrap">
-                          ₹12,330 -3%
+                          ₹{store?.totalProfit} <span className="text-gray-500 text-xs">({store?.profitPercentage}%)</span>
                         </div>
                         <div className="whitespace-nowrap">
                           {new Date(store?.updatedAt).toLocaleDateString()}

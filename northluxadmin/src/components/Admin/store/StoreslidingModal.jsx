@@ -42,7 +42,6 @@ const StoreSlidingModal = ({
   });
 
   const [isLoading, setIsLoading] = useState(false);
-
   useEffect(() => {
     if (editData) {
       setValues({

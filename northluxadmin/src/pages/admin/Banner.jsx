@@ -59,7 +59,6 @@ function Banner() {
       if (formData.mobileImage) {
         formDataToSend.append("mobileImage", formData.mobileImage);
       }
-      console.log(formData , "formData");
       
       if (editingBanner) {
         await editBanner(editingBanner._id, formDataToSend);
