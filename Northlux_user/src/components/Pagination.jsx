@@ -1,6 +1,8 @@
 import React from "react";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+  console.log(currentPage, totalPages, "xcxcxcxcxcxcx");
+
   const handlePrevPage = () => {
     if (currentPage > 1) {
       onPageChange(currentPage - 1);
@@ -17,19 +19,23 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     const pageNumbers = [];
     const maxVisiblePages = 5;
 
-    if (totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= totalPages; i++) {
+    // Ensure totalPages is a valid number
+    const validTotalPages = Math.max(1, parseInt(totalPages) || 1);
+
+    if (validTotalPages <= maxVisiblePages) {
+      for (let i = 1; i <= validTotalPages; i++) {
         pageNumbers.push(i);
       }
     } else {
       if (currentPage <= 3) {
         for (let i = 1; i <= 3; i++) pageNumbers.push(i);
         pageNumbers.push("...");
-        pageNumbers.push(totalPages);
-      } else if (currentPage >= totalPages - 2) {
+        pageNumbers.push(validTotalPages);
+      } else if (currentPage >= validTotalPages - 2) {
         pageNumbers.push(1);
         pageNumbers.push("...");
-        for (let i = totalPages - 2; i <= totalPages; i++) pageNumbers.push(i);
+        for (let i = validTotalPages - 2; i <= validTotalPages; i++)
+          pageNumbers.push(i);
       } else {
         pageNumbers.push(1);
         pageNumbers.push("...");
@@ -37,7 +43,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         pageNumbers.push(currentPage);
         pageNumbers.push(currentPage + 1);
         pageNumbers.push("...");
-        pageNumbers.push(totalPages);
+        pageNumbers.push(validTotalPages);
       }
     }
     return pageNumbers;
@@ -48,10 +54,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       <button
         className="pagination-arrow"
         onClick={handlePrevPage}
-        disabled={currentPage === 1}
+        disabled={currentPage <= 1}
         style={{
-          color: currentPage === 1 ? "gray" : "black",
-          cursor: currentPage === 1 ? "not-allowed" : "pointer",
+          color: currentPage <= 1 ? "gray" : "black",
+          cursor: currentPage <= 1 ? "not-allowed" : "pointer",
         }}
       >
         <span>←</span> Prev
