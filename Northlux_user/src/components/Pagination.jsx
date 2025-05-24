@@ -1,7 +1,8 @@
 import React from "react";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
-  console.log(currentPage, totalPages, "xcxcxcxcxcxcx");
+  // Add debug logging to check incoming props
+  console.log("Pagination props:", { currentPage, totalPages });
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
@@ -19,27 +20,34 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     const pageNumbers = [];
     const maxVisiblePages = 5;
 
-    if (totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= totalPages; i++) {
+    // Convert to number and ensure minimum of 1
+    const validTotalPages = Math.max(1, Number(totalPages) || 1);
+    const validCurrentPage = Math.max(1, Number(currentPage) || 1);
+
+    console.log("Validated values:", { validCurrentPage, validTotalPages });
+
+    if (validTotalPages <= maxVisiblePages) {
+      for (let i = 1; i <= validTotalPages; i++) {
         pageNumbers.push(i);
       }
     } else {
-      if (currentPage <= 3) {
+      if (validCurrentPage <= 3) {
         for (let i = 1; i <= 3; i++) pageNumbers.push(i);
         pageNumbers.push("...");
-        pageNumbers.push(totalPages);
-      } else if (currentPage >= totalPages - 2) {
+        pageNumbers.push(validTotalPages);
+      } else if (validCurrentPage >= validTotalPages - 2) {
         pageNumbers.push(1);
         pageNumbers.push("...");
-        for (let i = totalPages - 2; i <= totalPages; i++) pageNumbers.push(i);
+        for (let i = validTotalPages - 2; i <= validTotalPages; i++)
+          pageNumbers.push(i);
       } else {
         pageNumbers.push(1);
         pageNumbers.push("...");
-        pageNumbers.push(currentPage - 1);
-        pageNumbers.push(currentPage);
-        pageNumbers.push(currentPage + 1);
+        pageNumbers.push(validCurrentPage - 1);
+        pageNumbers.push(validCurrentPage);
+        pageNumbers.push(validCurrentPage + 1);
         pageNumbers.push("...");
-        pageNumbers.push(totalPages);
+        pageNumbers.push(validTotalPages);
       }
     }
     return pageNumbers;

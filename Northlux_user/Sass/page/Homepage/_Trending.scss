@@ -4,7 +4,7 @@
 .trending-container {
   padding: var.$default-padding;
   background: #fff;
-  margin: 2rem 0;
+  margin: 1rem 0 0 0;
 
   @media (max-width: 768px) {
     margin: 0.8rem 0;
@@ -14,7 +14,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    // margin-bottom: 2rem;
 
     .trending-content {
       h2 {
