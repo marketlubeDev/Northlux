@@ -22,7 +22,7 @@ function Homepage() {
 
   // useEffect(() => {
   //   window.scrollTo({
-  
+
   //     top: 0,
   //     behavior: "smooth",
   //   });
@@ -42,19 +42,67 @@ function Homepage() {
     ?.filter((banner) => banner?.bannerFor === "hero")
     .map((banner) => ({
       ...banner,
-      image: isMobile && banner?.mobileImage ? banner?.mobileImage : banner?.image,
+      image:
+        isMobile && banner?.mobileImage ? banner?.mobileImage : banner?.image,
     }));
 
-    
   return (
     <div>
       <Carousel data={heroBanners} isLoading={isLoading} />
       <ShopBy />
+      <div
+        style={{
+          width: "85%",
+          height: "1px",
+          backgroundColor: "#E5E5E5",
+          margin: "16px auto",
+        }}
+      />
       <ProductBanner banners={activeOffers} loading={activeOffersLoading} />
+      <div
+        style={{
+          width: "85%",
+          height: "1px",
+          backgroundColor: "#E5E5E5",
+          margin: "8px auto",
+        }}
+      />
       <Clearance />
+      <div
+        style={{
+          width: "85%",
+          height: "1px",
+          backgroundColor: "#E5E5E5",
+          margin: "8px auto",
+        }}
+      />
       <Bestseller />
+      <div
+        style={{
+          width: "85%",
+          height: "1px",
+          backgroundColor: "#E5E5E5",
+          margin: "8px auto",
+        }}
+      />
       <Offer />
+      <div
+        style={{
+          width: "85%",
+          height: "1px",
+          backgroundColor: "#E5E5E5",
+          margin: "8px auto",
+        }}
+      />
       <ProductBanner banners={activeOffers} loading={activeOffersLoading} />
+      <div
+        style={{
+          width: "85%",
+          height: "1px",
+          backgroundColor: "#E5E5E5",
+          margin: "8px auto",
+        }}
+      />
       <Trending />
     </div>
   );
