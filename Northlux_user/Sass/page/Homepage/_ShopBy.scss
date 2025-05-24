@@ -1,21 +1,21 @@
 .shop-by {
   max-width: 1402px;
   margin: 0 auto;
-  padding:0 20px;
+  padding: 0 20px;
   text-align: center;
 
   h2 {
     font-size: 28px;
     margin-bottom: 8px;
     color: #000;
-    margin-top: 1.5rem;
+    // margin-top: 1.5rem;
   }
 
   .tabs {
     display: flex;
     justify-content: center;
     gap: 12px;
-    margin-bottom: 32px;
+    margin-bottom: 16px;
 
     .tab-btn {
       padding: 8px 16px;
@@ -50,7 +50,7 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 16px;
-    margin-bottom: 2rem;
+    // margin-bottom: 2rem;
 
     @media screen and (max-width: 768px) {
       grid-template-columns: repeat(2, 1fr);
@@ -69,7 +69,6 @@
       border-radius: 12px;
       overflow: hidden;
       cursor: pointer;
-
 
       .content-image {
         width: 100%;
@@ -148,8 +147,6 @@
     @media (max-width: 768px) {
       margin-top: 0.8rem;
     }
-
-   
 
     p {
       color: #000;

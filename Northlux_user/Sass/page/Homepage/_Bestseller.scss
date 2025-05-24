@@ -5,7 +5,7 @@
 .bestseller-container {
   padding: var.$default-padding;
   background-color: #fff;
-  margin: 2rem 0;
+  margin: 1rem 0;
 
   @media (max-width: 768px) {
     margin: 0.8rem 0;
@@ -15,7 +15,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
 
     h3 {
       font-size: 2rem;
@@ -215,6 +215,10 @@
       align-items: flex-start;
       gap: 0.5rem;
       margin-bottom: 1.5rem;
+
+      h3 {
+        font-size: 1.5rem;
+      }
 
       .desktop-view-all {
         display: none;

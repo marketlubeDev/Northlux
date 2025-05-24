@@ -57,7 +57,7 @@ export const BrandListing = () => {
     data: brandsData,
     isLoading: brandsLoading,
     isError: brandsError,
-  } = useBrands({ search: searchQuery, page: currentPage, limit });
+  } = useBrands({ search: searchQuery, page: currentPage });
 
   const brands = brandsData?.data?.brands || [];
   // useEffect(() => {

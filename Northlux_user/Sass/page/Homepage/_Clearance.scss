@@ -8,12 +8,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    // margin-bottom: 2rem;
 
-@media screen and (max-width: 768px) {
-  margin-bottom: 0;
-}
-
+    @media screen and (max-width: 768px) {
+      margin-bottom: 0;
+    }
 
     .clearance-content {
       &_h2 {
@@ -113,10 +112,10 @@
     padding: 1rem;
 
     .clearance-header {
-      padding: 0 var.$default-padding;
+      padding: 0;
 
       .clearance-content_h2 {
-        font-size: 2rem;
+        font-size: 21px;
       }
 
       .desktop-view-all {

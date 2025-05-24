@@ -643,7 +643,6 @@ ul {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
 }
 @media screen and (max-width: 768px) {
   .clearance-container .clearance-header {
@@ -732,10 +731,10 @@ ul {
     padding: 1rem;
   }
   .clearance-container .clearance-header {
-    padding: 0 0 10%;
+    padding: 0;
   }
   .clearance-container .clearance-header .clearance-content_h2 {
-    font-size: 2rem;
+    font-size: 21px;
   }
   .clearance-container .clearance-header .desktop-view-all {
     display: none;
@@ -789,7 +788,7 @@ ul {
 .bestseller-container {
   padding: 0 10%;
   background-color: #fff;
-  margin: 2rem 0;
+  margin: 1rem 0;
 }
 @media (max-width: 768px) {
   .bestseller-container {
@@ -800,7 +799,7 @@ ul {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
 }
 .bestseller-container .bestseller-header h3 {
   font-size: 2rem;
@@ -968,6 +967,9 @@ ul {
     align-items: flex-start;
     gap: 0.5rem;
     margin-bottom: 1.5rem;
+  }
+  .bestseller-container .bestseller-header h3 {
+    font-size: 1.5rem;
   }
   .bestseller-container .bestseller-header .desktop-view-all {
     display: none;
@@ -5054,13 +5056,12 @@ body.modal-open {
   font-size: 28px;
   margin-bottom: 8px;
   color: #000;
-  margin-top: 1.5rem;
 }
 .shop-by .tabs {
   display: flex;
   justify-content: center;
   gap: 12px;
-  margin-bottom: 32px;
+  margin-bottom: 16px;
 }
 .shop-by .tabs .tab-btn {
   padding: 8px 16px;
@@ -5090,7 +5091,6 @@ body.modal-open {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 16px;
-  margin-bottom: 2rem;
 }
 @media screen and (max-width: 768px) {
   .shop-by .content {
@@ -6228,7 +6228,7 @@ input[required]::placeholder::after {
 }
 @media (max-width: 768px) {
   .nav-bar-container .nav-bar-list {
-    gap: 60px;
+    gap: 40px;
   }
 }
 .nav-bar-container .nav-bar-list li {

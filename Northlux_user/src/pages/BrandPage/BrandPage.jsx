@@ -12,13 +12,12 @@ export default function BrandPage() {
   const { allBanners, isLoading, error } = useBanners();
   const { id } = useParams();
 
-
   const { brand, isLoading: brandLoading, error: brandError } = useBrand(id);
-  const [brandData, setBrandData] = useState([{
-    image: brand?.brand?.bannerImage,
-  }]);
-
-
+  const [brandData, setBrandData] = useState([
+    {
+      image: brand?.brand?.bannerImage,
+    },
+  ]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -34,9 +33,7 @@ export default function BrandPage() {
     return <div>Error loading content</div>;
   }
 
-
   const [isMobile, setIsMobile] = useState(false);
-
 
   useEffect(() => {
     const handleResize = () => {
@@ -49,21 +46,24 @@ export default function BrandPage() {
   }, []);
 
   useEffect(() => {
-      if(isMobile){
-        setBrandData([{
+    if (isMobile) {
+      setBrandData([
+        {
           image: brand?.brand?.mobileBannerImage,
-        }]);
-      }else{
-        setBrandData([{
+        },
+      ]);
+    } else {
+      setBrandData([
+        {
           image: brand?.brand?.bannerImage,
-        }]);
-      }
-  }, [isMobile , brand]);
-
+        },
+      ]);
+    }
+  }, [isMobile, brand]);
 
   return (
     <div>
-      <Carousel data={brandData} maxHeight={'30rem'} isBrand={true} />
+      <Carousel data={brandData} maxHeight={"30rem"} isBrand={true} />
       <ExclusiveSale id={id} />
       {/* <ProductBanner
         banners={allBanners?.filter(

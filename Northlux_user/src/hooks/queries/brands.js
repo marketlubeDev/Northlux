@@ -3,12 +3,13 @@ import { brandService } from "../../api/services/brandService";
 import apiClient from "../../api/client";
 
 export const useBrands = (filters = {}) => {
+  console.log(filters, "fdfdfdfdfd");
   return useQuery({
     queryKey: ["brands", filters],
-    queryFn: () => apiClient.get("/brand", { params: filters }).then((res) => res.data),
+    queryFn: () =>
+      apiClient.get("/brand", { params: filters }).then((res) => res.data),
   });
 };
-
 
 export const useBrand = (id) => {
   const { data, isLoading, error } = useQuery({

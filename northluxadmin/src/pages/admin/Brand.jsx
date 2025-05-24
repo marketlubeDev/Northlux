@@ -47,6 +47,7 @@ function Brand() {
     fetchBrands();
   }, []);
 
+
   const fetchBrands = async () => {
     try {
       setLoading(true);
@@ -486,7 +487,7 @@ function Brand() {
                   <div>
                     <div className="mb-4 text-left">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Banner Image (3:1)
+                        Banner Image (4:1)
                       </label>
                       <div
                         onClick={handleBannerImageClick}
