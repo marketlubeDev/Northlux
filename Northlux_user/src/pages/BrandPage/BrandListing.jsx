@@ -61,6 +61,8 @@ export const BrandListing = () => {
     isError: brandsError,
   } = useBrands({ search: searchQuery, page: currentPage, limit: limit });
 
+  const totalPages = brandsData?.totalPages;
+
   const brands = brandsData?.data?.brands || [];
   // useEffect(() => {
   //   setBrands(brandsData?.data?.brands);
@@ -132,7 +134,7 @@ export const BrandListing = () => {
       <div className="pagination-wrapper">
         <Pagination
           currentPage={currentPage}
-          totalPages={brandsData?.totalPages}
+          totalPages={totalPages}
           onPageChange={handlePageChange}
         />
       </div>
