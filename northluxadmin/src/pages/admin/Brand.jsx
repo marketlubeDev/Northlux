@@ -32,7 +32,8 @@ function Brand() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [bannerImagePreview, setBannerImagePreview] = useState(null);
-  const [mobileBannerImagePreview, setMobileBannerImagePreview] = useState(null);
+  const [mobileBannerImagePreview, setMobileBannerImagePreview] =
+    useState(null);
   const fileInputRef = useRef(null);
   const bannerFileInputRef = useRef(null);
   const mobileBannerFileInputRef = useRef(null);
@@ -44,7 +45,6 @@ function Brand() {
 
   useEffect(() => {
     fetchBrands();
-    
   }, []);
 
   const fetchBrands = async () => {
@@ -451,7 +451,7 @@ function Brand() {
                 <form onSubmit={handleSubmit}>
                   <div className="mb-4 text-left">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Brand Image
+                      Brand Image (1:1)
                     </label>
                     <div
                       onClick={handleImageClick}
@@ -486,7 +486,7 @@ function Brand() {
                   <div>
                     <div className="mb-4 text-left">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Banner Image
+                        Banner Image (3:1)
                       </label>
                       <div
                         onClick={handleBannerImageClick}
@@ -514,7 +514,7 @@ function Brand() {
                   <div>
                     <div className="mb-4 text-left">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Banner Image For Mobile
+                        Banner Image For Mobile (4:3)
                       </label>
                       <div
                         onClick={handleMobileBannerImageClick}
@@ -527,7 +527,9 @@ function Brand() {
                             className="w-full h-full object-contain rounded-lg"
                           />
                         ) : (
-                          <p className="text-gray-500">Click to upload mobile banner image</p>
+                          <p className="text-gray-500">
+                            Click to upload mobile banner image
+                          </p>
                         )}
                       </div>
                       <input

@@ -1,8 +1,13 @@
-import React, { useState, useRef,useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import PageHeader from "../../components/Admin/PageHeader";
 import { FaTrash, FaEdit, FaCamera } from "react-icons/fa";
 import { toast } from "react-toastify";
-import { addBanner, deleteBanner, editBanner, getBanners } from "../../sevices/bannerApis";
+import {
+  addBanner,
+  deleteBanner,
+  editBanner,
+  getBanners,
+} from "../../sevices/bannerApis";
 function Banner() {
   const [showModal, setShowModal] = useState(false);
   const [editingBanner, setEditingBanner] = useState(null);
@@ -59,7 +64,7 @@ function Banner() {
       if (formData.mobileImage) {
         formDataToSend.append("mobileImage", formData.mobileImage);
       }
-      
+
       if (editingBanner) {
         await editBanner(editingBanner._id, formDataToSend);
         toast.success("Banner updated successfully");
@@ -107,10 +112,8 @@ function Banner() {
       ...prev,
       [name]: value,
     }));
-
-
   };
-  const handleCloseModal = () =>{
+  const handleCloseModal = () => {
     setShowModal(false);
     setEditingBanner(null);
     resetForm();
@@ -173,29 +176,35 @@ function Banner() {
           </thead>
           <tbody>
             {banners?.map((banner) => (
-            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600" key={banner._id}>
-
-              <td className="p-4">
-                <img
-                  src={banner.image}
-                  className="w-16 md:w-32 max-w-full max-h-full"
-                  alt="Apple Watch"
-                />
-              </td>
-              <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                {banner.title}
-              </td>
-              <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                {banner.bannerFor}
-              </td>
-              <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white flex gap-2 ">
-                <FaTrash className="text-red-500 text-lg" onClick={() => handleDeleteBanner(banner._id)}/>
-                <FaEdit className="text-blue-500 text-lg" onClick={() => handleEditBanner(banner)}/>
-              </td>
-            </tr>
-
+              <tr
+                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
+                key={banner._id}
+              >
+                <td className="p-4">
+                  <img
+                    src={banner.image}
+                    className="w-16 md:w-32 max-w-full max-h-full"
+                    alt="Apple Watch"
+                  />
+                </td>
+                <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                  {banner.title}
+                </td>
+                <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                  {banner.bannerFor}
+                </td>
+                <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white flex gap-2 ">
+                  <FaTrash
+                    className="text-red-500 text-lg"
+                    onClick={() => handleDeleteBanner(banner._id)}
+                  />
+                  <FaEdit
+                    className="text-blue-500 text-lg"
+                    onClick={() => handleEditBanner(banner)}
+                  />
+                </td>
+              </tr>
             ))}
-
           </tbody>
         </table>
       </div>
@@ -229,7 +238,7 @@ function Banner() {
             <form onSubmit={handleSubmit}>
               <div className="mb-4 ">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Banner Image
+                  Banner Image (16:9)
                 </label>
                 <div
                   onClick={handleImageClick}
@@ -263,12 +272,12 @@ function Banner() {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Mobile Banner Image
+                  Mobile Banner Image (4:3)
                 </label>
                 <div
-  onClick={handleMobileImageClick}
-  className="relative w-full aspect-[4/3] border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors"
->
+                  onClick={handleMobileImageClick}
+                  className="relative w-full aspect-[4/3] border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors"
+                >
                   {mobileImagePreview ? (
                     <div className="relative w-full h-full">
                       <img
@@ -283,7 +292,9 @@ function Banner() {
                   ) : (
                     <div className="text-center">
                       <FaCamera className="mx-auto text-gray-400 text-3xl mb-2" />
-                      <p className="text-gray-500">Click to upload mobile image</p>
+                      <p className="text-gray-500">
+                        Click to upload mobile image
+                      </p>
                     </div>
                   )}
                 </div>
@@ -319,7 +330,9 @@ function Banner() {
                   onChange={handleInputChange}
                   value={formData.bannerFor}
                 >
-                  <option value="" disabled >Select Banner For</option>
+                  <option value="" disabled>
+                    Select Banner For
+                  </option>
                   <option value="hero">Hero</option>
                   <option value="category">Category</option>
                   <option value="product">Product</option>
