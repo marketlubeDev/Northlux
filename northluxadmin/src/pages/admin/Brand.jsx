@@ -514,7 +514,7 @@ function Brand() {
                   <div>
                     <div className="mb-4 text-left">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Banner Image For Mobile (4:3)
+                        Banner Image For Mobile (2:1)
                       </label>
                       <div
                         onClick={handleMobileBannerImageClick}

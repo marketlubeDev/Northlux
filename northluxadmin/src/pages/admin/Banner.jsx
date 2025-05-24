@@ -238,7 +238,7 @@ function Banner() {
             <form onSubmit={handleSubmit}>
               <div className="mb-4 ">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Banner Image (16:9)
+                  Banner Image (3:1)
                 </label>
                 <div
                   onClick={handleImageClick}
@@ -272,7 +272,7 @@ function Banner() {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Mobile Banner Image (4:3)
+                  Mobile Banner Image (2:1)
                 </label>
                 <div
                   onClick={handleMobileImageClick}

@@ -326,7 +326,7 @@ function OfferBanner() {
                 <form onSubmit={handleSubmit} className="text-left">
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2 text-left">
-                      Banner Image (1:1)
+                      Banner Image (3:1)
                     </label>
                     <div
                       onClick={handleImageClick}
