@@ -174,8 +174,6 @@ function AllProductsContent() {
     });
   }, [location.state]);
 
-
-
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -470,22 +468,17 @@ function AllProductsContent() {
     });
   };
 
-
-
   const productBanners = allBanners
-  ?.filter((banner) => banner?.bannerFor === "product")
-  .map((banner) => ({
-    ...banner,
-    image: isMobile && banner?.mobileImage ? banner?.mobileImage : banner?.image,
-  }));  
+    ?.filter((banner) => banner?.bannerFor === "product")
+    .map((banner) => ({
+      ...banner,
+      image:
+        isMobile && banner?.mobileImage ? banner?.mobileImage : banner?.image,
+    }));
 
   return (
     <div className="product-page">
-      <Carousel
-        data={productBanners}
-        maxHeight="32rem"
-        showButton={false}
-      />
+      <Carousel data={productBanners} maxHeight="32rem" showButton={false} />
       <div className="product-section">
         <div className="breadcrumb">
           <span>Home</span> / <span>All Products</span>

@@ -11,7 +11,9 @@ export const BrandListing = () => {
   const [inputValue, setInputValue] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+
+  console.log(currentPage, "currentPage");
+  const [limit, setLimit] = useState(12);
   // const [brands, setBrands] = useState([]);
   const inputRef = useRef(null);
   const navigate = useNavigate();
@@ -57,7 +59,7 @@ export const BrandListing = () => {
     data: brandsData,
     isLoading: brandsLoading,
     isError: brandsError,
-  } = useBrands({ search: searchQuery, page: currentPage });
+  } = useBrands({ search: searchQuery, page: currentPage, limit: limit });
 
   const brands = brandsData?.data?.brands || [];
   // useEffect(() => {
@@ -130,8 +132,7 @@ export const BrandListing = () => {
       <div className="pagination-wrapper">
         <Pagination
           currentPage={currentPage}
-          // totalPages={2}
-          totalPages={Math.ceil(brandsData?.results / limit)}
+          totalPages={brandsData?.totalPages}
           onPageChange={handlePageChange}
         />
       </div>
