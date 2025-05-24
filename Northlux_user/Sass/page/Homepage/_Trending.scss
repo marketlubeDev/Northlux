@@ -7,7 +7,7 @@
   margin: 1rem 0 0 0;
 
   @media (max-width: 768px) {
-    margin: 0.8rem 0;
+    margin: 0rem 0;
   }
 
   .trending-header {
@@ -21,6 +21,10 @@
         font-size: 2rem;
         font-weight: 600;
         margin-bottom: 0;
+
+        @media (max-width: 575px) {
+          font-size: 21px !important;
+        }
 
         span {
           color: var.$color-primary;
@@ -125,8 +129,9 @@
 
     .trending-products {
       gap: 1rem;
-      padding: 1rem var.$default-padding;
+      padding: 0rem var.$default-padding;
       overflow-x: scroll !important;
+      padding-bottom: 0rem !important;
       -webkit-overflow-scrolling: touch;
 
       &::-webkit-scrollbar {

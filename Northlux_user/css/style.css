@@ -724,7 +724,7 @@ ul {
 }
 @media screen and (max-width: 768px) {
   .clearance-container {
-    padding: 1rem;
+    padding: 0 1rem;
   }
   .clearance-container .clearance-header {
     padding: 0;
@@ -801,6 +801,11 @@ ul {
   font-size: 2rem;
   font-weight: 600;
   margin-bottom: 0;
+}
+@media (max-width: 575px) {
+  .bestseller-container .bestseller-header h3 {
+    font-size: 21px !important;
+  }
 }
 .bestseller-container .bestseller-header h3 span {
   color: #2eb5af;
@@ -953,7 +958,7 @@ ul {
 .bestseller-container .mobile-view-all {
   display: none;
   justify-content: center;
-  margin-top: 1.5rem;
+  margin-top: 0rem;
   color: #2eb5af;
 }
 @media screen and (max-width: 768px) {
@@ -1016,6 +1021,13 @@ ul {
     font-size: 0.875rem;
     margin-bottom: 1.5rem;
   }
+}
+@media screen and (max-width: 768px) and (max-width: 575px) {
+  .bestseller-container .bestseller-content .bestseller-info p {
+    margin-bottom: 0rem;
+  }
+}
+@media screen and (max-width: 768px) {
   .bestseller-container .bestseller-content .bestseller-info .buttons {
     flex-direction: column;
     gap: 0.75rem;
@@ -1156,9 +1168,10 @@ ul {
   .offer-container .offer-content {
     grid-template-columns: 1fr;
     height: auto;
+    gap: 0;
   }
   .offer-container .offer-content .offer-text {
-    padding: 2rem;
+    padding: 1rem !important;
   }
   .offer-container .offer-content .offer-text h2 {
     font-size: 2rem;
@@ -1221,7 +1234,7 @@ ul {
 }
 @media (max-width: 768px) {
   .trending-container {
-    margin: 0.8rem 0;
+    margin: 0rem 0;
   }
 }
 .trending-container .trending-header {
@@ -1233,6 +1246,11 @@ ul {
   font-size: 2rem;
   font-weight: 600;
   margin-bottom: 0;
+}
+@media (max-width: 575px) {
+  .trending-container .trending-header .trending-content h2 {
+    font-size: 21px !important;
+  }
 }
 .trending-container .trending-header .trending-content h2 span {
   color: #2eb5af;
@@ -1320,8 +1338,9 @@ ul {
   }
   .trending-container .trending-products {
     gap: 1rem;
-    padding: 1rem 0 10%;
+    padding: 0rem 0 10%;
     overflow-x: scroll !important;
+    padding-bottom: 0rem !important;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin !important;
     -ms-overflow-style: scrollbar !important;
@@ -5060,6 +5079,12 @@ body.modal-open {
   font-size: 28px;
   margin-bottom: 8px;
   color: #000;
+}
+@media (max-width: 575px) {
+  .shop-by h2 {
+    font-size: 24px !important;
+    margin-bottom: 0rem;
+  }
 }
 .shop-by .tabs {
   display: flex;
