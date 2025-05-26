@@ -88,9 +88,11 @@ function Trending() {
         </button>
       </div>
 
-      <p onClick={handleViewAll} className="view-all mobile-view-all">
+    <div style={{ display: "flex", justifyContent: "center" }}>
+    <p onClick={handleViewAll} className="view-all mobile-view-all">
         View All <ViewAllIcon />
       </p>
+    </div>
     </section>
   );
 }
