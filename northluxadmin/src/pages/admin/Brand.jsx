@@ -12,6 +12,7 @@ import debounce from "lodash/debounce";
 import LoadingSpinner from "../../components/spinner/LoadingSpinner";
 import { FaEdit, FaTrash, FaCamera } from "react-icons/fa";
 import ConfirmationModal from "../../components/Admin/ConfirmationModal";
+import Pagination from "../../components/Admin/Product/components/Pagination/Pagination";
 
 function Brand() {
   const [brands, setBrands] = useState([]);
@@ -20,6 +21,9 @@ function Brand() {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingBrand, setEditingBrand] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [itemsPerPage] = useState(10);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -43,21 +47,34 @@ function Brand() {
   const [mobileImagePreview, setMobileImagePreview] = useState(null);
   const mobileFileInputRef = useRef(null);
 
-  useEffect(() => {
-    fetchBrands();
-  }, []);
-
-
-  const fetchBrands = async () => {
+  const fetchBrands = async (page = currentPage) => {
     try {
       setLoading(true);
-      const response = await getAllBrands();
-      setBrands(response.data.brands);
-      setPriorityBrandsCount(response?.priorityBrandCount);
+      const response = await getAllBrands(page);
+      if (response && response.data) {
+        setBrands(response.data.brands || []);
+        setPriorityBrandsCount(response.data.priorityBrandCount || 0);
+        setTotalPages(response.totalPages || 1);
+        setCurrentPage(response.currentPage || 1);
+      } else {
+        console.error('Unexpected API response structure:', response);
+        toast.error("Invalid response from server");
+      }
     } catch (error) {
+      console.error('Error fetching brands:', error);
       toast.error("Failed to fetch brands");
     } finally {
       setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBrands(1);
+  }, []);
+
+  const handlePageChange = (page) => {
+    if (page !== currentPage) {
+      fetchBrands(page);
     }
   };
 
@@ -70,9 +87,17 @@ function Brand() {
 
       try {
         setLoading(true);
-        const response = await searchBrand(query);
-        setBrands(response.brands);
+        const response = await searchBrand(query);  
+        if (response && response.brands) {
+          setBrands(response.brands || []);
+          setTotalPages(response.totalPages || 1);
+          setCurrentPage(response.currentPage || 1);
+        } else {
+          console.error('Unexpected search response structure:', response);
+          toast.error("Invalid search response from server");
+        }
       } catch (error) {
+        console.error('Search Error:', error);
         toast.error("Failed to search brands");
       } finally {
         setLoading(false);
@@ -279,7 +304,6 @@ function Brand() {
       <PageHeader
         content="Brands"
         otherDetails={`${priorityBrandsCount} priority brands`}
-        // otherDetails={`${priorityBrandsCount} priority brands`}
       />
 
       <div className="flex flex-col m-4">
@@ -417,6 +441,15 @@ function Brand() {
                 )}
               </tbody>
             </table>
+            {brands && brands.length > 0 && (
+              <div className="py-4 px-3 flex justify-end border-t border-gray-200">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

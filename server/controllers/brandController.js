@@ -100,6 +100,7 @@ const getAllBrands = catchAsync(async (req, res, next) => {
     results: brands.length,
     totalPages,
     priorityBrandCount,
+    currentPage: pageNumber,
     data: {
       brands,
     },
