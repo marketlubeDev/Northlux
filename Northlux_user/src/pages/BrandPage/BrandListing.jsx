@@ -12,7 +12,7 @@ export const BrandListing = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  console.log(currentPage, "currentPage");
+ 
   const [limit, setLimit] = useState(12);
   // const [brands, setBrands] = useState([]);
   const inputRef = useRef(null);

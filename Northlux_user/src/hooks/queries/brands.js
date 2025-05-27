@@ -3,7 +3,6 @@ import { brandService } from "../../api/services/brandService";
 import apiClient from "../../api/client";
 
 export const useBrands = (filters = {}) => {
-  console.log(filters, "fdfdfdfdfd");
   return useQuery({
     queryKey: ["brands", filters],
     queryFn: () =>

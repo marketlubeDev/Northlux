@@ -1,7 +1,7 @@
 import { axiosInstance } from "../axios/axiosInstance";
-export const getAllBrands = async () => {
+export const getAllBrands = async (page = 1, limit = 10) => {
   try {
-    const response = await axiosInstance.get("/brand?limit=1000");
+    const response = await axiosInstance.get(`/brand?page=${page}&limit=${limit}`);
     return response.data;
   } catch (error) {
     throw error;
