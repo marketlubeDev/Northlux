@@ -1,7 +1,7 @@
 @use "../abstract/variables" as var;
 
 .footer {
-  background: #fdf6f0;
+  background: #333;
   padding: 3rem 0 0;
 
   // Newsletter Section
@@ -23,6 +23,7 @@
         display: flex;
         flex-direction: column;
         gap: 1rem;
+        color: #fff;
         h2 {
           font-size: 1.75rem;
           font-weight: 600;
@@ -34,10 +35,11 @@
         }
 
         p {
-          color: #666;
+          color: #fff;
           font-size: 0.875rem;
           margin-bottom: 1.5rem;
           line-height: 1.5;
+          opacity: 0.6;
         }
       }
 
@@ -73,7 +75,7 @@
 
   .footer-divider {
     height: 1px;
-    background: #e5e5e5;
+    background: #ffffff33;
     margin: 2rem 0;
   }
 
@@ -119,7 +121,7 @@
         font-size: 1rem;
         font-weight: 600;
         margin-bottom: 1.25rem;
-        color: #333;
+        color: #fff;
       }
 
       ul {
@@ -130,15 +132,77 @@
         li {
           margin-bottom: 0.75rem;
           font-size: 0.875rem;
-          color: #666;
+          color: #fff !important;
+          opacity: 0.6 !important;
 
           &.address {
             line-height: 1.5;
           }
 
           a {
-            color: #666;
+            color: #fff !important;
+            opacity: 0.6 !important;
             text-decoration: none;
+
+            &:hover {
+              color: var.$color-primary;
+            }
+          }
+        }
+      }
+    }
+
+    .footer-section2 {
+      h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1.25rem;
+        color: #fff;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+          margin-bottom: 0.75rem;
+          font-size: 0.875rem;
+          color: #fff !important;
+
+          a {
+            text-decoration: none;
+
+            &:hover {
+              color: var.$color-primary;
+            }
+          }
+        }
+      }
+    }
+
+    .footer-section3 {
+      h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1.25rem;
+        color: #fff;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+          margin-bottom: 0.75rem;
+          font-size: 0.875rem;
+          color: #fff !important;
+          opacity: 0.6 !important;
+
+          a {
+            text-decoration: none;
+            color: #fff !important;
 
             &:hover {
               color: var.$color-primary;
@@ -156,7 +220,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #ffffff33;
 
     .social-links {
       display: flex;
@@ -164,7 +228,8 @@
       padding: 0.6rem 0;
 
       a {
-        color: #666;
+        color: #fff;
+        opacity: 0.6;
         font-size: 1.25rem;
 
         &:hover {
@@ -174,7 +239,8 @@
     }
 
     p {
-      color: #666;
+      color: #fff;
+      opacity: 0.6;
       font-size: 0.875rem;
     }
 
@@ -183,7 +249,8 @@
       gap: 1rem;
 
       a {
-        color: #666;
+        color: #fff;
+        opacity: 0.6;
         text-decoration: none;
         font-size: 0.875rem;
 
@@ -233,4 +300,9 @@
       }
     }
   }
+}
+
+.footer-link {
+  color: #fff !important;
+  opacity: 0.6 !important;
 }

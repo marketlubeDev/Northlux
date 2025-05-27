@@ -1,6 +1,6 @@
 import React from "react";
 import { FaTwitter, FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
-import Logo from "../assets/Logo.svg";
+import Logo from "../assets/LogoFoot.svg";
 import { useCategories } from "../hooks/queries/categories";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -65,26 +65,34 @@ function Footer() {
           </div>
 
           {/* Company */}
-          <div className="footer-section">
+          <div className="footer-section2">
             <h4>Company</h4>
             <ul>
               <li>
-                <a href="#">About us</a>
+                <a href="#" className="footer-link">
+                  About us
+                </a>
               </li>
               <li>
-                <a href="#">Blog</a>
+                <a href="#" className="footer-link">
+                  Blog
+                </a>
               </li>
               <li>
-                <a href="#">Gift vouchers</a>
+                <a href="#" className="footer-link">
+                  Gift vouchers
+                </a>
               </li>
               <li>
-                <a href="#">Our policy</a>
+                <a href="#" className="footer-link">
+                  Our policy
+                </a>
               </li>
             </ul>
           </div>
 
           {/* Contact */}
-          <div className="footer-section">
+          <div className="footer-section3">
             <h4>Contact</h4>
             <ul>
               <li>
@@ -111,9 +119,9 @@ function Footer() {
       {/* Footer Bottom */}
       <div className="footer-bottom">
         <div className="social-links">
-          <a href="#">
+          {/* <a href="#">
             <FaTwitter />
-          </a>
+          </a> */}
           <a href="#">
             <FaFacebookF />
           </a>
@@ -125,7 +133,7 @@ function Footer() {
           </a>
         </div>
 
-        <p>© 2025 Lorem All rights reserved</p>
+        <p>© 2025 Northlux All rights reserved</p>
 
         <div className="legal-links">
           <a href="/terms">Terms & Condition</a>
