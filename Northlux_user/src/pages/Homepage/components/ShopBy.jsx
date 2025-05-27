@@ -96,7 +96,7 @@ const ShopBy = () => {
       {activeTab === "brands" && (
         <div className="browse-all">
           <button onClick={() => navigate("/brands")} className="browse-button">
-            Browse all Brands →
+            View all Brands →
           </button>
         </div>
       )}

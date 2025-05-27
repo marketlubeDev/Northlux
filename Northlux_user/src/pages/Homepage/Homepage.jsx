@@ -9,6 +9,7 @@ import ShopBy from "./components/ShopBy";
 import ProductBanner from "./components/ProductBanner";
 import { useBanners } from "../../hooks/queries/banner";
 import { useActiveOffers } from "../../hooks/queries/activeOffer";
+import CarouselBanner from "../../components/CarouselBanner";
 
 function Homepage() {
   const { allBanners, isLoading, error } = useBanners();
@@ -52,25 +53,26 @@ function Homepage() {
       <ShopBy />
       <div
         style={{
-          width: "85%",
+          width: "80%",
           height: "1px",
           backgroundColor: "#E5E5E5",
           margin: "16px auto",
         }}
       />
-      <ProductBanner banners={activeOffers} loading={activeOffersLoading} />
+      <CarouselBanner data={activeOffers} isLoading={activeOffersLoading} />
+
       <div
         style={{
-          width: "85%",
+          width: "80%",
           height: "1px",
           backgroundColor: "#E5E5E5",
-          margin: "8px auto",
+          margin: "16px auto",
         }}
       />
       <Clearance />
       <div
         style={{
-          width: "85%",
+          width: "80%",
           height: "1px",
           backgroundColor: "#E5E5E5",
           margin: "8px auto",
@@ -79,25 +81,18 @@ function Homepage() {
       <Bestseller />
       <div
         style={{
-          width: "85%",
+          width: "80%",
           height: "1px",
           backgroundColor: "#E5E5E5",
           margin: "8px auto",
         }}
       />
       <Offer />
+
+      <CarouselBanner data={activeOffers} isLoading={activeOffersLoading} />
       <div
         style={{
-          width: "85%",
-          height: "1px",
-          backgroundColor: "#E5E5E5",
-          margin: "8px auto",
-        }}
-      />
-      <ProductBanner banners={activeOffers} loading={activeOffersLoading} />
-      <div
-        style={{
-          width: "85%",
+          width: "80%",
           height: "1px",
           backgroundColor: "#E5E5E5",
           margin: "8px auto",

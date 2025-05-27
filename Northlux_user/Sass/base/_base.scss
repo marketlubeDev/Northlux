@@ -36,10 +36,10 @@ main {
 }
 
 * {
-  // -webkit-tap-highlight-color: transparent;
-  // -webkit-touch-callout: none;
-  // -webkit-user-select: none;
-  // user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 // For input fields and selectable text, add this to allow selection

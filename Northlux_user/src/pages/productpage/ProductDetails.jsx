@@ -111,8 +111,7 @@ function ProductDetailsContent() {
             `• ${orderDetails?.storeName}%0a` +
             `• Contact: ${orderDetails?.storeNumber}%0a%0a` +
             `*Product Image*%0a` +
-            `${orderDetails?.productImage}%0a%0a` ;
-            
+            `${orderDetails?.productImage}%0a%0a`;
 
           const whatsappUrl = `https://wa.me/+91${orderDetails?.storeNumber}?text=${message}`;
           window.open(whatsappUrl, "_blank");

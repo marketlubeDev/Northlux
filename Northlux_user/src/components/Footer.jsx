@@ -99,14 +99,14 @@ function Footer() {
                 <a href="#">Contact us</a>
               </li>
               <li className="address">
-                123 Fashion Street,
+                Balan K Nair Rd,
                 <br />
-                Downtown Avenue, Mumbai,
+                Koombara, Ashokapura,
                 <br />
-                India, 400001
+                Kozhikode, Kerala 673004
               </li>
               <li>
-                <a href="mailto:Lorem@gmail.com">Lorem@gmail.com</a>
+                <a href="mailto:northlux@gmail.com">northlux@gmail.com</a>
               </li>
               <li>
                 <a href="#">Support & FAQ</a>
@@ -122,13 +122,13 @@ function Footer() {
           {/* <a href="#">
             <FaTwitter />
           </a> */}
-          <a href="#">
+          <a href="https://www.facebook.com/" target="_blank">
             <FaFacebookF />
           </a>
-          <a href="#">
+          <a href="https://www.instagram.com/_northlux/" target="_blank">
             <FaInstagram />
           </a>
-          <a href="#">
+          <a href="https://www.youtube.com/" target="_blank">
             <FaYoutube />
           </a>
         </div>

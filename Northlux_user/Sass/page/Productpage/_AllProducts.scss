@@ -4,7 +4,7 @@
   background: #fff;
 
   .product-section {
-    margin: 2rem 0;
+    margin: 1rem 0;
     padding: var.$default-padding;
 
     @media (max-width: 768px) {
@@ -27,11 +27,11 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
 
       .header-left {
         h1 {
-          font-size: 1.25rem;
+          font-size: 2rem;
           font-weight: 500;
 
           @media (max-width: 768px) {
@@ -41,6 +41,11 @@
           span {
             color: var.$color-primary;
             font-weight: normal;
+            font-size: 1.5rem;
+
+            @media (max-width: 768px) {
+              font-size: 0.8rem;
+            }
           }
         }
       }
@@ -108,8 +113,12 @@
 
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+
+      @media (max-width: 1400px) {
+        grid-template-columns: repeat(4, 1fr);
+      }
 
       @media (max-width: 1200px) {
         grid-template-columns: repeat(3, 1fr);
@@ -427,8 +436,12 @@
     .product-grid {
       flex: 1;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+
+      @media (max-width: 1400px) {
+        grid-template-columns: repeat(4, 1fr);
+      }
 
       @media (max-width: 1200px) {
         grid-template-columns: repeat(3, 1fr);
