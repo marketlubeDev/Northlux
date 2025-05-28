@@ -123,6 +123,7 @@ export const NavBar = () => {
       navigate("/products", {
         state: {
           selectedSubCategory: subCategory,
+          selectedCategory: subCategory.parent,
         },
       });
     } else {

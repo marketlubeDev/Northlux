@@ -13,7 +13,7 @@ export const BrandListing = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
  
-  const [limit, setLimit] = useState(12);
+  const [limit, setLimit] = useState(18);
   // const [brands, setBrands] = useState([]);
   const inputRef = useRef(null);
   const navigate = useNavigate();

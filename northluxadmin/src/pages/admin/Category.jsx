@@ -30,6 +30,7 @@ function Category() {
     name: "",
     description: "",
     parent: "",
+    parentName: "",
     image: null,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,6 +46,7 @@ function Category() {
 
   useEffect(() => {
     fetchCategories();
+    fetchParentCategories();
   }, []);
 
   const fetchCategories = async () => {
@@ -147,6 +149,7 @@ function Category() {
       name: category.name,
       description: category.description,
       parent: category.parent?._id || "",
+      parentName: category.parent?.name || "",
       image: null,
     });
     setImagePreview(category.image);
@@ -158,6 +161,7 @@ function Category() {
       name: "",
       description: "",
       parent: "",
+      parentName: "",
       image: null,
     });
     setImagePreview(null);
@@ -172,9 +176,7 @@ function Category() {
   const fetchParentCategories = async () => {
     try {
       const response = await getAllCategories();
-      const filtered = response.envelop.data.filter(
-        (cat) => !editingCategory || cat._id !== editingCategory._id
-      );
+      const filtered = response.envelop.data.filter((category) => !category.parent);
       setParentCategories(filtered);
     } catch (error) {
       toast.error("Failed to fetch parent categories");
@@ -182,7 +184,6 @@ function Category() {
   };
 
   const handleOpenModal = () => {
-    fetchParentCategories();
     setShowModal(true);
   };
 
@@ -616,7 +617,7 @@ function Category() {
                   onChange={handleInputChange}
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <option value="">None (Root Category)</option>
+               {!editingCategory && <option value="">{"None (Root Category)"}</option>}
                   {parentCategories.map((category) => (
                     <option key={category._id} value={category._id}>
                       {category.name}

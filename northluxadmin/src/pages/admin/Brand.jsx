@@ -31,7 +31,6 @@ function Brand() {
     image: null,
     bannerImage: null,
     mobileBannerImage: null,
-    mobileImage: null,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
@@ -44,8 +43,6 @@ function Brand() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [brandToDelete, setBrandToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [mobileImagePreview, setMobileImagePreview] = useState(null);
-  const mobileFileInputRef = useRef(null);
 
   const fetchBrands = async (page = currentPage) => {
     try {
@@ -152,18 +149,6 @@ function Brand() {
     }
   };
 
-  const handleMobileImageClick = () => {
-    mobileFileInputRef.current.click();
-  };
-
-  const handleMobileImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData((prev) => ({ ...prev, mobileImage: file }));
-      setMobileImagePreview(URL.createObjectURL(file));
-    }
-  };
-
   const handleMobileBannerImageClick = () => {
     mobileBannerFileInputRef.current.click();
   };
@@ -179,13 +164,25 @@ function Brand() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
+    // Validate all required fields
+    const missingFields = [];
+    if (!formData.name) missingFields.push("Brand Name");
+    if (!formData.description) missingFields.push("Brand Description");
+    if (!editingBrand) {
+      if (!formData.image) missingFields.push("Brand Image");
+      if (!formData.bannerImage) missingFields.push("Banner Image");
+      if (!formData.mobileBannerImage) missingFields.push("Mobile Banner Image");
+    }
+    if (missingFields.length > 0) {
+      toast.error(`Please fill in the following required fields: ${missingFields.join(", ")}`);
+      setIsSubmitting(false);
+      return;
+    }
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("name", formData.name);
       formDataToSend.append("description", formData.description);
       formDataToSend.append("isPriority", formData.isPriority || false);
-
       if (formData.image) {
         formDataToSend.append("image", formData.image);
       }
@@ -195,10 +192,6 @@ function Brand() {
       if (formData.mobileBannerImage) {
         formDataToSend.append("mobileBannerImage", formData.mobileBannerImage);
       }
-      if (formData.mobileImage) {
-        formDataToSend.append("mobileImage", formData.mobileImage);
-      }
-
       if (editingBrand) {
         await editBrand(editingBrand._id, formDataToSend);
         toast.success("Brand updated successfully");
@@ -208,6 +201,7 @@ function Brand() {
       }
       setShowModal(false);
       resetForm();
+      setSearchQuery("");
       fetchBrands();
     } catch (error) {
       toast.error(error.response?.data?.message || "Operation failed");
@@ -224,13 +218,11 @@ function Brand() {
       image: null,
       bannerImage: null,
       mobileBannerImage: null,
-      mobileImage: null,
       isPriority: brand.isPriority,
     });
     setImagePreview(brand.image);
     setBannerImagePreview(brand.bannerImage);
     setMobileBannerImagePreview(brand.mobileBannerImage);
-    setMobileImagePreview(brand.mobileImage);
     setShowModal(true);
   };
 
@@ -241,13 +233,11 @@ function Brand() {
       image: null,
       bannerImage: null,
       mobileBannerImage: null,
-      mobileImage: null,
     });
     setEditingBrand(null);
     setImagePreview(null);
     setBannerImagePreview(null);
     setMobileBannerImagePreview(null);
-    setMobileImagePreview(null);
   };
 
   // Add useEffect for handling body scroll
@@ -515,6 +505,7 @@ function Brand() {
                       onChange={handleImageChange}
                       accept="image/*"
                       className="hidden"
+                      name="image"
                     />
                   </div>
                   <div>
@@ -542,6 +533,7 @@ function Brand() {
                         onChange={handleBannerImageChange}
                         accept="image/*"
                         className="hidden"
+                        name="bannerImage"
                       />
                     </div>
                   </div>
@@ -572,6 +564,7 @@ function Brand() {
                         onChange={handleMobileBannerImageChange}
                         accept="image/*"
                         className="hidden"
+                        name="mobileBannerImage"
                       />
                     </div>
                   </div>
@@ -609,7 +602,6 @@ function Brand() {
                       type="checkbox"
                       name="isPriority"
                       checked={formData.isPriority}
-                      // value={formData.isPriority}
                       onChange={handleInputChange}
                       disabled={
                         priorityBrandsCount >= 8 && !formData.isPriority
