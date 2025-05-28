@@ -5,4 +5,8 @@ export const labelService = {
     const response = await apiClient.get("/label/getlabels");
     return response.data;
   },
+  getGroupLabels: async () => {
+    const response = await apiClient.get("/label/group-labels");
+    return response.data;
+  },
 };

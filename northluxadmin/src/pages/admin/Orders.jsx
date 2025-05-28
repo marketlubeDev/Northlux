@@ -447,8 +447,8 @@ function Orders({ role }) {
           <td className="px-3 py-3 lg:px-4 whitespace-nowrap">
             <div className="flex items-center">
               <img
-                src={order?.productDetails?.images[0]}
-                alt={order?.product?.name}
+                src={order?.productDetails?.images?.[0] || "N/A"}
+                alt={order?.productDetails?.name || "N/A"}
                 className="w-10 h-10 rounded-full"
               />
               <span
@@ -467,7 +467,7 @@ function Orders({ role }) {
                       " - " +
                       order?.productDetails?.variantName
                     ).slice(0, 20)
-                  : order?.productDetails?.name.slice(0, 20)}
+                  : order?.productDetails?.name?.slice(0, 20)}
                 {order?.productDetails?.hasVariant && "..."}
               </span>
             </div>

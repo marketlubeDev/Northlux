@@ -7,3 +7,10 @@ export const useLabels = () => {
     queryFn: labelService.getAllLabels,
   });
 };
+
+export const useGroupLabels = () => {
+  return useQuery({
+    queryKey: ["groupLabels"],
+    queryFn: labelService.getGroupLabels,
+  });
+};
