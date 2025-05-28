@@ -1,5 +1,5 @@
 import { axiosInstance } from "../axios/axiosInstance";
-export const getAllBrands = async (page = 1, limit = 10) => {
+export const getAllBrands = async (page = 1, limit = 1000) => {
   try {
     const response = await axiosInstance.get(`/brand?page=${page}&limit=${limit}`);
     return response.data;

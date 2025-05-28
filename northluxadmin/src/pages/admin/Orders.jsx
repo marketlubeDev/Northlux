@@ -42,14 +42,15 @@ function Orders({ role }) {
     }
   }, [role, store]);
 
-  const orderStatuses = [
+  const orderStatuses =  [
     "pending",
+    "confirmed",
     "processed",
     "shipped",
     "delivered",
     "cancelled",
     "refunded",
-    "onrefound",
+    "onrefund",
   ];
 
   // Move fetchData outside of useEffect so it can be reused

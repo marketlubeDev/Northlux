@@ -47,7 +47,7 @@ function Brand() {
   const fetchBrands = async (page = currentPage) => {
     try {
       setLoading(true);
-      const response = await getAllBrands(page);
+      const response = await getAllBrands(page , 10);
       if (response && response.data) {
         setBrands(response.data.brands || []);
         setPriorityBrandsCount(response.data.priorityBrandCount || 0);

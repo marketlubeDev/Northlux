@@ -38,6 +38,7 @@ export const BrandListing = () => {
   const handleInputChange = (e) => {
     const value = e.target.value;
     setInputValue(value);
+    setCurrentPage(1);
     debouncedSearch(value);
   };
 
@@ -46,7 +47,7 @@ export const BrandListing = () => {
   //   if (inputRef.current) {
   //     inputRef.current.focus();
   //   }
-  // }, [searchQuery]);
+  // }, []);
 
   useEffect(() => {
     window.scrollTo({
@@ -103,41 +104,48 @@ export const BrandListing = () => {
               onChange={handleInputChange}
               className="search-input"
               ref={inputRef}
-              // autoFocus={true}
+              autoFocus={true}
             />
           </div>
           {/* </div> */}
         </div>
       </div>
       <div className="brand-listing-container">
-        {brands?.map((brand, index) => (
-          <div key={index} className="brand-listing-item">
-            <img src={brand?.image} alt={brand?.name} />
-            <div className="overlay">
-              {/* <h3 className="brand-name">{brand?.name}</h3> */}
-              <button
-                onClick={() => {
-                  navigate(`/brands/${brand?._id}`);
-                }}
-                className="explore-button"
-              >
-                Explore
-              </button>
-            </div>
-            <p>{brand?.description}</p>
+        {brands.length === 0 ? (
+          <div className="no-results-found" style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>
+            <h3>No results found</h3>
+            <p>Try a different search or check your spelling.</p>
           </div>
-        ))}
+        ) : (
+          brands?.map((brand, index) => (
+            <div key={index} className="brand-listing-item">
+              <img src={brand?.image} alt={brand?.name} />
+              <div className="overlay">
+                {/* <h3 className="brand-name">{brand?.name}</h3> */}
+                <button
+                  onClick={() => {
+                    navigate(`/brands/${brand?._id}`);
+                  }}
+                  className="explore-button"
+                >
+                  Explore
+                </button>
+              </div>
+              <p>{brand?.description}</p>
+            </div>
+          ))
+        )}
       </div>
 
       {/* Add Pagination */}
       {/* {brandsData?.results > limit && ( */}
-      <div className="pagination-wrapper">
+    {totalPages > 1 && <div className="pagination-wrapper">
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={handlePageChange}
         />
-      </div>
+      </div>}
       {/* )} */}
     </main>
   );

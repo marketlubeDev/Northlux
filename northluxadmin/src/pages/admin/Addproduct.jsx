@@ -201,6 +201,7 @@ function Addproduct({ role }) {
             : "",
           stockStatus: productData.stockStatus || "",
           images: productData.images || [],
+          grossPrice: productData.grossPrice || "",
         };
 
         // Update product data with the new variant
