@@ -259,6 +259,26 @@
         }
       }
     }
+
+    .powered-by {
+      span {
+        color: #fff;
+        opacity: 0.6;
+        text-decoration: none;
+        font-size: 0.875rem;
+
+        a {
+          color: #fff;
+          font-size: 0.8rem;
+          text-decoration: none;
+          cursor: pointer;
+
+          &:hover {
+            color: var.$color-primary;
+          }
+        }
+      }
+    }
   }
 
   @media (max-width: 768px) {
@@ -305,4 +325,8 @@
 .footer-link {
   color: #fff !important;
   opacity: 0.6 !important;
+}
+
+.footer-brand-name {
+  color: var.$color-primary;
 }

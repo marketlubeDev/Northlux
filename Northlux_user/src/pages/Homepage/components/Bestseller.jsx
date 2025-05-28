@@ -7,6 +7,8 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useProducts } from "../../../hooks/queries/products";
 import ButtonLoadingSpinner from "../../../components/ButtonLoadingSpinners";
+import AOS from "aos";
+import "aos/dist/aos.css"; // Import the styles
 
 function Bestseller() {
   const navigate = useNavigate();
@@ -66,6 +68,16 @@ function Bestseller() {
     });
   };
 
+  // Initialize AOS
+  useEffect(() => {
+    AOS.init({
+      // You can add options here, like:
+      duration: 1000, // Animation duration in milliseconds
+      once: true, // Whether animation should happen only once
+      offset: 100, // Offset (in px) from the original trigger point
+    });
+  }, []);
+
   return (
     <div className="bestseller-container" data-aos="fade-up">
       <div className="bestseller-header">
@@ -105,12 +117,23 @@ function Bestseller() {
               <FiArrowRight />
             </button>
           </div>
-          <h2 className="fade-text">{currentProduct?.name}</h2>
+          <h2 className="fade-text">{currentProduct?.name?.toUpperCase()}</h2>
           <p className="fade-text">
-            {currentProduct?.description.split("").length > 500
-              ? currentProduct?.description.split("").slice(0, 500).join("") +
-                "..."
-              : currentProduct?.description}
+            {currentProduct?.description
+              ? (
+                  currentProduct.description.charAt(0).toUpperCase() +
+                  currentProduct.description.slice(1)
+                ).split("").length > 500
+                ? (
+                    currentProduct.description.charAt(0).toUpperCase() +
+                    currentProduct.description.slice(1)
+                  )
+                    .split("")
+                    .slice(0, 500)
+                    .join("") + "..."
+                : currentProduct.description.charAt(0).toUpperCase() +
+                  currentProduct.description.slice(1)
+              : ""}
           </p>
           {/* <div className="buttons">
             <button
@@ -135,10 +158,10 @@ function Bestseller() {
         </div>
       </div>
       <div style={{ display: "flex", justifyContent: "center" }}>
-    <p onClick={handleViewAll} className="view-all mobile-view-all">
-        View All <ViewAllIcon />
-      </p>
-    </div>
+        <p onClick={handleViewAll} className="view-all mobile-view-all">
+          View All <ViewAllIcon />
+        </p>
+      </div>
     </div>
   );
 }

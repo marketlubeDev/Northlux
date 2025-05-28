@@ -36,13 +36,6 @@ main {
   background: #555;
 }
 
-* {
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
 input,
 textarea,
 select {
@@ -836,7 +829,7 @@ ul {
   text-decoration: none;
   font-weight: 500;
   transition: all 0.3s ease;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.8rem 0.5rem 1rem;
   cursor: pointer;
   border: 1px solid #2eb5af;
   border-radius: 0.5rem;
@@ -1004,7 +997,7 @@ ul {
   text-decoration: none;
   font-weight: 500;
   transition: all 0.3s ease;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.8rem 0.5rem 1rem;
   cursor: pointer;
   font-size: 1rem;
   border: 1px solid #2eb5af;
@@ -1142,7 +1135,7 @@ ul {
   opacity: 0;
 }
 .bestseller-container .mobile-view-all {
-  display: flex;
+  display: none;
   color: #2eb5af;
   justify-content: center;
   align-items: center;
@@ -1463,7 +1456,7 @@ ul {
   text-decoration: none;
   font-weight: 500;
   transition: all 0.3s ease;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.8rem 0.5rem 1rem;
   cursor: pointer;
   border: 1px solid #2eb5af;
   border-radius: 0.5rem;
@@ -1673,7 +1666,7 @@ ul {
   text-decoration: none;
   font-weight: 500;
   transition: all 0.3s ease;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.8rem 0.5rem 1rem;
   cursor: pointer;
   border: 1px solid #2eb5af;
   border-radius: 0.5rem;
@@ -1953,7 +1946,7 @@ ul {
     grid-template-columns: 1fr;
   }
   .tabs {
-    flex-direction: column;
+    flex-direction: row;
   }
   .product-banner {
     margin-bottom: 0;
@@ -2334,6 +2327,21 @@ ul {
 .footer .footer-bottom .legal-links a:hover {
   color: #2eb5af;
 }
+.footer .footer-bottom .powered-by span {
+  color: #fff;
+  opacity: 0.6;
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+.footer .footer-bottom .powered-by span a {
+  color: #fff;
+  font-size: 0.8rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+.footer .footer-bottom .powered-by span a:hover {
+  color: #2eb5af;
+}
 @media (max-width: 768px) {
   .footer .newsletter {
     padding: 0 1rem;
@@ -2369,6 +2377,10 @@ ul {
 .footer-link {
   color: #fff !important;
   opacity: 0.6 !important;
+}
+
+.footer-brand-name {
+  color: #2eb5af;
 }
 
 .product-page {
@@ -3475,7 +3487,7 @@ body.filter-open {
   cursor: pointer;
   border: 1px solid #2eb5af;
   border-radius: 0.5rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.8rem 0.5rem 1rem;
 }
 .top-picks-section .section-header .view-controls .navigation-buttons {
   display: flex;
@@ -5508,7 +5520,7 @@ body.modal-open {
   color: #40bfb4;
   text-decoration: none;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -6679,6 +6691,18 @@ input[required]::placeholder::after {
   border-radius: 5px;
   cursor: pointer;
   height: 40px;
+}
+
+.divider-home {
+  width: 80%;
+  height: 0px;
+  border: 1px solid #e5e5e5;
+  margin: 0.8rem auto;
+}
+@media (max-width: 768px) {
+  .divider-home {
+    width: 90%;
+  }
 }
 
 /*# sourceMappingURL=style.css.map */

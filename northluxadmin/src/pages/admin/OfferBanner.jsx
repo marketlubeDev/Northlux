@@ -349,6 +349,12 @@ function OfferBanner() {
                         <div className="text-center">
                           <FaCamera className="mx-auto text-gray-400 text-3xl mb-2" />
                           <p className="text-gray-500">Click to upload image</p>
+                          <p
+                            className="text-gray-500"
+                            style={{ fontSize: "12px" }}
+                          >
+                            ( 3:1 aspect ratio recommended )
+                          </p>
                         </div>
                       )}
                     </div>

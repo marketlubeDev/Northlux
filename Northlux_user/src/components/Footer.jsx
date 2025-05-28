@@ -122,22 +122,29 @@ function Footer() {
           {/* <a href="#">
             <FaTwitter />
           </a> */}
-          <a href="https://www.facebook.com/" target="_blank">
+          {/* <a href="https://www.facebook.com/" target="_blank">
             <FaFacebookF />
-          </a>
+          </a> */}
           <a href="https://www.instagram.com/_northlux/" target="_blank">
             <FaInstagram />
           </a>
-          <a href="https://www.youtube.com/" target="_blank">
+          {/* <a href="https://www.youtube.com/" target="_blank">
             <FaYoutube />
-          </a>
+          </a> */}
         </div>
 
-        <p>© 2025 Northlux All rights reserved</p>
+        <p>
+          © 2025 <span className="footer-brand-name">Northlux</span> All rights
+          reserved
+        </p>
 
-        <div className="legal-links">
-          <a href="/terms">Terms & Condition</a>
-          <a href="/privacy">Privacy Policy</a>
+        <div className="powered-by">
+          <span>
+            Powered by{" "}
+            <a href="https://www.instagram.com/marketlube/" target="_blank">
+              Marketlube
+            </a>
+          </span>
         </div>
       </div>
     </footer>

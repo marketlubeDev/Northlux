@@ -26,6 +26,7 @@ function CarouselBanner({
     cssEase: "linear",
     customPaging: (i) => <div className="custom-dot"></div>,
     dotsClass: "slick-dots custom-dots",
+    draggable: true,
   };
 
   if (isLoading) return <LoadingSpinner />;
@@ -41,7 +42,16 @@ function CarouselBanner({
               src={item?.bannerImage}
               alt={item?.bannerImage}
               className="carousel-image"
-              onClick={() => navigate(`/products`)}
+              onClick={() =>
+                navigate(`/products`, {
+                  state: {
+                    selectedOffer: {
+                      _id: item._id,
+                      name: item.offerName,
+                    },
+                  },
+                })
+              }
             />
           </div>
         ))}

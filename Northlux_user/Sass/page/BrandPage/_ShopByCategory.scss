@@ -172,7 +172,6 @@
   .product-banner {
     margin-bottom: 0;
   }
-
 }
 
 @media (max-width: 480px) {
@@ -181,7 +180,7 @@
   }
 
   .tabs {
-    flex-direction: column;
+    flex-direction: row;
   }
 
   .product-banner {

@@ -54,11 +54,11 @@ function Brand() {
         setTotalPages(response.totalPages || 1);
         setCurrentPage(response.currentPage || 1);
       } else {
-        console.error('Unexpected API response structure:', response);
+        console.error("Unexpected API response structure:", response);
         toast.error("Invalid response from server");
       }
     } catch (error) {
-      console.error('Error fetching brands:', error);
+      console.error("Error fetching brands:", error);
       toast.error("Failed to fetch brands");
     } finally {
       setLoading(false);
@@ -84,17 +84,17 @@ function Brand() {
 
       try {
         setLoading(true);
-        const response = await searchBrand(query);  
+        const response = await searchBrand(query);
         if (response && response.brands) {
           setBrands(response.brands || []);
           setTotalPages(response.totalPages || 1);
           setCurrentPage(response.currentPage || 1);
         } else {
-          console.error('Unexpected search response structure:', response);
+          console.error("Unexpected search response structure:", response);
           toast.error("Invalid search response from server");
         }
       } catch (error) {
-        console.error('Search Error:', error);
+        console.error("Search Error:", error);
         toast.error("Failed to search brands");
       } finally {
         setLoading(false);
@@ -475,7 +475,7 @@ function Brand() {
                 <form onSubmit={handleSubmit}>
                   <div className="mb-4 text-left">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Brand Image (1:1)
+                      Brand Image
                     </label>
                     <div
                       onClick={handleImageClick}
@@ -496,6 +496,12 @@ function Brand() {
                         <div className="text-center">
                           <FaCamera className="mx-auto text-gray-400 text-3xl mb-2" />
                           <p className="text-gray-500">Click to upload image</p>
+                          <p
+                            className="text-gray-500"
+                            style={{ fontSize: "12px" }}
+                          >
+                            ( 1:1 aspect ratio recommended )
+                          </p>
                         </div>
                       )}
                     </div>
@@ -511,7 +517,7 @@ function Brand() {
                   <div>
                     <div className="mb-4 text-left">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Banner Image (4:1)
+                        Banner Image
                       </label>
                       <div
                         onClick={handleBannerImageClick}
@@ -524,7 +530,18 @@ function Brand() {
                             className="w-full h-full object-contain rounded-lg"
                           />
                         ) : (
-                          <p className="text-gray-500">Click to upload image</p>
+                          <div className="text-center">
+                            <FaCamera className="mx-auto text-gray-400 text-3xl mb-2" />
+                            <p className="text-gray-500">
+                              Click to upload image
+                            </p>
+                            <p
+                              className="text-gray-500"
+                              style={{ fontSize: "12px" }}
+                            >
+                              ( 4:1 aspect ratio recommended )
+                            </p>
+                          </div>
                         )}
                       </div>
                       <input
@@ -540,7 +557,7 @@ function Brand() {
                   <div>
                     <div className="mb-4 text-left">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Banner Image For Mobile (2:1)
+                        Banner Image For Mobile
                       </label>
                       <div
                         onClick={handleMobileBannerImageClick}
@@ -553,9 +570,18 @@ function Brand() {
                             className="w-full h-full object-contain rounded-lg"
                           />
                         ) : (
-                          <p className="text-gray-500">
-                            Click to upload mobile banner image
-                          </p>
+                          <div className="text-center">
+                            <FaCamera className="mx-auto text-gray-400 text-3xl mb-2" />
+                            <p className="text-gray-500">
+                              Click to upload mobile banner image
+                            </p>
+                            <p
+                              className="text-gray-500"
+                              style={{ fontSize: "12px" }}
+                            >
+                              ( 2:1 aspect ratio recommended )
+                            </p>
+                          </div>
                         )}
                       </div>
                       <input
@@ -590,9 +616,13 @@ function Brand() {
                       name="description"
                       value={formData.description}
                       onChange={handleInputChange}
+                      maxLength={20}
                       className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                       required
                     />
+                    <p className="text-xs text-gray-500 mt-1">
+                      {formData.description.length}/20 characters
+                    </p>
                   </div>
                   <div className="mb-4 flex items-center gap-4">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
