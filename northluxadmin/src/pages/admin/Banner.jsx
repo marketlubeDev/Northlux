@@ -238,7 +238,7 @@ function Banner() {
             <form onSubmit={handleSubmit}>
               <div className="mb-4 ">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Banner Image (3:1)
+                  Banner Image
                 </label>
                 <div
                   onClick={handleImageClick}
@@ -259,6 +259,9 @@ function Banner() {
                     <div className="text-center">
                       <FaCamera className="mx-auto text-gray-400 text-3xl mb-2" />
                       <p className="text-gray-500">Click to upload image</p>
+                      <p className="text-gray-500" style={{ fontSize: "12px" }}>
+                        ( 3:1 aspect ratio recommended )
+                      </p>
                     </div>
                   )}
                 </div>
@@ -272,7 +275,7 @@ function Banner() {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Mobile Banner Image (4:3)
+                  Mobile Banner Image
                 </label>
                 <div
                   onClick={handleMobileImageClick}
@@ -294,6 +297,9 @@ function Banner() {
                       <FaCamera className="mx-auto text-gray-400 text-3xl mb-2" />
                       <p className="text-gray-500">
                         Click to upload mobile image
+                      </p>
+                      <p className="text-gray-500" style={{ fontSize: "12px" }}>
+                        ( 4:3 aspect ratio recommended )
                       </p>
                     </div>
                   )}

@@ -51,53 +51,16 @@ function Homepage() {
     <div>
       <Carousel data={heroBanners} isLoading={isLoading} />
       <ShopBy />
-      <div
-        style={{
-          width: "80%",
-          height: "1px",
-          backgroundColor: "#E5E5E5",
-          margin: "16px auto",
-        }}
-      />
+      <div className="divider-home" />
       <CarouselBanner data={activeOffers} isLoading={activeOffersLoading} />
-
-      <div
-        style={{
-          width: "80%",
-          height: "1px",
-          backgroundColor: "#E5E5E5",
-          margin: "16px auto",
-        }}
-      />
+      <div className="divider-home" />
       <Clearance />
-      <div
-        style={{
-          width: "80%",
-          height: "1px",
-          backgroundColor: "#E5E5E5",
-          margin: "8px auto",
-        }}
-      />
+      <div className="divider-home" />
       <Bestseller />
-      <div
-        style={{
-          width: "80%",
-          height: "1px",
-          backgroundColor: "#E5E5E5",
-          margin: "8px auto",
-        }}
-      />
+      <div className="divider-home" />
       <Offer />
-
       <CarouselBanner data={activeOffers} isLoading={activeOffersLoading} />
-      <div
-        style={{
-          width: "80%",
-          height: "1px",
-          backgroundColor: "#E5E5E5",
-          margin: "8px auto",
-        }}
-      />
+      <div className="divider-home" />
       <Trending />
     </div>
   );

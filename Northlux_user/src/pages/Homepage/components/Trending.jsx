@@ -56,7 +56,11 @@ function Trending() {
   };
 
   return (
-    <section className="trending-container" data-aos="fade-up">
+    <section
+      className="trending-container"
+      data-aos="fade-up"
+      data-aos-duration="1000"
+    >
       <div className="trending-header">
         <div className="trending-content">
           <h2>
@@ -88,11 +92,11 @@ function Trending() {
         </button>
       </div>
 
-    <div style={{ display: "flex", justifyContent: "center" }}>
-    <p onClick={handleViewAll} className="view-all mobile-view-all">
-        View All <ViewAllIcon />
-      </p>
-    </div>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <p onClick={handleViewAll} className="view-all mobile-view-all">
+          View All <ViewAllIcon />
+        </p>
+      </div>
     </section>
   );
 }

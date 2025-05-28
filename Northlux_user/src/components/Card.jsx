@@ -42,7 +42,7 @@ function Card({ product }) {
         </div>
       </div>
 
-      <div className="product-card_content">
+      <div className="product-card_content" style={{ padding: "1rem 0.5rem" }}>
         {/* <span className="category">{category.name}</span> */}
         <h3 className="title">
           {name.split("").length > 20 ? name.slice(0, 20) + "..." : name}

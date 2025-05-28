@@ -19,7 +19,6 @@ import {
   FaCamera,
 } from "react-icons/fa";
 
-
 function Category() {
   const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -569,6 +568,9 @@ function Category() {
                     <div className="text-center">
                       <FaCamera className="mx-auto text-gray-400 text-3xl mb-2" />
                       <p className="text-gray-500">Click to upload image</p>
+                      <p className="text-gray-500" style={{ fontSize: "12px" }}>
+                        ( 1:1 aspect ratio recommended )
+                      </p>
                     </div>
                   )}
                 </div>
