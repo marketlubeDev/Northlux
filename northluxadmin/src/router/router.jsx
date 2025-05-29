@@ -13,7 +13,7 @@ import Category from "../pages/admin/Category";
 import Brand from "../pages/admin/Brand";
 import Label from "../pages/admin/Label";
 import Banner from "../pages/admin/Banner";
-import OfferBanner from "../pages/admin/OfferBanner";
+import BannerWithLink from "../pages/admin/BannerWithLink";
 import Store from "../pages/admin/Store";
 import Storeinfo from "../pages/admin/Storeinfo";
 import StoreLayout from "../layouts/StoreLayout/StoreLayout";
@@ -94,8 +94,8 @@ export const router = createBrowserRouter([
         element: <Banner />,
       },
       {
-        path: "offer-banner",
-        element: <OfferBanner />,
+        path: "banner-with-link",
+        element: <BannerWithLink />,
       },
       {
         path: "active-offer",
@@ -174,8 +174,8 @@ export const router = createBrowserRouter([
         element: <Banner role={"store"} />,
       },
       {
-        path: "offer-banner",
-        element: <OfferBanner role={"store"} />,
+        path: "banner-with-link",
+        element: <BannerWithLink role={"store"} />,
       },
       {
         path: "store",

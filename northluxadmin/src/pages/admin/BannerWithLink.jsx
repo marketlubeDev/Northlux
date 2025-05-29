@@ -15,17 +15,12 @@ import {
 } from "../../utils/validations/offerBannerValidation";
 import LoadingSpinner from "../../components/spinner/LoadingSpinner";
 
-function OfferBanner() {
+function BannerWithLink() {
   const [showModal, setShowModal] = useState(false);
   const [editingBanner, setEditingBanner] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    title: "",
-    subtitle: "",
-    description: "",
-    offerValue: "",
-    offerType: "",
     link: "",
     image: null,
   });
@@ -84,42 +79,15 @@ function OfferBanner() {
       ...prev,
       [name]: value,
     }));
-
-    const error = validateOfferBannerField(
-      name,
-      value,
-      formData.offerType,
-      imagePreview,
-      !!editingBanner
-    );
-    setErrors((prev) => ({
-      ...prev,
-      [name]: error,
-    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const newErrors = validateOfferBannerForm(
-      formData,
-      imagePreview,
-      !!editingBanner
-    );
-
-    if (Object.values(newErrors).some((error) => error !== "")) {
-      setErrors(newErrors);
-      return;
-    }
+    console.log(formData);
 
     setIsSubmitting(true);
     try {
       const formDataObj = new FormData();
-      formDataObj.append("title", formData.title);
-      formDataObj.append("subtitle", formData.subtitle);
-      formDataObj.append("description", formData.description);
-      formDataObj.append("offerValue", formData.offerValue);
-      formDataObj.append("offerType", formData.offerType);
       formDataObj.append("link", formData.link);
       if (formData.image) {
         formDataObj.append("image", formData.image);
@@ -146,11 +114,6 @@ function OfferBanner() {
   const handleEditBanner = (banner) => {
     setEditingBanner(banner);
     setFormData({
-      title: banner.title,
-      subtitle: banner.subtitle,
-      description: banner.description,
-      offerValue: banner.offerValue,
-      offerType: banner.offerType,
       link: banner.link,
       image: null,
     });
@@ -160,11 +123,6 @@ function OfferBanner() {
 
   const resetForm = () => {
     setFormData({
-      title: "",
-      subtitle: "",
-      description: "",
-      offerValue: "",
-      offerType: "",
       link: "",
       image: null,
     });
@@ -208,13 +166,13 @@ function OfferBanner() {
 
   return (
     <>
-      <PageHeader content="Offer Banner" />
+      <PageHeader content="Banner With Link" />
       <div>
         <button
           className="block text-white bg-green-500 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center ms-auto mb-2"
           onClick={() => setShowModal(true)}
         >
-          Add New Offer Banner
+          Add New Banner With Link
         </button>
       </div>
 
@@ -301,7 +259,7 @@ function OfferBanner() {
             <div className="relative bg-white rounded-lg max-w-md w-full mx-auto p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold">
-                  {editingBanner ? "Edit Offer Banner" : "Add New Offer Banner"}
+                  {editingBanner ? "Edit Banner With Link" : "Add New Banner With Link"}
                 </h2>
                 <button
                   onClick={handleCloseModal}
@@ -372,117 +330,8 @@ function OfferBanner() {
                     />
                   </div>
 
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1 text-left">
-                      Title
-                    </label>
-                    <input
-                      type="text"
-                      name="title"
-                      value={formData.title}
-                      onChange={handleInputChange}
-                      className={`w-full p-2 border rounded-md ${
-                        errors.title ? "border-red-500" : "border-gray-300"
-                      }`}
-                    />
-                    {errors.title && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.title}
-                      </p>
-                    )}
-                  </div>
+              
 
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1 text-left">
-                      Subtitle
-                    </label>
-                    <input
-                      type="text"
-                      name="subtitle"
-                      value={formData.subtitle}
-                      onChange={handleInputChange}
-                      className={`w-full p-2 border rounded-md ${
-                        errors.subtitle ? "border-red-500" : "border-gray-300"
-                      }`}
-                    />
-                    {errors.subtitle && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.subtitle}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1 text-left">
-                      Description
-                    </label>
-                    <textarea
-                      name="description"
-                      value={formData.description}
-                      onChange={handleInputChange}
-                      className={`w-full p-2 border rounded-md ${
-                        errors.description
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                      rows="3"
-                    />
-                    {errors.description && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.description}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="mb-4 flex gap-4">
-                    <div className="flex-1">
-                      <label className="block text-sm font-medium text-gray-700 mb-1 text-left">
-                        Offer Value
-                      </label>
-                      <input
-                        type="number"
-                        name="offerValue"
-                        value={formData.offerValue}
-                        onChange={handleInputChange}
-                        className={`w-full p-2 border rounded-md ${
-                          errors.offerValue
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        }`}
-                      />
-                      {errors.offerValue && (
-                        <p className="mt-1 text-sm text-red-500">
-                          {errors.offerValue}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <label className="block text-sm font-medium text-gray-700 mb-1 text-left">
-                        Offer Type
-                      </label>
-                      <select
-                        name="offerType"
-                        value={formData.offerType}
-                        onChange={handleInputChange}
-                        className={`w-full p-2 border rounded-md ${
-                          errors.offerType
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        }`}
-                      >
-                        <option value="" disabled>
-                          Select Type
-                        </option>
-                        <option value="percentage">Percentage</option>
-                        <option value="fixed">Fixed</option>
-                      </select>
-                      {errors.offerType && (
-                        <p className="mt-1 text-sm text-red-500">
-                          {errors.offerType}
-                        </p>
-                      )}
-                    </div>
-                  </div>
 
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-1 text-left">
@@ -567,4 +416,4 @@ function OfferBanner() {
   );
 }
 
-export default OfferBanner;
+export default BannerWithLink;

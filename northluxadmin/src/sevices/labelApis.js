@@ -38,3 +38,13 @@ export const editLabel = async (labelId, labelData) => {
     throw error;
   }
 };
+
+export const deleteLabel = async (labelId) => {
+  try {
+    const response = await axiosInstance.delete(`/label/deletelabel/${labelId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+

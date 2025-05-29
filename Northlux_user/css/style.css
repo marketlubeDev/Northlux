@@ -1249,8 +1249,6 @@ ul {
   opacity: 1;
 }
 .offer-container .offer-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: 2rem;
   background: linear-gradient(135deg, #2eb5af 0%, #2eb5af 100%);
   overflow: hidden;

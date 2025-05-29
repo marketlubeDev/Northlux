@@ -5,15 +5,22 @@ import {
   searchLabel,
   addLabel,
   editLabel,
+  deleteLabel,
 } from "../../sevices/labelApis";
 import { toast } from "react-toastify";
 import debounce from "lodash/debounce";
 import LoadingSpinner from "../../components/spinner/LoadingSpinner";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import ConfirmationModal from "../../components/Admin/ConfirmationModal";
+
 function Label() {
   const [labels, setLabels] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [labelToDelete, setLabelToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [editingLabel, setEditingLabel] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -99,6 +106,31 @@ function Label() {
       description: label.description,
     });
     setShowModal(true);
+  };
+
+  const handleDelete = (labelId) => {
+    const label = labels.find(l => l._id === labelId);
+    setLabelToDelete(label);
+    setShowDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setLabelToDelete(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      setIsDeleting(true);
+      await deleteLabel(labelToDelete._id);
+      toast.success("Label deleted successfully");
+      fetchLabels();
+      handleCloseDeleteModal();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Operation failed");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const resetForm = () => {
@@ -206,12 +238,19 @@ function Label() {
                         {label._id}
                       </td>
                       <td className="px-6 py-4">{label.name}</td>
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-4 gap-2 flex">
                         <button
                           onClick={() => handleEdit(label)}
                           className="font-medium text-blue-600 hover:underline"
                         >
-                          Edit
+                          <FaEdit size={20} />
+                        </button>
+
+                        <button
+                          onClick={() => handleDelete(label._id)}
+                          className="font-medium text-red-600 hover:underline"
+                        >
+                          <FaTrash size={20} color="red" />
                         </button>
                       </td>
                     </tr>
@@ -312,6 +351,17 @@ function Label() {
           </div>
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Delete"
+        message={`Are you sure you want to delete the label "${labelToDelete?.name}"?`}
+        isLoading={isDeleting}
+        confirmButtonText="Delete"
+        confirmButtonColor="red"
+      />
     </div>
   );
 }

@@ -5,8 +5,12 @@ import {
   FiArrowRight as ViewAllIcon,
 } from "react-icons/fi";
 import Card from "../../../components/Card";
+import { useNavigate } from "react-router-dom";
 
 export default function Sections({ label }) {
+  console.log(label , "label>>>>");
+  const navigate = useNavigate();
+  
   const scrollContainerRef = useRef(null);
   if(label?.products?.length === 0) return null
 
@@ -41,6 +45,14 @@ export default function Sections({ label }) {
     }
   };
 
+
+  const handleViewAll = () => {
+    navigate("/products", {
+      state: {
+        selectedLabel:{ _id: label?.label?.id, name: label?.label?.name }
+      },
+    });
+  };
   return (
     <section
       className="trending-container"
@@ -49,9 +61,9 @@ export default function Sections({ label }) {
     >
       <div className="trending-header">
         <div className="trending-content">
-          <h2>{label?.label}</h2>
+          <h2>{label?.label?.name}</h2>
         </div>
-        <p className="view-all desktop-view-all">
+        <p className="view-all desktop-view-all" onClick={handleViewAll}>
           View All <ViewAllIcon />
         </p>
       </div>
@@ -77,7 +89,7 @@ export default function Sections({ label }) {
       </div>
 
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <p className="view-all mobile-view-all">View All</p>
+        <p className="view-all mobile-view-all" onClick={handleViewAll}>View All</p>
       </div>
     </section>
   );

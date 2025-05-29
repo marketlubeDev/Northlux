@@ -7,7 +7,7 @@ import {
   FaChevronRight,
 } from "react-icons/fa";
 import { getAllCategories } from "../../sevices/categoryApis";
-import { createSubCategory, updateSubCategory } from "../../sevices/subcategoryApis";
+import { createSubCategory, deleteSubCategory, updateSubCategory } from "../../sevices/subcategoryApis";
 import { toast } from "react-toastify";
 
 function Subcategories() {
@@ -104,6 +104,16 @@ function Subcategories() {
     setShowModal(true);
   };
 
+  const handleDelete = async (subcategoryId) => {
+    try {
+      await deleteSubCategory(subcategoryId);
+      toast.success("Subcategory deleted successfully");
+      fetchCategories();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Operation failed");
+    }
+  };
+
   // Flatten subcategories for table display
 
 
@@ -184,7 +194,7 @@ function Subcategories() {
                         <button className="font-medium text-blue-600 hover:underline" onClick={() => handleEdit(subcategory)}>
                           <FaEdit size={18} />
                         </button>
-                        <button className="font-medium text-red-600 hover:underline">
+                        <button className="font-medium text-red-600 hover:underline" onClick={() => handleDelete(subcategory._id)}>
                           <FaTrash size={18} />
                         </button>
                       </td>

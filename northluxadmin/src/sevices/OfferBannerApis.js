@@ -1,11 +1,7 @@
 import { axiosInstance } from "../axios/axiosInstance";
 
 export const addOfferBanner = async (bannerData) => {
-  const response = await axiosInstance.post("/offerBanner", bannerData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const response = await axiosInstance.post("/offerBanner", bannerData);
   return response.data;
 };
 
