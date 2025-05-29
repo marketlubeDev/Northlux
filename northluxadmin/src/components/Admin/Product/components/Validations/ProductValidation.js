@@ -5,6 +5,7 @@ export const validateProduct = (productData, selectedVariant, images) => {
   if (!productData.name?.trim()) errors.name = "Product name is required";
   if (!productData.brand) errors.brand = "Brand is required";
   if (!productData.category) errors.category = "Category is required";
+  if (!productData.subcategory) errors.subcategory = "Subcategory is required";
   if (!productData.label) errors.label = "Label is required";
   if (!productData.store) errors.store = "Store is required";
 
@@ -46,12 +47,12 @@ export const validateProduct = (productData, selectedVariant, images) => {
         "Offer price must be less than or equal to regular price";
     }
 
-    // Image validation
+
     if (!images?.some((image) => image)) {
       errors.images = "At least one product image is required";
     }
   }
 
-  // ... rest of the validation logic
+ 
   return errors;
 };

@@ -22,6 +22,7 @@ import { ActiveOffers } from "../pages/admin/ActiveOffers";
 import Sales from "../pages/admin/Sales";
 import Inventory from "../pages/admin/Inventory";
 import StoreProtectedRoute from "./StoreProtectedRoute/StoreProtectedRoute";
+import Subcategories from "../pages/admin/Subcategories";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -62,6 +63,10 @@ export const router = createBrowserRouter([
       {
         path: "category",
         element: <Category />,
+      },
+      {
+        path: "subcategory",
+        element: <Subcategories />,
       },
       {
         path: "brand",

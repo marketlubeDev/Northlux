@@ -33,6 +33,8 @@ import {
   initialVariantState,
 } from "../../components/Admin/Product/constants/initialStates";
 import LoadingSpinner from "../../components/spinner/LoadingSpinner";
+import { Select } from "@headlessui/react";
+import Selector from "../../components/Admin/Product/components/Inputs/Selector";
 
 function Addproduct({ role }) {
   // State Management
@@ -50,6 +52,8 @@ function Addproduct({ role }) {
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(null);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [storeLoggedIn, setStoreLoggedIn] = useState(false);
+  const [subcategories, setSubcategories] = useState([]);
+  const [showSubcategory, setShowSubcategory] = useState([]);
 
   const navigate = useNavigate();
 
@@ -124,7 +128,18 @@ function Addproduct({ role }) {
       try {
         //in this function we are fetching the categories and brands also store (store is updated in the backend)
         const res = await getcategoriesbrands();
+        console.log(res.data);
+
+        const subcategoryList = res.data.categories.flatMap((category) =>
+          (category.subcategories || []).map((subcat) => ({
+            ...subcat,
+            parentCategoryName: category.name,
+            parentCategoryId: category._id,
+          }))
+        );
+        console.log(subcategoryList);
         setFormUtilites(res.data);
+        setSubcategories(subcategoryList);
       } catch (err) {
         toast.error("Failed to fetch categories and brands");
       }
@@ -132,9 +147,21 @@ function Addproduct({ role }) {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const subcategoryList = subcategories.filter(
+      (subcat) => subcat.parentCategoryId == productData.category
+    );
+    setShowSubcategory(subcategoryList);
+    setProductData((prev) => ({
+      ...prev,
+      subcategory: "",
+    }));
+  }, [productData.category]);
+
   // Event Handlers
   const handleProductChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
     setProductData((prev) => ({
       ...prev,
       [name]: value,
@@ -272,7 +299,6 @@ function Addproduct({ role }) {
   };
 
   const handleSaveVariant = () => {
-  
     const variantData = {
       _id: currentVariant?._id || "",
       sku: currentVariant?.sku || "",
@@ -373,6 +399,7 @@ function Addproduct({ role }) {
   };
 
   const handlePublish = async () => {
+    console.log(productData , "productData>>>");
     if (
       selectedVariant === "hasVariants" &&
       productData.variants.length === 0
@@ -417,6 +444,7 @@ function Addproduct({ role }) {
     formData.append("name", productData.name);
     formData.append("brand", productData.brand);
     formData.append("category", productData.category);
+    formData.append("subcategory", productData.subcategory);
     formData.append("label", productData.label);
     formData.append("store", productData.store);
     formData.append("priority", productData.priority);
@@ -521,6 +549,8 @@ function Addproduct({ role }) {
       });
     }
 
+    console.log(formData , "formData");
+
     try {
       let res;
       if (editMode && productId) {
@@ -618,17 +648,30 @@ function Addproduct({ role }) {
               />
 
               <div className="flex gap-2">
-                <BrandSelect
-                  brands={formUtilites.brands}
+                <Selector
+                  options={formUtilites.brands}
                   handleChange={handleProductChange}
                   value={productData.brand}
                   errors={errors}
+                  label="Brand"
+                  name="brand"
                 />
-                <CategorySelect
-                  categories={formUtilites.categories}
+                <Selector
+                  options={formUtilites.categories}
                   handleChange={handleProductChange}
                   value={productData.category}
                   errors={errors}
+                  label="Category"
+                  name="category"
+                />
+                <Selector
+                  options={showSubcategory}
+                  handleChange={handleProductChange}
+                  value={productData.subcategory}
+                  errors={errors}
+                  label="Subcategory"
+                  name="subcategory"
+                  disabled={!productData.category}
                 />
               </div>
 

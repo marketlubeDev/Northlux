@@ -16,6 +16,7 @@ function AdminLayout() {
     { name: "Orders", path: "order" },
     { name: "Stores", path: "store" },
     { name: "Categories", path: "category" },
+    { name: "SubCategories", path: "subcategory" },
     { name: "Brands", path: "brand" },
     { name: "Labels", path: "label" },
     // { name: "Customers", path: "customer" },

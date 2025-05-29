@@ -22,6 +22,7 @@ import { useBanners } from "../../hooks/queries/banner";
 // Separate the content into a new component
 function AllProductsContent() {
   const location = useLocation();
+
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [openSections, setOpenSections] = useState({
     categories: true,
@@ -134,16 +135,33 @@ function AllProductsContent() {
         ...prev,
         categoryName: categoryFromHeader.name,
       }));
+
+
+      if(!subCategoryFromHeader){
+        setSelectedFilters((prev) => ({
+          ...prev,
+          subcategoryId: null,
+        }));
+        setSelectedNames((prev) => ({
+          ...prev,
+          subcategoryName: "",
+        }));
+      }
     }
     if (subCategoryFromHeader) {
       setSelectedFilters((prev) => ({
         ...prev,
-        subcategoryId: subCategoryFromHeader?.id,
+        subcategoryId: subCategoryFromHeader?._id,
+        categoryId: subCategoryFromHeader?.category,
       }));
       setSelectedNames((prev) => ({
         ...prev,
         subcategoryName: subCategoryFromHeader?.name,
       }));
+      // setSelectedNames((prev) => ({
+      //   ...prev,
+      //   categoryName: categoryFromHeader.name,
+      // }));
     }
     if (labelFromHomePage) {
       setSelectedFilters((prev) => ({

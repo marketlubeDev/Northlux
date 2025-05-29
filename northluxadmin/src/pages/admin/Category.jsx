@@ -28,12 +28,9 @@ function Category() {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    parent: "",
-    parentName: "",
     image: null,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [parentCategories, setParentCategories] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -45,7 +42,6 @@ function Category() {
 
   useEffect(() => {
     fetchCategories();
-    fetchParentCategories();
   }, []);
 
   const fetchCategories = async () => {
@@ -118,9 +114,6 @@ function Category() {
       const formDataToSend = new FormData();
       formDataToSend.append("name", formData.name);
       formDataToSend.append("description", formData.description);
-      if (formData.parent) {
-        formDataToSend.append("parent", formData.parent);
-      }
       if (formData.image) {
         formDataToSend.append("image", formData.image);
       }
@@ -147,7 +140,6 @@ function Category() {
     setFormData({
       name: category.name,
       description: category.description,
-      parent: category.parent?._id || "",
       parentName: category.parent?.name || "",
       image: null,
     });
@@ -159,8 +151,6 @@ function Category() {
     setFormData({
       name: "",
       description: "",
-      parent: "",
-      parentName: "",
       image: null,
     });
     setImagePreview(null);
@@ -172,15 +162,6 @@ function Category() {
     resetForm();
   };
 
-  const fetchParentCategories = async () => {
-    try {
-      const response = await getAllCategories();
-      const filtered = response.envelop.data.filter((category) => !category.parent);
-      setParentCategories(filtered);
-    } catch (error) {
-      toast.error("Failed to fetch parent categories");
-    }
-  };
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -274,9 +255,9 @@ function Category() {
             </button>
           </td>
         </tr>
-        {category.subcategories?.map((subcategory) =>
+        {/* {category.subcategories?.map((subcategory) =>
           renderCategoryRow(subcategory, level + 1, category.name)
-        )}
+        )} */}
       </React.Fragment>
     );
   };
@@ -609,7 +590,7 @@ function Category() {
                   required
                 />
               </div>
-              <div className="mb-4">
+              {/* <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Parent Category (Optional)
                 </label>
@@ -626,7 +607,7 @@ function Category() {
                     </option>
                   ))}
                 </select>
-              </div>
+              </div> */}
               <div className="flex justify-end gap-2">
                 <button
                   type="button"

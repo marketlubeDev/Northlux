@@ -2,6 +2,7 @@ export const initialProductState = {
   name: "",
   brand: "",
   category: "",
+  subcategory: "",
   label: "",
   description: "",
   sku: "",

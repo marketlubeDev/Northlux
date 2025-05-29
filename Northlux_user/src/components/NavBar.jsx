@@ -117,13 +117,18 @@ export const NavBar = () => {
   };
 
   const handleClickSubCategory = (subCategory) => {
+    console.log(subCategory.category , "subCategory");
+
+    const category = categories.find(category => category._id === subCategory.category);
+    console.log(category , "category");
+    
     setDropdownOpen(false);
 
     if (dropdownContent?.parent === "subcategories") {
       navigate("/products", {
         state: {
           selectedSubCategory: subCategory,
-          selectedCategory: subCategory.parent,
+          selectedCategory: category,
         },
       });
     } else {
