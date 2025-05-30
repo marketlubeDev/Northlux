@@ -95,9 +95,10 @@ function Homepage() {
         ))
       }
       {/* Show remaining offer banner sections if any */}
+      <div className="divider-home" />
       {offerBanner?.slice(Math.ceil(groupLabels?.data?.length / 2)).map((section) => (
         <React.Fragment key={section.section}>
-            <div className="divider-home" />
+   
           <Offer 
             banners={section.banners}
             isLoading={offerBannerLoading}
