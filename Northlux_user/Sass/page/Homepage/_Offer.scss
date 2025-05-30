@@ -170,6 +170,10 @@
       .offer-image {
         order: -1;
         height: 300px;
+
+        @media screen and (max-width: 768px) {
+          aspect-ratio: 2/1;
+        }
       }
     }
   }

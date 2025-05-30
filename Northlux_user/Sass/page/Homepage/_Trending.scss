@@ -90,7 +90,7 @@
     display: flex;
     gap: 1.5rem;
     overflow-x: auto;
-    padding: 1rem 0;
+    padding: 0.1rem 0;
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
@@ -116,7 +116,7 @@
     padding: 1rem;
 
     .trending-header {
-      margin-bottom: 0.8rem;
+      margin-bottom: 0.5rem;
 
       .desktop-view-all {
         display: none;

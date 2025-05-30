@@ -1,7 +1,9 @@
+@use "../../abstract/variables" as var;
+
 .shop-by {
-  max-width: 1550px;
+  // max-width: 1550px;
+  padding: var.$default-padding;
   margin: 0 auto;
-  padding: 0 10px;
   text-align: center;
 
   h2 {
