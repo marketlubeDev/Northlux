@@ -9,26 +9,30 @@ import {
   getOfferBanners,
 } from "../../sevices/OfferBannerApis";
 import ConfirmationModal from "../../components/Admin/ConfirmationModal";
-import {
-  validateOfferBannerField,
-  validateOfferBannerForm,
-} from "../../utils/validations/offerBannerValidation";
 import LoadingSpinner from "../../components/spinner/LoadingSpinner";
 
 function BannerWithLink() {
   const [showModal, setShowModal] = useState(false);
   const [editingBanner, setEditingBanner] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState({
+    desktop: null,
+    mobile: null
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     link: "",
     image: null,
+    mobileImage: null,
     section: 1,
   });
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef({
+    desktop: null,
+    mobile: null
+  });
   const [offerBanners, setOfferBanners] = useState([]);
   const [errors, setErrors] = useState({
     image: "",
+    mobileImage: "",
     link: "",
     section: "",
   });
@@ -53,21 +57,24 @@ function BannerWithLink() {
     }
   };
 
-  const handleImageClick = () => {
-    fileInputRef.current.click();
+  const handleImageClick = (type) => {
+    fileInputRef.current[type].click();
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = (e, type) => {
     const file = e.target.files[0];
     if (file) {
       setFormData((prev) => ({
         ...prev,
-        image: file,
+        [type === 'desktop' ? 'image' : 'mobileImage']: file,
       }));
-      setImagePreview(URL.createObjectURL(file));
+      setImagePreview((prev) => ({
+        ...prev,
+        [type]: URL.createObjectURL(file)
+      }));
       setErrors((prev) => ({
         ...prev,
-        image: "",
+        [type === 'desktop' ? 'image' : 'mobileImage']: "",
       }));
     }
   };
@@ -82,20 +89,22 @@ function BannerWithLink() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log(formData);
     setIsSubmitting(true);
     if(formData.section === "" || formData.link === ""){
-      toast.error("Section, Link and Image are required");
+      toast.error("All fields are required");
       setIsSubmitting(false);
       return;
     }
     try {
- 
       const formDataObj = new FormData();
       formDataObj.append("link", formData.link);
       formDataObj.append("section", parseInt(formData.section));
       if (formData.image) {
         formDataObj.append("image", formData.image);
+      }
+      if (formData.mobileImage) {
+        formDataObj.append("mobileImage", formData.mobileImage);
       }
 
       if (editingBanner) {
@@ -121,9 +130,13 @@ function BannerWithLink() {
     setFormData({
       link: banner?.link,
       image: null,
+      mobileImage: null,
       section: banner?.section,
     });
-    setImagePreview(banner?.image);
+    setImagePreview({
+      desktop: banner?.image,
+      mobile: banner?.mobileImage
+    });
     setShowModal(true);
   };
 
@@ -131,9 +144,13 @@ function BannerWithLink() {
     setFormData({
       link: "",
       image: null,
+      mobileImage: null,
       section: 1,
     });
-    setImagePreview(null);
+    setImagePreview({
+      desktop: null,
+      mobile: null
+    });
     setEditingBanner(null);
   };
 
@@ -278,19 +295,19 @@ function BannerWithLink() {
                 <form onSubmit={handleSubmit} className="text-left">
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2 text-left">
-                      Banner Image (3:1)
+                      Banner Image For Desktop (3:1)
                     </label>
                     <div
-                      onClick={handleImageClick}
+                      onClick={() => handleImageClick('desktop')}
                       className={`relative w-full h-48 border-2 border-dashed rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 ${
                         errors.image ? "border-red-500" : "border-gray-300"
                       }`}
                     >
-                      {imagePreview ? (
+                      {imagePreview.desktop ? (
                         <div className="relative w-full h-full">
                           <img
-                            src={imagePreview}
-                            alt="Preview"
+                            src={imagePreview.desktop}
+                            alt="Desktop Preview"
                             className="w-full h-full object-contain rounded-lg"
                           />
                           <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100">
@@ -300,32 +317,67 @@ function BannerWithLink() {
                       ) : (
                         <div className="text-center">
                           <FaCamera className="mx-auto text-gray-400 text-3xl mb-2" />
-                          <p className="text-gray-500">Click to upload image</p>
-                          <p
-                            className="text-gray-500"
-                            style={{ fontSize: "12px" }}
-                          >
+                          <p className="text-gray-500">Click to upload desktop image</p>
+                          <p className="text-gray-500" style={{ fontSize: "12px" }}>
                             ( 3:1 aspect ratio recommended )
                           </p>
                         </div>
                       )}
                     </div>
                     {errors.image && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errors.image}
-                      </p>
+                      <p className="mt-1 text-sm text-red-500">{errors.image}</p>
                     )}
                     <input
                       type="file"
-                      ref={fileInputRef}
-                      onChange={handleImageChange}
+                      ref={el => fileInputRef.current.desktop = el}
+                      onChange={(e) => handleImageChange(e, 'desktop')}
                       accept="image/*"
                       className="hidden"
                     />
                   </div>
 
-              
-
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 text-left">
+                      Banner Image For Mobile (2:1)
+                    </label>
+                    <div
+                      onClick={() => handleImageClick('mobile')}
+                      className={`relative w-full h-48 border-2 border-dashed rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 ${
+                        errors.mobileImage ? "border-red-500" : "border-gray-300"
+                      }`}
+                    >
+                      {imagePreview.mobile ? (
+                        <div className="relative w-full h-full">
+                          <img
+                            src={imagePreview.mobile}
+                            alt="Mobile Preview"
+                            className="w-full h-full object-contain rounded-lg"
+                          />
+                          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100">
+                            <FaCamera className="text-white text-3xl" />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-center">
+                          <FaCamera className="mx-auto text-gray-400 text-3xl mb-2" />
+                          <p className="text-gray-500">Click to upload mobile image</p>
+                          <p className="text-gray-500" style={{ fontSize: "12px" }}>
+                            ( 2:1 aspect ratio recommended )
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                    {errors.mobileImage && (
+                      <p className="mt-1 text-sm text-red-500">{errors.mobileImage}</p>
+                    )}
+                    <input
+                      type="file"
+                      ref={el => fileInputRef.current.mobile = el}
+                      onChange={(e) => handleImageChange(e, 'mobile')}
+                      accept="image/*"
+                      className="hidden"
+                    />
+                  </div>
 
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-1 text-left">

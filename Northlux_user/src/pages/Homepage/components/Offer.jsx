@@ -6,11 +6,27 @@ function Offer({ banners, isLoading, error }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     // Ensure component is mounted
     setMounted(true);
-    return () => setMounted(false);
+
+    // Check if device is mobile
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    // Initial check
+    checkMobile();
+
+    // Add event listener for window resize
+    window.addEventListener('resize', checkMobile);
+
+    return () => {
+      setMounted(false);
+      window.removeEventListener('resize', checkMobile);
+    };
   }, []);
 
   useEffect(() => {
@@ -54,7 +70,12 @@ function Offer({ banners, isLoading, error }) {
     <div className="offer-container">
       <div className={`offer-content`} onClick={() => window.open(banner?.link , "_blank")}>
         <div className="offer-image">
-          <img src={banner?.image} alt="offer banner" loading="eager" />
+          <img 
+            src={isMobile ? banner?.mobileImage : banner?.image} 
+            alt="offer banner" 
+            loading="eager"
+            className={isMobile ? 'mobile-image' : 'desktop-image'}
+          />
         </div>
       </div>
 
