@@ -5,11 +5,14 @@
   margin: 2rem 0;
   height: 30rem;
   opacity: 1;
- padding: var.$default-padding;
+  padding: var.$default-padding;
   margin: 0 auto;
 
+  @media screen and (max-width: 768px) {
+    padding: 0;
+  }
+
   .offer-content {
- 
     gap: 2rem;
     overflow: hidden;
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
@@ -125,7 +128,7 @@
       img {
         width: 100%;
         height: 100%;
-        object-fit: fill;
+        object-fit: inherit;
         object-position: center;
       }
     }
@@ -133,7 +136,6 @@
 
   @media screen and (max-width: 768px) {
     height: auto;
-
     .offer-content {
       grid-template-columns: 1fr;
       height: auto;
@@ -172,7 +174,7 @@
         height: 300px;
 
         @media screen and (max-width: 768px) {
-          aspect-ratio: 2/1;
+          object-fit: inherit;
         }
       }
     }
