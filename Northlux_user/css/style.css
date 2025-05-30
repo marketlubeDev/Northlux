@@ -1443,12 +1443,7 @@ ul {
 .trending-container {
   padding: 0 10%;
   background: #fff;
-  margin: 1rem 0 0 0;
-}
-@media (max-width: 768px) {
-  .trending-container {
-    margin: 0rem 0;
-  }
+  margin: 0.5rem 0 0 0;
 }
 .trending-container .trending-header {
   display: flex;
@@ -1518,7 +1513,7 @@ ul {
   display: flex;
   gap: 1.5rem;
   overflow-x: auto;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
@@ -1538,7 +1533,7 @@ ul {
 }
 @media screen and (max-width: 768px) {
   .trending-container {
-    padding: 1rem;
+    padding: 0 1rem;
   }
   .trending-container .trending-header {
     margin-bottom: 0.8rem;
@@ -2049,7 +2044,7 @@ ul {
   font-size: 0.875rem;
 }
 .product-card_content {
-  padding: 1rem 0.5rem;
+  padding: 0.5rem;
 }
 @media screen and (max-width: 768px) {
   .product-card_content {
@@ -2073,6 +2068,11 @@ ul {
   gap: 0.1rem;
   margin-bottom: 0.5rem;
   flex-wrap: wrap;
+}
+@media screen and (max-width: 768px) {
+  .product-card_content .price {
+    margin-bottom: 0.2rem;
+  }
 }
 .product-card_content .price .current-price {
   color: #000000;
@@ -6716,7 +6716,7 @@ input[required]::placeholder::after {
   width: 80%;
   height: 0px;
   border: 1px solid #e5e5e5;
-  margin: 1rem auto;
+  margin: 0.6rem auto;
 }
 @media (max-width: 768px) {
   .divider-home {

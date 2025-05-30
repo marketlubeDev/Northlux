@@ -89,7 +89,7 @@
   }
 
   &_content {
-    padding: 1rem 0.5rem;
+    padding: 0.5rem;
 
     @media screen and (max-width: 768px) {
       padding: 0;
@@ -115,10 +115,9 @@
       margin-bottom: 0.5rem;
       flex-wrap: wrap;
 
-      // @media screen and (max-width: 768px) {
-      //   //in mobile view last child will be in next line
-      //   flex-wrap: wrap;
-      // }
+      @media screen and (max-width: 768px) {
+        margin-bottom: 0.2rem;
+      }
 
       .current-price {
         color: #000000;

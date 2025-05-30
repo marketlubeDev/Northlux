@@ -4,11 +4,8 @@
 .trending-container {
   padding: var.$default-padding;
   background: #fff;
-  margin: 1rem 0 0 0;
+  margin: 0.5rem 0 0 0;
 
-  @media (max-width: 768px) {
-    margin: 0rem 0;
-  }
 
   .trending-header {
     display: flex;
@@ -90,7 +87,7 @@
     display: flex;
     gap: 1.5rem;
     overflow-x: auto;
-    padding: 1rem 0;
+    padding: 0.5rem 0;
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
@@ -113,7 +110,7 @@
   }
 
   @media screen and (max-width: 768px) {
-    padding: 1rem;
+    padding: 0 1rem;
 
     .trending-header {
       margin-bottom: 0.8rem;
