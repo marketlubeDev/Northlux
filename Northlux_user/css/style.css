@@ -1245,7 +1245,7 @@ ul {
 
 .offer-container {
   margin: 2rem 0;
-  height: 50vh;
+  height: 30rem;
   opacity: 1;
   padding: 0 10%;
   margin: 0 auto;
@@ -1427,7 +1427,7 @@ ul {
 .trending-container {
   padding: 0 10%;
   background: #fff;
-  margin: 1.5rem 0 0 0;
+  margin: 1rem 0 0 0;
 }
 @media (max-width: 768px) {
   .trending-container {
@@ -1502,7 +1502,7 @@ ul {
   display: flex;
   gap: 1.5rem;
   overflow-x: auto;
-  padding: 0.1rem 0;
+  padding: 1rem 0;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
@@ -1525,7 +1525,7 @@ ul {
     padding: 1rem;
   }
   .trending-container .trending-header {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
   }
   .trending-container .trending-header .desktop-view-all {
     display: none;
