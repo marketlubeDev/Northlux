@@ -1427,7 +1427,7 @@ ul {
 .trending-container {
   padding: 0 10%;
   background: #fff;
-  margin: 1rem 0 0 0;
+  margin: 1.5rem 0 0 0;
 }
 @media (max-width: 768px) {
   .trending-container {
