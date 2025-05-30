@@ -172,7 +172,7 @@ export const NavBar = () => {
                 : handleCategoryClickOnMobile(brands, "brands", "brands")
             }
           >
-            Brands
+            BRANDS
             <span
               className="arrow-icon"
               style={{
