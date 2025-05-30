@@ -1247,10 +1247,11 @@ ul {
   margin: 2rem 0;
   height: 30rem;
   opacity: 1;
+  max-width: 1550px;
+  margin: 0 auto;
 }
 .offer-container .offer-content {
   gap: 2rem;
-  background: linear-gradient(135deg, #2eb5af 0%, #2eb5af 100%);
   overflow: hidden;
   transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
   opacity: 1;
@@ -1402,7 +1403,7 @@ ul {
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-  margin-top: 0.8rem;
+  margin-top: 0.3rem;
 }
 .slider-dots .dot {
   width: 7px;
@@ -6695,7 +6696,7 @@ input[required]::placeholder::after {
   width: 80%;
   height: 0px;
   border: 1px solid #e5e5e5;
-  margin: 0.8rem auto;
+  margin: 1rem auto;
 }
 @media (max-width: 768px) {
   .divider-home {

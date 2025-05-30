@@ -13,7 +13,6 @@ export function useProducts(filters = {}) {
 
 async function getProducts(filters) {
   const params = new URLSearchParams();
-  console.log(filters , "filters");
 
   // Add pagination params
   if (filters.page) params.append("page", filters.page);

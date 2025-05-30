@@ -5,15 +5,12 @@
   margin: 2rem 0;
   height: 30rem;
   opacity: 1;
+  max-width: 1550px;
+  margin: 0 auto;
 
   .offer-content {
  
     gap: 2rem;
-    background: linear-gradient(
-      135deg,
-      var.$color-primary 0%,
-      var.$color-primary 100%
-    );
     overflow: hidden;
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
     opacity: 1;
@@ -194,7 +191,7 @@
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-  margin-top: 0.8rem;
+  margin-top: 0.3rem;
 
   .dot {
     width: 7px;

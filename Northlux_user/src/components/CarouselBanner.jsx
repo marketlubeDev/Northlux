@@ -31,7 +31,6 @@ function CarouselBanner({
 
   if (isLoading) return <LoadingSpinner />;
 
-  console.log(data, "sajhsdlkhsalh");
 
   return (
     <div className="carousel-container-banner" style={{ maxHeight: maxHeight }}>

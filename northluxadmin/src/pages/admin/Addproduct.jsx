@@ -5,8 +5,6 @@ import { toast } from "react-toastify";
 //components
 import PageHeader from "../../components/Admin/PageHeader";
 import ProductNameInput from "../../components/Admin/Product/components/Inputs/ProductNameInput";
-import BrandSelect from "../../components/Admin/Product/components/Inputs/BrandSelect";
-import CategorySelect from "../../components/Admin/Product/components/Inputs/CategrorySelect";
 import StoreSelect from "../../components/Admin/Product/components/Inputs/StoreSelect";
 import LabelSelect from "../../components/Admin/Product/components/Inputs/LabelSelect";
 import VariantRadioButtons from "../../components/Admin/Product/components/Variants/VariantRadioButtons";
@@ -94,6 +92,7 @@ function Addproduct({ role }) {
           name: res?.data?.name,
           brand: res?.data?.brand?._id,
           category: res?.data?.category?._id,
+          subcategory: res?.data?.subcategory?._id || "", 
           label: res?.data?.label?._id,
           store: res?.data?.store,
           variants: variants,
@@ -109,6 +108,7 @@ function Addproduct({ role }) {
           stockStatus: !hasVariants ? res.data.stockStatus : "",
           images: !hasVariants ? res.data.images : [],
         };
+
 
         setProductData(productData);
       } catch (err) {
@@ -128,7 +128,6 @@ function Addproduct({ role }) {
       try {
         //in this function we are fetching the categories and brands also store (store is updated in the backend)
         const res = await getcategoriesbrands();
-        console.log(res.data);
 
         const subcategoryList = res.data.categories.flatMap((category) =>
           (category.subcategories || []).map((subcat) => ({
@@ -137,7 +136,6 @@ function Addproduct({ role }) {
             parentCategoryId: category._id,
           }))
         );
-        console.log(subcategoryList);
         setFormUtilites(res.data);
         setSubcategories(subcategoryList);
       } catch (err) {
@@ -148,20 +146,24 @@ function Addproduct({ role }) {
   }, []);
 
   useEffect(() => {
-    const subcategoryList = subcategories.filter(
-      (subcat) => subcat.parentCategoryId == productData.category
+    // Filter subcategories based on the selected category
+    const filteredSubcategories = subcategories.filter(
+      (subcat) => subcat.parentCategoryId === productData.category
     );
-    setShowSubcategory(subcategoryList);
-    setProductData((prev) => ({
-      ...prev,
-      subcategory: "",
-    }));
-  }, [productData.category]);
+    setShowSubcategory(filteredSubcategories);
+    
+    // Only reset subcategory if we're not in edit mode and category has changed
+    if (!editMode && productData.category) {
+      setProductData((prev) => ({
+        ...prev,
+        subcategory: "",
+      }));
+    }
+  }, [productData.category, subcategories, editMode]);
 
   // Event Handlers
   const handleProductChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
     setProductData((prev) => ({
       ...prev,
       [name]: value,
@@ -399,7 +401,6 @@ function Addproduct({ role }) {
   };
 
   const handlePublish = async () => {
-    console.log(productData , "productData>>>");
     if (
       selectedVariant === "hasVariants" &&
       productData.variants.length === 0
@@ -549,7 +550,7 @@ function Addproduct({ role }) {
       });
     }
 
-    console.log(formData , "formData");
+
 
     try {
       let res;

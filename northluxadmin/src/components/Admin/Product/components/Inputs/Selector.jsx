@@ -1,7 +1,9 @@
 import React from "react";
 import ErrorMessage from "../../../../common/ErrorMessage";
 
-const Selector = ({options, handleChange, value, errors, label, name, disabled=false }) => (
+const Selector = ({options, handleChange, value, errors, label, name, disabled=false }) => {
+
+  return (
   <div className="flex flex-col w-1/2">
     <label className="block mb-2 text-sm font-medium text-gray-900">
       {label}
@@ -24,6 +26,7 @@ const Selector = ({options, handleChange, value, errors, label, name, disabled=f
     </select>
     <ErrorMessage error={errors?.[name]} />
   </div>
-);
+  );
+};
 
 export default Selector;

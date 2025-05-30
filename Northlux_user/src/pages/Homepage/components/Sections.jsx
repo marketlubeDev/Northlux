@@ -8,7 +8,6 @@ import Card from "../../../components/Card";
 import { useNavigate } from "react-router-dom";
 
 export default function Sections({ label }) {
-  console.log(label , "label>>>>");
   const navigate = useNavigate();
   
   const scrollContainerRef = useRef(null);
@@ -61,7 +60,13 @@ export default function Sections({ label }) {
     >
       <div className="trending-header">
         <div className="trending-content">
-          <h2>{label?.label?.name}</h2>
+          <h2>
+            {label?.label?.name?.split(' ').map((word, index, array) => (
+              <span key={index} style={{color: index === array.length - 1 && index !== 0 ? '#2eb5af' : 'black'}}>
+                {word.charAt(0).toUpperCase() + word.slice(1)}{' '}
+              </span>
+            ))}
+          </h2>
         </div>
         <p className="view-all desktop-view-all" onClick={handleViewAll}>
           View All <ViewAllIcon />

@@ -23,15 +23,14 @@ function BannerWithLink() {
   const [formData, setFormData] = useState({
     link: "",
     image: null,
+    section: 1,
   });
   const fileInputRef = useRef(null);
   const [offerBanners, setOfferBanners] = useState([]);
   const [errors, setErrors] = useState({
-    title: "",
     image: "",
-    description: "",
-    offerValue: "",
     link: "",
+    section: "",
   });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [bannerToDelete, setBannerToDelete] = useState(null);
@@ -83,12 +82,18 @@ function BannerWithLink() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
 
     setIsSubmitting(true);
+    if(formData.section === "" || formData.link === ""){
+      toast.error("Section, Link and Image are required");
+      setIsSubmitting(false);
+      return;
+    }
     try {
+ 
       const formDataObj = new FormData();
       formDataObj.append("link", formData.link);
+      formDataObj.append("section", parseInt(formData.section));
       if (formData.image) {
         formDataObj.append("image", formData.image);
       }
@@ -114,10 +119,11 @@ function BannerWithLink() {
   const handleEditBanner = (banner) => {
     setEditingBanner(banner);
     setFormData({
-      link: banner.link,
+      link: banner?.link,
       image: null,
+      section: banner?.section,
     });
-    setImagePreview(banner.image);
+    setImagePreview(banner?.image);
     setShowModal(true);
   };
 
@@ -125,6 +131,7 @@ function BannerWithLink() {
     setFormData({
       link: "",
       image: null,
+      section: 1,
     });
     setImagePreview(null);
     setEditingBanner(null);
@@ -177,80 +184,67 @@ function BannerWithLink() {
       </div>
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th scope="col" className="px-16 py-3">
-                Image
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Title
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Subtitle
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Offer
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Link
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading && (
-              <tr>
-                <td colSpan="6" className="text-center">
-                  <LoadingSpinner />
-                </td>
-              </tr>
-            )}
-            {!isLoading && offerBanners.length > 0
-              ? offerBanners.map((banner) => (
-                  <tr
-                    key={banner._id}
-                    className="bg-white border-b hover:bg-gray-50"
-                  >
-                    <td className="p-4">
-                      <img
-                        src={banner.image}
-                        className="w-16 md:w-32  max-w-full max-h-full object-contain md:h-20"
-                        alt={banner.title}
-                      />
-                    </td>
-                    <td className="px-6 py-4 font-semibold">{banner.title}</td>
-                    <td className="px-6 py-4">{banner.subtitle}</td>
-                    <td className="px-6 py-4">
-                      {banner.offerValue}
-                      {banner.offerType === "percentage" ? "%" : " OFF"}
-                    </td>
-                    <td className="px-6 py-4">{banner.link}</td>
-                    <td className="px-6 py-10 flex gap-2">
-                      <FaTrash
-                        className="text-red-500 text-lg cursor-pointer"
-                        onClick={() => handleDeleteBanner(banner)}
-                      />
-                      <FaEdit
-                        className="text-blue-500 text-lg cursor-pointer"
-                        onClick={() => handleEditBanner(banner)}
-                      />
-                    </td>
+        {isLoading ? (
+          <div className="text-center p-4">
+            <LoadingSpinner />
+          </div>
+        ) : (
+          offerBanners.map((sectionGroup) => (
+            <div key={sectionGroup.section} className="mb-8">
+              <h3 className="text-lg font-semibold mb-4 px-4">Section {sectionGroup.section}</h3>
+              <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    <th scope="col" className="px-16 py-3">
+                      Image
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Link
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Action
+                    </th>
                   </tr>
-                ))
-              : !isLoading &&
-                offerBanners.length === 0 && (
-                  <div className="p-8 text-center">
-                    <p className="text-gray-500 text-lg">
-                      No offer banners available. Click "Add New Offer Banner"
-                      to create one.
-                    </p>
-                  </div>
-                )}
-          </tbody>
-        </table>
+                </thead>
+                <tbody>
+                  {sectionGroup.banners.map((banner) => (
+                    <tr
+                      key={banner?._id}
+                      className="bg-white border-b hover:bg-gray-50"
+                    >
+                      <td className="p-4">
+                        <img
+                          src={banner?.image}
+                          className="w-16 md:w-32 max-w-full max-h-full object-contain md:h-20"
+                          alt="Banner"
+                        />
+                      </td>
+                      <td className="px-6 py-4">{banner?.link}</td>
+                      <td className="px-6 py-10 flex gap-2">
+                        <FaTrash
+                          className="text-red-500 text-lg cursor-pointer"
+                          onClick={() => handleDeleteBanner(banner)}
+                        />
+                        <FaEdit
+                          className="text-blue-500 text-lg cursor-pointer"
+                          onClick={() => handleEditBanner(banner)}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ))
+        )}
+        {!isLoading && offerBanners.length === 0 && (
+          <div className="p-8 text-center">
+            <p className="text-gray-500 text-lg">
+              No banner with link available. Click "Add New Banner With Link"
+              to create one.
+            </p>
+          </div>
+        )}
       </div>
 
       {showModal && (
@@ -351,6 +345,26 @@ function BannerWithLink() {
                     )}
                   </div>
 
+                  <div className="mb-4">
+                    <select
+                      name="section"
+                      value={formData.section}
+                      onChange={handleInputChange}
+                      className={`w-full p-2 border rounded-md ${
+                        errors.section ? "border-red-500" : "border-gray-300"
+                      }`}
+                    >
+                      <option value="">Select Section</option>
+                      <option value={1}>Section 1</option>
+                      <option value={2}>Section 2</option>
+                      <option value={3}>Section 3</option>
+                      <option value={4}>Section 4</option>
+                      <option value={5}>Section 5</option>
+                    </select>
+                  </div>
+                   
+                  
+
                   <div className="flex justify-end gap-2">
                     <button
                       type="button"
@@ -407,7 +421,7 @@ function BannerWithLink() {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
         title="Confirm Delete"
-        message={`Are you sure you want to delete the offer banner "${bannerToDelete?.title}"?`}
+        message={`Are you sure you want to delete the offer banner ?`}
         isLoading={isDeleting}
         confirmButtonText="Delete"
         confirmButtonColor="red"

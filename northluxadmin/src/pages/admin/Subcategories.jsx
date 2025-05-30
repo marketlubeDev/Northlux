@@ -95,7 +95,6 @@ function Subcategories() {
   };
 
   const handleEdit = (subcategory) => {
-    console.log(subcategory);
     setEditingSubcategory(subcategory); 
     setFormData({
       name: subcategory.name,
