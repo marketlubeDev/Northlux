@@ -1247,7 +1247,7 @@ ul {
   margin: 2rem 0;
   height: 30rem;
   opacity: 1;
-  max-width: 1550px;
+  padding: 0 10%;
   margin: 0 auto;
 }
 .offer-container .offer-content {
