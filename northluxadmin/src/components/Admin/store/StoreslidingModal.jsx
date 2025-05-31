@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { addStore, getStores, updateStore } from "../../../sevices/storeApis";
+import { addStore, updateStore } from "../../../sevices/storeApis";
 import { toast } from "react-toastify";
-import { setStores } from "../../../redux/features/AdminUtilities";
-import { useDispatch } from "react-redux";
 
 const StoreSlidingModal = ({
   isOpen,
@@ -25,6 +23,7 @@ const StoreSlidingModal = ({
     district: "",
     state: "",
     pincode: "",
+    activeStatus: true,
   });
 
   const [errors, setErrors] = useState({
@@ -44,6 +43,8 @@ const StoreSlidingModal = ({
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     if (editData) {
+      console.log(editData , "editData");
+      console.log(editData?.activeStatus , "editData?.activeStatus");
       setValues({
         storeName: editData.store_name || "",
         storeNumber: editData.store_number || "",
@@ -56,6 +57,7 @@ const StoreSlidingModal = ({
         district: editData?.address?.district || "",
         state: editData?.address?.state || "",
         pincode: editData?.address?.pincode || "",
+        activeStatus: editData?.activeStatus !== undefined ? editData.activeStatus : true,
       });
     } else {
       // Reset form when opening in create mode
@@ -71,6 +73,7 @@ const StoreSlidingModal = ({
         district: "",
         state: "",
         pincode: "",
+        activeStatus: true,
       });
     }
     setShowPassword(false);
@@ -182,7 +185,7 @@ const StoreSlidingModal = ({
         isValid = false;
       } else if (!validatePassword(values?.password.toString())) {
         newErrors.password =
-          "Password must be at least 8 characters with 1 uppercase, 1 lowercase, and 1 number";
+          "Password must be at least 8 characters with 1 uppercase, 1 lowercase, 1 number and 1 special character";
         isValid = false;
       } else {
         newErrors.password = "";
@@ -268,6 +271,7 @@ const StoreSlidingModal = ({
           state: values.state,
           pincode: values.pincode,
         },
+        activeStatus: values.activeStatus,
       };
 
       if (editData) {
@@ -295,6 +299,8 @@ const StoreSlidingModal = ({
       toast.error(error?.response?.data?.message || "Something went wrong");
     }
   };
+
+ 
 
   return (
     <>
@@ -590,6 +596,18 @@ const StoreSlidingModal = ({
         </div>
 
         <div className="absolute bottom-0 left-0 right-0 p-6 bg-white border-t flex justify-end gap-4 shadow-lg">
+          <div className="flex items-center gap-2 mr-auto">
+            <span className="text-sm font-medium text-gray-700">Active Status:</span>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={values.activeStatus}
+                onChange={(e) => setValues({ ...values, activeStatus: e.target.checked })}
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+            </label>
+          </div>
           <button
             onClick={onClose}
             className="px-6 py-2 text-gray-600 hover:text-gray-800"

@@ -51,7 +51,7 @@ function Homepage() {
 
       <div className="divider-home" />
       {/* Show first offer banner section */}
-      {offerBanner?.length > 0 && offerBanner?.[0] && (
+      {/* {offerBanner?.length > 0 && offerBanner?.[0] && (
         <>
           <Offer 
             banners={offerBanner[0].banners}
@@ -59,7 +59,7 @@ function Homepage() {
             error={null}
           />
         </>
-      )}
+      )} */}
       { offerBanner?.length > 0 && groupLabels?.data?.length > 0 &&
         groupLabels?.data?.map((label, index) => (
           <React.Fragment key={label?.label}>
