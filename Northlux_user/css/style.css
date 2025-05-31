@@ -638,6 +638,7 @@ ul {
 }
 
 .carousel-container-banner {
+  height: 50vh;
   position: relative;
   overflow: hidden;
   width: 80%;
