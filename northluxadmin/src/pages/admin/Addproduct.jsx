@@ -438,7 +438,7 @@ function Addproduct({ role }) {
       return;
     }
 
-    setIsPublishing(true);
+    setIsPublishing(true); 
     const formData = new FormData();
 
     // Add basic product info
@@ -527,6 +527,40 @@ function Addproduct({ role }) {
           );
         }
       });
+
+      //also check any of the variants has same sku
+      const skuSet = new Set();
+      const nameSet = new Set();
+      let duplicateSku = null;
+      let duplicateName = null;
+
+      for (const variant of productData.variants) {
+        // Check SKU
+        if (skuSet.has(variant.sku)) {
+          duplicateSku = variant.sku;
+          break;
+        }
+        skuSet.add(variant.sku);
+
+        // Check Name
+        const name = variant.attributes?.title?.trim().toLowerCase();
+        if (nameSet.has(name)) {
+          duplicateName = variant.attributes?.title;
+          break;
+        }
+        nameSet.add(name);
+      }
+
+      if (duplicateSku) {
+        toast.error(`Duplicate SKU found: ${duplicateSku}`);
+        setIsPublishing(false);
+        return;
+      }
+      if (duplicateName) {
+        toast.error(`Duplicate variant name found: ${duplicateName}`);
+        setIsPublishing(false);
+        return;
+      }
     } else {
       // For products without variants
       formData.append("description", productData.description);

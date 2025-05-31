@@ -8,6 +8,7 @@ export const validateVariant = (variant) => {
     errors.description = "Description is required";
   if (!variant.price) errors.price = "Price is required";
   if (!variant.offerPrice) errors.offerPrice = "Offer price is required";
+  if (!variant.grossPrice) errors.grossPrice = "Gross price is required";
   if (
     variant.stock === undefined ||
     variant.stock === null ||
