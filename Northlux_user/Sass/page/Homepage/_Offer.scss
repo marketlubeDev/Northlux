@@ -3,10 +3,15 @@
 
 .offer-container {
   margin: 2rem 0;
-  height: 30rem;
+  // height: 30rem;
   opacity: 1;
   padding: var.$default-padding;
   margin: 0 auto;
+  max-height: 30rem;
+
+  @media screen and (max-width: 1024px) and (min-width: 768px) {
+    padding: 0 5%;
+  }
 
   @media screen and (max-width: 768px) {
     padding: 0;
@@ -142,6 +147,63 @@
     }
   }
 
+  @media screen and (max-width: 1200px) and (min-width: 768px) {
+    .offer-content {
+      grid-template-columns: 1fr;
+      height: auto;
+      gap: 0;
+
+      .offer-text {
+        padding: 1rem !important;
+
+        h2 {
+          font-size: 2rem;
+        }
+
+        h3 {
+          font-size: 1.25rem;
+        }
+
+        p {
+          max-width: 100%;
+        }
+
+        .offer-tags {
+          flex-direction: column;
+
+          span {
+            text-align: lef;
+          }
+        }
+
+        .explore-btn {
+          width: 100%;
+        }
+      }
+
+      .offer-image {
+        order: -1;
+
+        img {
+          &.desktop-image {
+            display: none;
+          }
+
+          &.mobile-image {
+            display: block;
+            aspect-ratio: 2 / 1;
+            object-fit: cover;
+            width: 100%;
+            height: auto;
+            max-height: unset;
+          }
+        }
+      }
+    }
+  }
+
+
+  
   @media screen and (max-width: 768px) {
     height: auto;
     .offer-content {

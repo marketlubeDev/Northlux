@@ -168,7 +168,6 @@ function Bestseller() {
               </p>
             </div>
           </div>
-          <div className="divider-home" />
         </>
       )}
     </>

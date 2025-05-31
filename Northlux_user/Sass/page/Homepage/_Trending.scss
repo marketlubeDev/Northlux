@@ -6,6 +6,10 @@
   background: #fff;
   margin: 0.5rem 0 0 0;
 
+  @media screen and (max-width: 1024px) and (min-width: 768px) {
+    padding: 0 5%;
+  }
+
 
   .trending-header {
     display: flex;
@@ -109,6 +113,49 @@
     }
   }
 
+
+  @media screen and (max-width: 1024px) and (min-width: 768px) {
+
+    .trending-products {
+      gap: 1rem;
+      padding: 1rem var.$default-padding;
+      overflow-x: scroll !important;
+      padding-bottom: 0rem !important;
+      -webkit-overflow-scrolling: touch;
+
+      &::-webkit-scrollbar {
+        display: block !important;
+        height: 4px;
+        -webkit-appearance: none;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+        visibility: visible;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+        visibility: visible;
+
+        &:hover {
+          background: #555;
+        }
+      }
+
+      scrollbar-width: thin !important;
+      -ms-overflow-style: scrollbar !important;
+
+      .product-card {
+        flex: 0 0 calc(25% - 0.5rem);
+        min-width: calc(25% - 0.5rem);
+        margin-right: 0;
+      }
+    }
+  }
+
   @media screen and (max-width: 768px) {
     padding: 0 1rem;
 
@@ -157,14 +204,55 @@
       -ms-overflow-style: scrollbar !important;
 
       .product-card {
-        flex: 0 0 calc(50% - 0.5rem);
-        min-width: calc(50% - 0.5rem);
+        flex: 0 0 calc(33% - 0.5rem);
+        min-width: calc(33% - 0.5rem);
         margin-right: 0;
       }
     }
 
     .trending-products-wrapper .scroll-button {
       display: none;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .trending-products {
+      gap: 1rem;
+      padding: 0rem var.$default-padding;
+      overflow-x: scroll !important;
+      padding-bottom: 0rem !important;
+      -webkit-overflow-scrolling: touch;
+
+      &::-webkit-scrollbar {
+        display: block !important;
+        height: 4px;
+        -webkit-appearance: none;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+        visibility: visible;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+        visibility: visible;
+
+        &:hover {
+          background: #555;
+        }
+      }
+
+      scrollbar-width: thin !important;
+      -ms-overflow-style: scrollbar !important;
+
+      .product-card {
+        flex: 0 0 calc(50% - 0.5rem);
+        min-width: calc(50% - 0.5rem);
+        margin-right: 0;
+      }
     }
   }
 

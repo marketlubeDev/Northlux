@@ -14,7 +14,7 @@ function Offer({ banners, isLoading, error }) {
 
     // Check if device is mobile
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= 1200);
     };
 
     // Initial check
