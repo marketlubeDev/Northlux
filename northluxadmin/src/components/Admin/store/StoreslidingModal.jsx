@@ -116,10 +116,10 @@ const StoreSlidingModal = ({
     return re.test(String(pincode));
   };
 
-  // Validate password strength
+  // Validate password
   const validatePassword = (password) => {
-    // At least 8 characters, 1 uppercase, 1 lowercase, 1 number
-    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    // At least 8 characters, 1 uppercase, 1 lowercase, 1 number, 1 special character
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/;
     return re.test(String(password));
   };
 
@@ -176,7 +176,7 @@ const StoreSlidingModal = ({
     }
 
     // Password validation (only for new stores or if password is changed)
-    if (!editData || (editData && values?.password !== editData?.password)) {
+    if (!editData || (editData && values?.password !== editData?.password) || editData?.password !== editData?.confirmPassword) {
       if (!values?.password) {
         newErrors.password = "Password is required";
         isValid = false;
