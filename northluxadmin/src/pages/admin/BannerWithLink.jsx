@@ -89,7 +89,6 @@ function BannerWithLink() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
     setIsSubmitting(true);
     if(formData.section === "" || formData.link === ""){
       toast.error("All fields are required");

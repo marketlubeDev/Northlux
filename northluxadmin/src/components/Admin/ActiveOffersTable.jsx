@@ -11,17 +11,10 @@ export const ActiveOffersTable = ({ offers, fetchData, loading }) => {
   const [selectedOffer, setSelectedOffer] = useState("");
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
 
-  // const handleSelectAll = (e) => {
-  //   setSelectedOffers(e.target.checked ? offers.map((offer) => offer._id) : []);
-  // };
-
-  // const handleSelectOffer = (offerId) => {
-  //   setSelectedOffers((prev) => [...prev, offerId]);
-  // };
 
   const handleDeleteOffer = async () => {
     try {
-      const response = await axiosInstance.delete(`/offer/${selectedOffer}`);
+     await axiosInstance.delete(`/offer/${selectedOffer}`);
       toast.success("Offers deleted successfully");
       fetchData();
       setDeleteConfirmation(false);
@@ -41,13 +34,10 @@ export const ActiveOffersTable = ({ offers, fetchData, loading }) => {
       <table className="min-w-full bg-white rounded-xl drop-shadow-lg shadow-xl">
         <thead className="bg-green-100 text-gray-600 *:text-sm *:font-normal">
           <tr>
-            {/* <th className="py-2 px-4" onClick={handleSelectAll}>
-              <input type="checkbox" onChange={handleSelectAll} />
-            </th> */}
             <th className="py-2 px-4">Offer Name</th>
             <th className="py-2 px-4">Banner</th>
             <th className="py-2 px-4">Type</th>
-            <th className="py-2 px-4">Products Included</th>
+            <th className="py-2 px-4">Details</th>
             <th className="py-2 px-4">Offer Value</th>
             <th className="py-2 px-4">Start Date</th>
             <th className="py-2 px-4">End Date</th>
@@ -82,7 +72,9 @@ export const ActiveOffersTable = ({ offers, fetchData, loading }) => {
                     </td>
                     <td className="py-2 px-4">{offer.offerType}</td>
                     <td className="py-2 px-4">
-                      {offer.products.map((product) => product.name).join(", ")}
+                      {offer.offerType === "brand" && offer.brand.name}
+                      {offer.offerType === "category" && offer.category.name}
+                      {offer.offerType ==="brandCategory" && offer.brand.name + "/" + offer.category.name}
                     </td>
                     <td className="py-2 px-4 text-green-500 font-medium">
                       {offer.offerValue}{" "}

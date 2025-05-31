@@ -1,7 +1,11 @@
 import { axiosInstance } from "../axios/axiosInstance";
 
-export const getStores = async () => {
-  const response = await axiosInstance.get(`/admin/getstores`);
+export const getStores = async (search = "") => {
+  const queryParams = new URLSearchParams();
+  if (search) {
+    queryParams.append("search", search);
+  }
+  const response = await axiosInstance.get(`/admin/getstores?${queryParams}`);
   return response.data;
 };
 

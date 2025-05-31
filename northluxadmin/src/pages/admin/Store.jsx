@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import PageHeader from "../../components/Admin/PageHeader";
 import { FaSort } from "react-icons/fa";
 import { FiEdit2 } from "react-icons/fi";
@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { setStores } from "../../redux/features/AdminUtilities";
 import { useDispatch } from "react-redux";
+import { debounce } from "lodash";
+
 function Store() {
   const dispatch = useDispatch();
   // const stores = useSelector((state) => state.adminUtilities.stores);
@@ -21,18 +23,40 @@ function Store() {
   // const [filteredStores, setFilteredStores] = useState(stores);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchStores = async () => {
-      const response = await getStores();
+  
+
+  const fetchStores = async (searchQuery = "") => {
+    try {
+      setIsLoading(true);
+      const response = await getStores(searchQuery);
       setStoress(response?.stores);
       dispatch(setStores(response?.stores));
-    };
+    } catch (error) {
+      console.error("Error fetching stores:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Create a debounced version of fetchStores
+  const debouncedFetchStores = useCallback(
+    debounce((searchQuery) => {
+      fetchStores(searchQuery);
+    }, 500),
+    []
+  );
+
+  useEffect(() => {
     fetchStores();
   }, [refetch]);
 
   useEffect(() => {
-    setSearch("");
-  }, []);
+    debouncedFetchStores(search);
+    // Cleanup function to cancel any pending debounced calls
+    return () => {
+      debouncedFetchStores.cancel();
+    };
+  }, [search, debouncedFetchStores]);
 
   const handleEdit = (store) => {
     setSelectedStore(store);
@@ -69,6 +93,7 @@ function Store() {
                     className="pl-10 pr-4 py-2 border rounded-lg w-[300px] text-sm focus:outline-none focus:border-[#259960]"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
+                    autoFocus
                   />
                   <svg
                     className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
