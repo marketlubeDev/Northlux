@@ -79,66 +79,68 @@ function Bestseller() {
   }, []);
 
   return (
-<>
-{
-  bestsellerProducts?.length > 0 && (
-    <div className="bestseller-container" data-aos="fade-up">
-    <div className="bestseller-header">
-      <h3>
-        Our Best Sellers- <span>Loved By Thousands</span>
-      </h3>
-      <p onClick={handleViewAll} className="view-all desktop-view-all">
-        View All <ViewAllIcon />
-      </p>
-    </div>
-    <div className="bestseller-content">
-      <div className="bestseller-image-wrapper">
-        <div className="bestseller-image">
-          <span className="tag">{currentProduct?.label?.name}</span>
-          <img
-            src={currentProduct?.mainImage}
-            alt={currentProduct?.name}
-            className="fade-image"
-            onClick={() => {
-              navigate(`/products/${currentProduct?._id}`);
-            }}
-          />
-        </div>
-      </div>
-      <div className="bestseller-info">
-        <div className="bestseller-navigation">
-          <button
-            className="nav-button prev"
-            onClick={() => handleNavigation("prev")}
-          >
-            <FiArrowLeft />
-          </button>
-          <button
-            className="nav-button next"
-            onClick={() => handleNavigation("next")}
-          >
-            <FiArrowRight />
-          </button>
-        </div>
-        <h2 className="fade-text">{currentProduct?.name?.toUpperCase()}</h2>
-        <p className="fade-text">
-          {currentProduct?.description
-            ? (
-                currentProduct.description.charAt(0).toUpperCase() +
-                currentProduct.description.slice(1)
-              ).split("").length > 500
-              ? (
-                  currentProduct.description.charAt(0).toUpperCase() +
-                  currentProduct.description.slice(1)
-                )
-                  .split("")
-                  .slice(0, 500)
-                  .join("") + "..."
-              : currentProduct.description.charAt(0).toUpperCase() +
-                currentProduct.description.slice(1)
-            : ""}
-        </p>
-        {/* <div className="buttons">
+    <>
+      {bestsellerProducts?.length > 0 && (
+        <>
+          <div className="bestseller-container" data-aos="fade-up">
+            <div className="bestseller-header">
+              <h3>
+                Our Best Sellers- <span>Loved By Thousands</span>
+              </h3>
+              <p onClick={handleViewAll} className="view-all desktop-view-all">
+                View All <ViewAllIcon />
+              </p>
+            </div>
+            <div className="bestseller-content">
+              <div className="bestseller-image-wrapper">
+                <div className="bestseller-image">
+                  <span className="tag">{currentProduct?.label?.name}</span>
+                  <img
+                    src={currentProduct?.mainImage}
+                    alt={currentProduct?.name}
+                    className="fade-image"
+                    onClick={() => {
+                      navigate(`/products/${currentProduct?._id}`);
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="bestseller-info">
+                <div className="bestseller-navigation">
+                  <button
+                    className="nav-button prev"
+                    onClick={() => handleNavigation("prev")}
+                  >
+                    <FiArrowLeft />
+                  </button>
+                  <button
+                    className="nav-button next"
+                    onClick={() => handleNavigation("next")}
+                  >
+                    <FiArrowRight />
+                  </button>
+                </div>
+                <h2 className="fade-text">
+                  {currentProduct?.name?.toUpperCase()}
+                </h2>
+                <p className="fade-text">
+                  {currentProduct?.description
+                    ? (
+                        currentProduct.description.charAt(0).toUpperCase() +
+                        currentProduct.description.slice(1)
+                      ).split("").length > 500
+                      ? (
+                          currentProduct.description.charAt(0).toUpperCase() +
+                          currentProduct.description.slice(1)
+                        )
+                          .split("")
+                          .slice(0, 500)
+                          .join("") + "..."
+                      : currentProduct.description.charAt(0).toUpperCase() +
+                        currentProduct.description.slice(1)
+                    : ""}
+                </p>
+                {/* <div className="buttons">
           <button
             className="add-to-cart"
             onClick={() => handleAddToCart("add")}
@@ -158,17 +160,18 @@ function Bestseller() {
             {loadingAction === "buy" ? <ButtonLoadingSpinner /> : "Buy Now"}
           </button>
         </div> */}
-      </div>
-    </div>
-    <div style={{ display: "flex", justifyContent: "center" }}>
-      <p onClick={handleViewAll} className="view-all mobile-view-all">
-        View All <ViewAllIcon />
-      </p>
-    </div>
-  </div>
-  )
-}
-</>
+              </div>
+            </div>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <p onClick={handleViewAll} className="view-all mobile-view-all">
+                View All <ViewAllIcon />
+              </p>
+            </div>
+          </div>
+          <div className="divider-home" />
+        </>
+      )}
+    </>
   );
 }
 

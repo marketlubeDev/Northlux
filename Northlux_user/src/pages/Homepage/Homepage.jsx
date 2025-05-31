@@ -15,10 +15,7 @@ function Homepage() {
   const { allBanners, isLoading } = useBanners();
   const { offerBanner, isLoading: offerBannerLoading } = useOfferBanner();
 
-  const {
-    activeOffers,
-    isLoading: activeOffersLoading,
-  } = useActiveOffers();
+  const { activeOffers, isLoading: activeOffersLoading } = useActiveOffers();
   const { data: groupLabels } = useGroupLabels();
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -44,65 +41,55 @@ function Homepage() {
       <Carousel data={heroBanners} isLoading={isLoading} />
       <ShopBy />
       <div className="divider-home" />
-    { activeOffers?.length > 0 && <CarouselBanner data={activeOffers} isLoading={activeOffersLoading} />}
+      {activeOffers?.length > 0 && (
+        <>
+          {" "}
+          <CarouselBanner data={activeOffers} isLoading={activeOffersLoading} />
+         
+        </>
+      )}
 
-      <div className="divider-home" />   
       <Bestseller />
 
-      <div className="divider-home" />
-      {/* Show first offer banner section */}
-      {/* {offerBanner?.length > 0 && offerBanner?.[0] && (
-        <>
-          <Offer 
-            banners={offerBanner[0].banners}
-            isLoading={offerBannerLoading}
-            error={null}
-          />
-        </>
-      )} */}
-      { offerBanner?.length > 0 && groupLabels?.data?.length > 0 &&
+      {offerBanner?.length > 0 &&
+        groupLabels?.data?.length > 0 &&
         groupLabels?.data?.map((label, index) => (
           <React.Fragment key={label?.label}>
-             <div className="divider-home" />
+            <div className="divider-home" />
             <Sections label={label} />
 
             {(index + 1) % 2 === 0 && index !== groupLabels.data.length - 1 && (
               <>
                 {offerBanner?.[Math.floor(index / 2) + 1] && (
                   <>
-                  <div className="divider-home" />
-                  <Offer 
-                    banners={offerBanner[Math.floor(index / 2) + 1].banners}
-                    isLoading={offerBannerLoading}
-                    error={null}
-                  />
-        
+                    <div className="divider-home" />
+                    <Offer
+                      banners={offerBanner[Math.floor(index / 2) + 1].banners}
+                      isLoading={offerBannerLoading}
+                      error={null}
+                    />
                   </>
                 )}
-
               </>
             )}
           </React.Fragment>
-        ))
-      }
+        ))}
       {/* Show remaining offer banner sections if any */}
       <div className="divider-home" />
-      {offerBanner?.slice(Math.ceil(groupLabels?.data?.length / 2)).map((section) => (
-        <React.Fragment key={section.section}>
-   
-          <Offer 
-            banners={section.banners}
-            isLoading={offerBannerLoading}
-            error={null}
-          />
-          <div className="divider-home" />
-        </React.Fragment>
-      ))}
+      {offerBanner
+        ?.slice(Math.ceil(groupLabels?.data?.length / 2))
+        .map((section) => (
+          <React.Fragment key={section.section}>
+            <Offer
+              banners={section.banners}
+              isLoading={offerBannerLoading}
+              error={null}
+            />
+            <div className="divider-home" />
+          </React.Fragment>
+        ))}
     </div>
   );
 }
 
 export default Homepage;
-
-
-
