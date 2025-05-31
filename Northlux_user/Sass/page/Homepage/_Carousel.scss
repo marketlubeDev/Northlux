@@ -7,6 +7,14 @@
   padding: 20px;
   overflow: hidden;
 
+  // Tablet responsiveness
+  @media (max-width: 1024px) and (min-width: 600px) {
+    padding: 0;
+    height: auto;
+    width: 100%;
+    max-width: 100vw;
+  }
+
   @include responsive.respond(phone) {
     padding: 0;
     height: auto;
@@ -115,25 +123,6 @@
       width: 90%;
       text-align: center;
     }
-
-    // Add gradient background
-    // &::before {
-    //   content: "";
-    //   position: absolute;
-    //   top: 0;
-    //   left: -20px;
-    //   width: calc(100% + 40px);
-    //   height: 100%;
-    //   background: radial-gradient(
-    //     ellipse at center,
-    //     rgba(0, 0, 0, 0.4) 0%,
-    //     rgba(0, 0, 0, 0.3) 30%,
-    //     rgba(0, 0, 0, 0.2) 60%,
-    //     rgba(0, 0, 0, 0) 100%
-    //   );
-    //   z-index: -1;
-    //   border-radius: 8px;
-    // }
 
     h1 {
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); // Add text shadow
@@ -333,24 +322,6 @@
       text-align: center;
     }
 
-    // Add gradient background
-    // &::before {
-    //   content: "";
-    //   position: absolute;
-    //   top: 0;
-    //   left: -20px;
-    //   width: calc(100% + 40px);
-    //   height: 100%;
-    //   background: radial-gradient(
-    //     ellipse at center,
-    //     rgba(0, 0, 0, 0.4) 0%,
-    //     rgba(0, 0, 0, 0.3) 30%,
-    //     rgba(0, 0, 0, 0.2) 60%,
-    //     rgba(0, 0, 0, 0) 100%
-    //   );
-    //   z-index: -1;
-    //   border-radius: 8px;
-    // }
 
     h1 {
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); // Add text shadow

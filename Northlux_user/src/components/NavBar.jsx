@@ -162,7 +162,7 @@ export const NavBar = () => {
       {categories && (
         <ul className="nav-bar-list">
           <li onClick={() => handleCategoryClick({ id: null, name: "All" })}>
-            All
+            ALL
           </li>
           <li
             onMouseEnter={() => handleCategoryHover(brands, "brands", "brands")}

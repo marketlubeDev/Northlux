@@ -299,7 +299,7 @@ function Banner() {
                         Click to upload mobile image
                       </p>
                       <p className="text-gray-500" style={{ fontSize: "12px" }}>
-                        ( 4:3 aspect ratio recommended )
+                        ( 2:1 aspect ratio recommended )
                       </p>
                     </div>
                   )}
