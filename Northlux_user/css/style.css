@@ -5625,6 +5625,11 @@ body.modal-open {
   padding: 0 10px;
   z-index: 1;
 }
+@media screen and (max-width: 768px) {
+  .shop-by .content .content-item .content-overlay .content-name {
+    font-size: 18px;
+  }
+}
 .shop-by .content .content-item:hover .content-image {
   transform: scale(1.05);
 }
