@@ -111,7 +111,7 @@ function AllProductsContent() {
       top: 0,
       behavior: "smooth",
     });
-  }, []);
+  }, [selectedFilters]);
 
   useEffect(() => {
     return () => {
