@@ -311,7 +311,7 @@ function AllProductsContent() {
               )
             : value === MAX_PRICE_VALUE
             ? Infinity
-            : Math.max(value, prev.min),
+            : Math.max(value, Math.max(prev.min, 2000)),
       };
 
       // Use MAX_PRICE_VALUE instead of Infinity for the API call
@@ -440,7 +440,7 @@ function AllProductsContent() {
     return active;
   };
 
-  const SLIDER_MAX = 100000;
+  const SLIDER_MAX = 50000;
 
   // Update the getTrackStyle function
   const getTrackStyle = () => {

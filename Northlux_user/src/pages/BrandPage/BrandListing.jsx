@@ -14,7 +14,6 @@ export const BrandListing = () => {
 
  
   const [limit, setLimit] = useState(18);
-  // const [brands, setBrands] = useState([]);
   const inputRef = useRef(null);
   const navigate = useNavigate();
 
@@ -60,7 +59,10 @@ export const BrandListing = () => {
     data: brandsData,
     isLoading: brandsLoading,
     isError: brandsError,
+    totalCount,
   } = useBrands({ search: searchQuery, page: currentPage, limit: limit });
+
+
 
   const totalPages = brandsData?.totalPages;
 
@@ -90,7 +92,7 @@ export const BrandListing = () => {
           <div className="brand-listing-header-title">
             <h2>
               All <span>Brands</span>{" "}
-              <span className="count">({brandsData?.results})</span>
+              <span className="count">({totalCount})</span>
             </h2>
           </div>
 
