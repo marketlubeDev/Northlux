@@ -47,6 +47,14 @@ const ProductNameInput = ({
         } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
         onChange={handleChange}
         value={value}
+        pattern="[A-Za-z0-9\s_-]*"
+        title="Only letters, numbers, spaces, underscores and hyphens are allowed"
+        onKeyDown={(e) => {
+          const pattern = /[A-Za-z0-9\s_-]/;
+          if (!pattern.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+            e.preventDefault();
+          }
+        }}
       />
       <ErrorMessage error={errors?.name} />
     </div>
