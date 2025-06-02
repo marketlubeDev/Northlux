@@ -96,15 +96,18 @@ function Footer() {
             <h4>Contact</h4>
             <ul>
               <li>
-                <a href="#">Contact us</a>
+                <span>Northlux</span>
               </li>
               <li className="address">
-                Balan K Nair Rd,
-                <br />
-                Koombara, Ashokapura,
-                <br />
-                Kozhikode, Kerala 673004
+                Triangle magnum 2 
               </li>
+              <li className="address">
+              Balan k Nair road, Ashokapuram 
+              </li>
+              <li className="address">
+              Kozhikode,  673004
+              </li>
+       
               <li>
                 <a href="mailto:northlux@gmail.com">northlux@gmail.com</a>
               </li>
