@@ -5,7 +5,6 @@ import {
   FiChevronUp,
   FiArrowLeft,
 } from "react-icons/fi";
-import Header from "../../components/Header";
 import Card from "../../components/Card";
 import Carousel from "../../components/Carousel";
 import LoadingSpinner from "../../components/LoadingSpinner";
@@ -248,6 +247,7 @@ function AllProductsContent() {
       ...prev,
       categoryId: categoryId,
       subcategoryId: subcategoryId,
+    
     }));
 
     setSelectedNames({

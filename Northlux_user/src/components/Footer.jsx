@@ -53,7 +53,10 @@ function Footer() {
                   key={category._id}
                   onClick={() =>
                     navigate(`/products`, {
-                      state: { selectedCategory: category },
+                      state: { selectedCategory: {
+                        id: category._id,
+                        name: category.name,
+                      } },
                     })
                   }
                   style={{ cursor: "pointer" }}
