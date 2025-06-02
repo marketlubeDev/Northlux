@@ -388,23 +388,21 @@ function Orders({ role }) {
           toast.error(result.message);
         }
       } catch (error) {
-        toast.error("Failed to update payment status");
+        toast.error(error?.response?.data?.message || "Failed to update payment status");
       }
     };
 
     const handleOrderStatusChange = async (newStatus) => {
       try {
         const result = await updateOrderStatus(order._id, newStatus, "order");
-        if (result.success) {
+        if (result?.data?.success) {
           setOrderStatus(newStatus);
-          toast.success(result.message);
+          toast.success(result?.data?.message);
           // Refresh data after successful status update
           await fetchData();
-        } else {
-          toast.error(result.message);
-        }
+        } 
       } catch (error) {
-        toast.error("Failed to update order status");
+        toast.error(error?.response?.data?.message || "Failed to update order status");
       }
     };
 

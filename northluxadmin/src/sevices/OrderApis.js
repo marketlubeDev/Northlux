@@ -22,10 +22,10 @@ export const getOrderStats = () => {
 export const updateOrderStatus = async (orderId, status, type) => {
   return axiosInstance
     .patch(`/order/change-status/${orderId}`, { status, type })
-    .then((res) => res.data)
-    .catch((err) => {
-      toast.error(err?.response?.data?.message || "Something went wrong");
-    });
+    // .then((res) => res.data)
+    // .catch((err) => {
+    //   toast.error(err?.response?.data?.message || "Something went wrong");
+    // });
 };
 
 export const updateOrder = async (orderId, data) => {

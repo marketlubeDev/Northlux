@@ -354,6 +354,7 @@ function Products({ role }) {
                 selectedProductsCount={selectedProductsCount}
                 role={role}
                 currentPage={currentPage}
+                refetchProducts={fetchProducts}
               />
             )}
           </div>

@@ -54,6 +54,7 @@ export const BulkOfferForm = ({
       !formData.endDate
     ) {
       toast.error("Please fill all the fields");
+      setIsLoading(false);
       return;
     }
 

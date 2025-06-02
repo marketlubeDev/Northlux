@@ -30,6 +30,8 @@ function ProductDetailsContent() {
     error: errorProducts,
   } = useProducts();
 
+  console.log(product);
+
   const { mutate: placeOrder, isPending: isPlacingOrder } = usePlaceOrder();
 
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -55,10 +57,10 @@ function ProductDetailsContent() {
 
   useEffect(() => {
     if (
-      selectedVariant?.stockStatus == "outofstock" ||
-      product?.stockStatus == "outofstock" ||
-      selectedVariant?.stock === 0 ||
-      product?.stock === 0
+      (selectedVariant && selectedVariant?.stockStatus == "outofstock") ||
+      (!selectedVariant && product?.stockStatus == "outofstock") ||
+      (selectedVariant && selectedVariant?.stock === 0) ||
+      (!selectedVariant && product?.stock === 0)
     ) {
       setOutOfStock(true);
     } else {

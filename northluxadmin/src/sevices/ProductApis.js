@@ -39,3 +39,11 @@ export const updateProduct = async (productId, formData) => {
   );
   return response;
 };
+
+export const deleteProduct = async (productId) => {
+  const response = await axiosInstance.patch(
+    `product/soft-delete?productId=${productId}`
+  );
+  return response;
+};
+

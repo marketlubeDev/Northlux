@@ -10,6 +10,7 @@ const ProductTable = ({
   role,
   selectedProductsCount,
   currentPage,
+  refetchProducts,
 }) => (
   <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
     <div className="pb-4 bg-white dark:bg-gray-900"></div>
@@ -30,6 +31,7 @@ const ProductTable = ({
             selectedProducts={selectedProducts}
             setSelectedProducts={setSelectedProducts}
             role={role}
+            refetchProducts={refetchProducts}
           />
         ))}
       </tbody>
