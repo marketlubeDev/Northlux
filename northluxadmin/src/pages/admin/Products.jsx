@@ -11,12 +11,18 @@ import Pagination from "../../components/Admin/Product/components/Pagination/Pag
 import { Modal } from "../../components/shared/Modal";
 import { BulkOfferForm } from "../../components/Admin/Product/components/Forms/BulkOfferForm";
 import { useSelector } from "react-redux";
+import { adminUtilities } from "../../sevices/adminApis";
 
 function Products({ role }) {
-  const stores = useSelector((state) => state.adminUtilities.stores);
-  const brands = useSelector((state) => state.adminUtilities.brands);
-  const categories = useSelector((state) => state.adminUtilities.categories);
+  // const stores = useSelector((state) => state.adminUtilities.stores);
+  // const brands = useSelector((state) => state.adminUtilities.brands);
+  // const categories = useSelector((state) => state.adminUtilities.categories);
   const store = useSelector((state) => state.store.store);
+  const [stores, setStores] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
+  const [labels, setLabels] = useState([]);
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,7 +34,10 @@ function Products({ role }) {
   const [selectedStore, setSelectedStore] = useState(store?._id);
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
+  const [selectedLabel, setSelectedLabel] = useState("");
   const [selectedActiveStatus, setSelectedActiveStatus] = useState("all");
+  const [showSubcategory, setShowSubcategory] = useState([]);
   const navigate = useNavigate();
 
   const [showBulkOfferModal, setShowBulkOfferModal] = useState(false);
@@ -47,20 +56,51 @@ function Products({ role }) {
     handleIsProductSelected();
   }, [selectedProducts]);
 
+  useEffect(() => {
+    setSelectedSubcategory("All Subcategories");
+    if (selectedCategory) {
+      setShowSubcategory(subcategories?.filter((subcategory) => subcategory?.category === selectedCategory));
+    } else {
+      setShowSubcategory([]);
+    }
+  }, [selectedCategory]);
+
   // Fetch products when page changes or on initial load
+  useEffect(() => {
+    const fetchAdminUtilities = async () => {
+      try {
+        const res = await adminUtilities();
+        setStores(res?.data?.stores);
+        setBrands(res?.data?.brands);
+        setCategories(res?.data?.categories);
+        setSubcategories(res?.data?.subcategories);
+        setLabels(res?.data?.labels);
+      } catch (err) {
+        console.log(err);
+        toast.error("Failed to fetch admin utilities");
+      }
+    };
+    fetchAdminUtilities();
+  }, []);
   useEffect(() => {
     let filter = {};
     if (selectedStore) {
       filter.store = selectedStore;
     }
-    if (selectedBrand) {
-      filter.brand = selectedBrand;
+    if (selectedBrand && selectedBrand !== "All Brands") {
+      filter.brandId = selectedBrand;
     }
-    if (selectedCategory) {
-      filter.category = selectedCategory;
+    if (selectedCategory && selectedCategory !== "All Categories") {
+      filter.categoryId = selectedCategory;
     }
     if (selectedActiveStatus) {
       filter.activeStatus = selectedActiveStatus;
+    }
+    if (selectedSubcategory && selectedSubcategory !== "All Subcategories") {
+      filter.subcategoryId = selectedSubcategory;
+    }
+    if (selectedLabel && selectedLabel !== "All Labels") {
+      filter.labelId = selectedLabel;
     }
     if (searchKeyword) {
       performSearch(searchKeyword, currentPage, filter);
@@ -75,6 +115,8 @@ function Products({ role }) {
     selectedBrand,
     selectedCategory,
     selectedActiveStatus,
+    selectedSubcategory,
+    selectedLabel,
   ]);
 
   const fetchProducts = async (page, filter) => {
@@ -170,11 +212,11 @@ function Products({ role }) {
   };
 
   // Handle page size change
-  const handlePageSizeChange = (e) => {
-    const newPageSize = parseInt(e.target.value);
-    setPageSize(newPageSize);
-    setCurrentPage(1); // Reset to first page when changing page size
-  };
+  // const handlePageSizeChange = (e) => {
+  //   const newPageSize = parseInt(e.target.value);
+  //   setPageSize(newPageSize);
+  //   setCurrentPage(1); // Reset to first page when changing page size
+  // };
 
   // Cleanup debounce on component unmount
   useEffect(() => {
@@ -191,7 +233,7 @@ function Products({ role }) {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 relative">
       <PageHeader content="Products" marginBottom="mb-0" />
-      <div className="bg-white p-4 shadow flex gap-2">
+      <div className="bg-white p-4 shadow flex gap-2 flex-wrap">
         <div className="text-sm text-gray-600 space-y-1">
           <select
             value={selectedStore}
@@ -240,6 +282,42 @@ function Products({ role }) {
             {categories?.map((category) => (
               <option key={category._id} value={category._id}>
                 {category?.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="text-sm text-gray-600 space-y-1">
+          <select
+            value={selectedSubcategory}
+            onChange={(e) => {
+              setSelectedSubcategory(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="border border-gray-300 rounded-md px-4 py-2 w-60"
+            disabled={!selectedCategory || selectedCategory === "All Categories"}
+          >
+            <option value="All Subcategories">All Subcategories</option>
+            {showSubcategory?.map((subcategory) => (
+              <option key={subcategory._id} value={subcategory._id}>
+                {subcategory?.name}
+              </option>
+            ))}
+            
+          </select>
+        </div>
+        <div className="text-sm text-gray-600 space-y-1">
+          <select
+            value={selectedLabel}
+            onChange={(e) => {
+              setSelectedLabel(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="border border-gray-300 rounded-md px-4 py-2 w-60"
+          >
+            <option value="All Labels">All Labels</option>
+            {labels?.map((label) => (
+              <option key={label._id} value={label._id}>
+                {label?.name}
               </option>
             ))}
           </select>

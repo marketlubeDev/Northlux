@@ -30,7 +30,6 @@ function ProductDetailsContent() {
     error: errorProducts,
   } = useProducts();
 
-  console.log(product);
 
   const { mutate: placeOrder, isPending: isPlacingOrder } = usePlaceOrder();
 

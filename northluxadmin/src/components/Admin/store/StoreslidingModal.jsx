@@ -43,8 +43,6 @@ const StoreSlidingModal = ({
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     if (editData) {
-      console.log(editData , "editData");
-      console.log(editData?.activeStatus , "editData?.activeStatus");
       setValues({
         storeName: editData.store_name || "",
         storeNumber: editData.store_number || "",

@@ -15,3 +15,8 @@ export const getcategoriesbrands = () => {
 export const checkAdmin = () => {
   return axiosInstance.get("/admin/checkadmin");
 };
+
+export const adminUtilities = () => {
+  return axiosInstance.get("/admin/adminutilities");
+};
+
