@@ -108,7 +108,7 @@ function Footer() {
               Balan k Nair road, Ashokapuram 
               </li>
               <li className="address">
-              Kozhikode,  673004
+              Kozhikode,  673 006
               </li>
        
               <li>
