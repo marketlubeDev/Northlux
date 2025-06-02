@@ -247,13 +247,13 @@ function AllProductsContent() {
       ...prev,
       categoryId: categoryId,
       subcategoryId: subcategoryId,
-    
     }));
 
-    setSelectedNames({
+    setSelectedNames((prev) => ({
+      ...prev,
       categoryName: categoryName,
       subcategoryName: subcategoryName,
-    });
+    }));
 
     if (isFilterOpen) {
       toggleFilter();
