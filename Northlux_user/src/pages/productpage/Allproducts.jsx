@@ -15,14 +15,14 @@ import debounce from "lodash/debounce";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "../../components/error/ErrorFallback";
 import { useLabels } from "../../hooks/queries/labels";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Pagination from "../../components/Pagination";
 import { useBanners } from "../../hooks/queries/banner";
 
 // Separate the content into a new component
 function AllProductsContent() {
   const location = useLocation();
-
+  const navigate = useNavigate();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [openSections, setOpenSections] = useState({
     categories: true,
@@ -499,7 +499,7 @@ function AllProductsContent() {
       <Carousel data={productBanners} maxHeight="32rem" showButton={false} />
       <div className="product-section">
         <div className="breadcrumb">
-          <span>Home</span> / <span>All Products</span>
+          <span style={{ cursor: "pointer" }} onClick={() => navigate("/")}>Home</span> / <span>All Products</span>
         </div>
 
         <div className="product-header">

@@ -22,11 +22,11 @@ function TopProductCards({ item }) {
         </div>
         <div>
           <p className="text-lg font-semibold tracking-tight text-gray-900 dark:text-white">
-            {item?.totalOrdered} Orders
+            {item?.orderCount} Orders
           </p>
-          {/* <p className="text-sm font-semibold tracking-tight text-gray-900 dark:text-white md:text-base">
-            Orders
-          </p> */}
+          <p className="text-sm font-semibold  text-gray-600 dark:text-white md:text-base">
+            {item?.totalOrdered} quantity 
+          </p>
         </div>
       </div>
     </div>
