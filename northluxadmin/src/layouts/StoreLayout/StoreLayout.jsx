@@ -17,7 +17,7 @@ function StoreLayout() {
     { name: "Labels", path: "label" },
     { name: "Customers", path: "customer" },
     { name: "Banners", path: "banner" },
-    { name: "Offer Banners", path: "offer-banner" },
+    { name: "Banners With Links", path: "banner-with-link" },
     { name: "Active Offers", path: "active-offer" },
     { name: "Sales", path: "sales" },
     { name: "Inventory", path: "inventory" },
