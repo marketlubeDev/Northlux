@@ -38,15 +38,10 @@ function ProductDetailsContent() {
   const [quantity, setQuantity] = useState(1);
   const [outOfStock, setOutOfStock] = useState(false);
   useEffect(() => {
-    setSelectedVariant(null);
-    setSelectedImage(null);
+    setSelectedVariant(product?.variants?.[0]);
+    setSelectedImage(product?.variants?.[0]?.images?.[0]);
     setQuantity(1);
-    if (product?.variants?.length > 0) {
-      setSelectedVariant(product.variants[0]);
-      setSelectedImage(product.variants[0].images[0]);
-    } else if (product?.images?.length > 0) {
-      setSelectedImage(product.images[0]);
-    }
+
 
     window.scrollTo({
       top: 0,
@@ -57,9 +52,7 @@ function ProductDetailsContent() {
   useEffect(() => {
     if (
       (selectedVariant && selectedVariant?.stockStatus == "outofstock") ||
-      (!selectedVariant && product?.stockStatus == "outofstock") ||
-      (selectedVariant && selectedVariant?.stock === 0) ||
-      (!selectedVariant && product?.stock === 0)
+      (selectedVariant && selectedVariant?.stock === 0) 
     ) {
       setOutOfStock(true);
     } else {
@@ -150,26 +143,13 @@ function ProductDetailsContent() {
             <img
               src={
                 selectedImage ||
-                (selectedVariant
-                  ? selectedVariant.images[0]
-                  : product?.images[0])
+                (selectedVariant && selectedVariant.images[0]) 
               }
               alt={product?.name}
             />
           </div>
           <div className="thumbnail-images">
-            {!selectedVariant
-              ? product?.images?.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image}
-                    alt={`${product?.name} ${index + 1}`}
-                    onClick={() => setSelectedImage(image)}
-                    className={selectedImage === image ? "selected" : ""}
-                    style={{ cursor: "pointer" }}
-                  />
-                ))
-              : selectedVariant?.images.map((image, index) => (
+            { selectedVariant?.images.map((image, index) => (
                   <img
                     key={index}
                     src={image}
@@ -205,13 +185,13 @@ function ProductDetailsContent() {
               ? selectedVariant?.attributes?.title
               : product?.name} */}
             {selectedVariant
-              ? `${product?.name} (${selectedVariant?.attributes?.title})`
-              : product?.name}
+              && `${product?.name} (${selectedVariant?.attributes?.title})`
+            }
           </h1>
 
-          {(product?.variants?.length > 0
-            ? selectedVariant?.stock < 5 && selectedVariant?.stock > 0
-            : product?.stock < 5 && product?.stock > 0) && (
+          {(selectedVariant
+            && selectedVariant?.stock < 5 && selectedVariant?.stock > 0
+           ) && (
             <span className="product-stock-left">
               ( only {selectedVariant ? selectedVariant?.stock : product?.stock}{" "}
               left)
@@ -221,12 +201,10 @@ function ProductDetailsContent() {
             <p>
               {truncateDescription(
                 selectedVariant
-                  ? selectedVariant?.attributes?.description
-                  : product?.description
+                  && selectedVariant?.attributes?.description
               )}
               {(selectedVariant?.attributes?.description?.split(" ").length >
-                100 ||
-                product?.description?.split(" ").length > 100) && (
+                100 ) && (
                 <button
                   className="read-more"
                   onClick={() => setShowFullDescription(!showFullDescription)}
@@ -272,18 +250,15 @@ function ProductDetailsContent() {
               <span className="current">
                 ₹
                 {selectedVariant
-                  ? selectedVariant?.offerPrice
-                  : product?.offerPrice}
+                  && selectedVariant?.offerPrice}
               </span>
               <span className="original">
-                ₹{selectedVariant ? selectedVariant?.price : product?.price}
+                ₹{selectedVariant && selectedVariant?.price}
               </span>
               <span className="discount">
                 {CalculateDiscount(
-                  selectedVariant ? selectedVariant?.price : product?.price,
-                  selectedVariant
-                    ? selectedVariant?.offerPrice
-                    : product?.offerPrice
+                  selectedVariant && selectedVariant?.price,
+                  selectedVariant && selectedVariant?.offerPrice
                 )}
                 % off
               </span>
@@ -350,7 +325,7 @@ function ProductDetailsContent() {
               )}
               {outOfStock && (
                 <span className="product-out-of-stock">
-                  Currently Unavailable
+                  Out of Stock
                 </span>
               )}
             </div>
