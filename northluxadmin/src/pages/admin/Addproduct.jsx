@@ -1,11 +1,26 @@
 import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { adminUtilities } from "../../sevices/adminApis";
-import { addProduct } from "../../sevices/ProductApis";
+import { getProductById, addProduct, updateProduct } from "../../sevices/ProductApis";
 import { toast } from "react-toastify";
+import LoadingSpinner from "../../components/spinner/LoadingSpinner";
 
 function Addproduct() {
-  // Local state for product and variants
-  const [productName, setProductName] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const productId = location.state?.productId;
+
+  // State for product and variants
+  const [productData, setProductData] = useState({
+    name: "",
+    brand: "",
+    category: "",
+    subcategory: "",
+    store: "",
+    label: "",
+    activeStatus: true,
+    priority: 0,
+  });
   const [variants, setVariants] = useState([
     {
       name: "",
@@ -26,17 +41,8 @@ function Addproduct() {
   const [stores, setStores] = useState([]);
   const [labels, setLabels] = useState([]);
   const [showSubcategory, setShowSubcategory] = useState([]);
-  const [productData, setProductData] = useState({
-    name: "",
-    brand: "",
-    category: "",
-    subcategory: "",
-    store: "",
-    label: "",
-    activeStatus: true,
-    priority: 0,
-  });
-
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (productData.category) {
@@ -62,6 +68,46 @@ function Addproduct() {
     };
     fetchUtilities();
   }, []);
+
+  useEffect(() => {
+    if (productId) {
+      setIsEditMode(true);
+      const fetchProduct = async () => {
+        try {
+          const res = await getProductById(productId);
+          const prod = res.data;
+          console.log(prod , "prod")
+          setProductData({
+            name: prod.name || "",
+            brand: prod.brand?._id || "",
+            category: prod.category?._id || "",
+            subcategory: prod.subcategory?._id || "",
+            store: prod.store?._id || "",
+            label: prod.label?._id || "",
+            activeStatus: prod.activeStatus ?? true,
+            priority: prod.priority ?? 0,
+          });
+          setVariants(
+            (prod.variants || []).map((v) => ({
+              name: v.attributes?.title || "",
+              sku: v.sku || "",
+              mrp: v.price || "",
+              offerPrice: v.offerPrice || "",
+              costPrice: v.grossPrice || "",
+              description: v.attributes?.description || "",
+              images: v.images || [null, null, null, null],
+              stockStatus: v.stockStatus || "",
+              stockQuantity: v.stock || "00",
+              _id: v._id,
+            }))
+          );
+        } catch (err) {
+          toast.error("Failed to fetch product details");
+        }
+      };
+      fetchProduct();
+    }
+  }, [productId]);
 
   // Add new variant
   const handleAddVariant = () => {
@@ -95,14 +141,12 @@ function Addproduct() {
   // Handle image upload (UI only)
   const handleImageChange = (idx, file) => {
     setVariants((prev) =>
-      prev.map((v, i) =>
-        i === activeVariant
-          ? {
-              ...v,
-              images: v.images.map((img, j) => (j === idx ? file : img)),
-            }
-          : v
-      )
+      prev.map((v, i) => {
+        if (i !== activeVariant) return v;
+        const newImages = [...v.images];
+        newImages[idx] = file; // Always replace with the new File
+        return { ...v, images: newImages };
+      })
     );
   };
 
@@ -152,32 +196,42 @@ function Addproduct() {
   };
 
   const handlePublishProduct = async () => {
-    const formData = new FormData();
+    setIsLoading(true);
 
-    // Product-level fields
+    console.log(variants , "variants")
+
+        //if variant name are same then show error also check not same variant sku
+        if (variants.some(v => v.name == v.name && v._id !== v._id)) {
+          toast.error("Variant name must be unique");
+          setIsLoading(false);
+          return;
+        }
+        if (variants.some(v => v.sku == v.sku && v._id !== v._id)) {
+            toast.error("Variant sku must be unique");
+          setIsLoading(false);
+          return;
+        }
+    const formData = new FormData();
     Object.entries(productData).forEach(([key, value]) => {
-      // Only append if value is not undefined or null
       if (value !== undefined && value !== null) {
         formData.append(key, value);
       }
     });
     formData.append("isDeleted", false);
 
-    // Variants
+
+
     variants.forEach((v, variantIndex) => {
+
+      if (v._id) formData.append(`variants[${variantIndex}][_id]`, v._id);
       formData.append(`variants[${variantIndex}][sku]`, v.sku);
       formData.append(`variants[${variantIndex}][price]`, v.mrp);
       formData.append(`variants[${variantIndex}][offerPrice]`, v.offerPrice);
       formData.append(`variants[${variantIndex}][stock]`, v.stockQuantity);
       formData.append(`variants[${variantIndex}][stockStatus]`, v.stockStatus);
       formData.append(`variants[${variantIndex}][grossPrice]`, v.costPrice);
-      formData.append(`variants[${variantIndex}][offer]`, ""); // or v.offer if you have it
-
-      // Attributes
       formData.append(`variants[${variantIndex}][attributes][title]`, v.name);
       formData.append(`variants[${variantIndex}][attributes][description]`, v.description);
-
-      // Images (skip nulls)
       v.images.forEach((img, imgIdx) => {
         if (img) {
           formData.append(`variants[${variantIndex}][images][${imgIdx}]`, img);
@@ -185,13 +239,20 @@ function Addproduct() {
       });
     });
 
-    // For demonstration, log all FormData entries
     try {
-      const response = await addProduct(formData);
-      console.log(response);
+      let response;
+      if (isEditMode) {
+        response = await updateProduct(productId, formData);
+        toast.success("Product updated successfully");
+      } else {
+        response = await addProduct(formData);
+        toast.success("Product added successfully");
+      }
+      navigate("/admin/product");
     } catch (error) {
-      console.log(error);
-      toast.error(error?.response?.data?.message || "Error publishing product");
+      toast.error(error?.response?.data?.message || "Error saving product");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -412,12 +473,20 @@ function Addproduct() {
                     key={idx}
                     className="w-32 h-32 border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 transition"
                   >
-                    {variants[activeVariant].images[idx] ? (
-                      <img
-                        src={URL.createObjectURL(variants[activeVariant].images[idx])}
-                        alt="variant"
-                        className="w-full h-full object-cover rounded-lg"
-                      />
+                    {variants?.[activeVariant]?.images?.[idx] ? (
+                      typeof variants[activeVariant].images[idx] === "string" ? (
+                        <img
+                          src={variants[activeVariant].images[idx]}
+                          alt="variant"
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      ) : (
+                        <img
+                          src={URL.createObjectURL(variants[activeVariant].images[idx])}
+                          alt="variant"
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      )
                     ) : (
                       <>
                         <span className="text-3xl text-gray-300">📷</span>
@@ -476,13 +545,37 @@ function Addproduct() {
         </div>
         {/* Bottom Buttons */}
         <div className="flex justify-between mt-8">
-          <button className="bg-red-600 text-white px-8 py-2 rounded-full font-semibold">Cancel</button>
+          <button onClick={() => navigate("/admin/product")} className="bg-red-600 text-white px-8 py-2 rounded-full font-semibold">Cancel</button>
           <div className="flex gap-4">
             <button
               className="bg-green-700 text-white px-8 py-2 rounded-full font-semibold"
               onClick={handlePublishProduct}
+              disabled={isLoading}
             >
-              Publish Product
+              {isLoading ?       
+              <div className="flex items-center gap-2">
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                <span>Publishing...</span>
+              </div> : "Publish Product"}
             </button>
           </div>
         </div>
