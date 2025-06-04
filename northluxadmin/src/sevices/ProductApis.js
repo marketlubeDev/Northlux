@@ -47,3 +47,12 @@ export const deleteProduct = async (productId) => {
   return response;
 };
 
+export const deleteVariant = async (variantId) => {
+  // Adjust the endpoint as per your backend
+  const response = await axiosInstance.patch(
+    `product/update-variant/${variantId}`,
+    { isDeleted: true }
+  );
+  return response;
+};
+

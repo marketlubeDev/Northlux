@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { adminUtilities } from "../../sevices/adminApis";
-import { getProductById, addProduct, updateProduct } from "../../sevices/ProductApis";
+import { getProductById, addProduct, updateProduct, deleteVariant } from "../../sevices/ProductApis";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../../components/spinner/LoadingSpinner";
+import { validateProduct } from "../../components/Admin/Product/components/Validations/ProductValidation";
+import ConfirmationModal from "../../components/Admin/ConfirmationModal";
 
 function Addproduct() {
   const location = useLocation();
@@ -31,7 +33,7 @@ function Addproduct() {
       description: "",
       images: [null, null, null, null],
       stockStatus: "",
-      stockQuantity: "00",
+      stockQuantity: "",
     },
   ]);
   const [activeVariant, setActiveVariant] = useState(0);
@@ -43,6 +45,13 @@ function Addproduct() {
   const [showSubcategory, setShowSubcategory] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({
+    product: {},
+    variants: {}
+  });
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [variantToDelete, setVariantToDelete] = useState(null);
+  const [isDeletingVariant, setIsDeletingVariant] = useState(false);
 
   useEffect(() => {
     if (productData.category) {
@@ -97,7 +106,7 @@ function Addproduct() {
               description: v.attributes?.description || "",
               images: v.images || [null, null, null, null],
               stockStatus: v.stockStatus || "",
-              stockQuantity: v.stock || "00",
+              stockQuantity: v.stock || "",
               _id: v._id,
             }))
           );
@@ -144,7 +153,7 @@ function Addproduct() {
       prev.map((v, i) => {
         if (i !== activeVariant) return v;
         const newImages = [...v.images];
-        newImages[idx] = file; // Always replace with the new File
+        newImages[idx] = file; 
         return { ...v, images: newImages };
       })
     );
@@ -174,8 +183,25 @@ function Addproduct() {
   };
 
   // Remove a variant
-  const handleRemoveVariant = (idx) => {
+  const handleRemoveVariant = async (idx) => {
     if (variants.length === 1) return; // Don't allow removing last variant
+    const variant = variants[idx];
+
+    if (isEditMode && variant._id) {
+      setIsDeletingVariant(true);
+      try {
+        await deleteVariant(variant._id);
+        // Optionally show a toast here for success
+      } catch (error) {
+        toast.error(error?.response?.data?.message || "Failed to delete variant");
+        setIsDeletingVariant(false);
+        setShowDeleteModal(false);
+        return;
+      }
+      setIsDeletingVariant(false);
+    }
+
+    // Remove from UI state
     const newVariants = variants.filter((_, i) => i !== idx);
     let newActive = activeVariant;
     if (idx === activeVariant) {
@@ -185,6 +211,7 @@ function Addproduct() {
     }
     setVariants(newVariants);
     setActiveVariant(newActive);
+    setShowDeleteModal(false);
   };
 
   const handleProductChange = (e) => {
@@ -198,19 +225,34 @@ function Addproduct() {
   const handlePublishProduct = async () => {
     setIsLoading(true);
 
-    console.log(variants , "variants")
+    // Validate the product data
+    const validationErrors = validateProduct(productData, variants);
+    
+    if (Object.keys(validationErrors).length > 0) {
+      // Separate product and variant errors
+      const productErrors = {};
+      const variantErrors = {};
 
-        //if variant name are same then show error also check not same variant sku
-        if (variants.some(v => v.name == v.name && v._id !== v._id)) {
-          toast.error("Variant name must be unique");
-          setIsLoading(false);
-          return;
+      Object.entries(validationErrors).forEach(([key, value]) => {
+        if (key.startsWith('variant')) {
+          const variantIndex = parseInt(key.replace('variant', ''));
+          variantErrors[variantIndex] = value;
+        } else {
+          productErrors[key] = value;
         }
-        if (variants.some(v => v.sku == v.sku && v._id !== v._id)) {
-            toast.error("Variant sku must be unique");
-          setIsLoading(false);
-          return;
-        }
+      });
+
+      setErrors({
+        product: productErrors,
+        variants: variantErrors
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    // Clear errors if validation passes
+    setErrors({ product: {}, variants: {} });
+
     const formData = new FormData();
     Object.entries(productData).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
@@ -219,10 +261,7 @@ function Addproduct() {
     });
     formData.append("isDeleted", false);
 
-
-
     variants.forEach((v, variantIndex) => {
-
       if (v._id) formData.append(`variants[${variantIndex}][_id]`, v._id);
       formData.append(`variants[${variantIndex}][sku]`, v.sku);
       formData.append(`variants[${variantIndex}][price]`, v.mrp);
@@ -254,6 +293,14 @@ function Addproduct() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Add error display helper
+  const getError = (field, isVariant = false, variantIndex = null) => {
+    if (isVariant && variantIndex !== null) {
+      return errors.variants[variantIndex]?.[field];
+    }
+    return errors.product[field];
   };
 
   return (
@@ -292,11 +339,12 @@ function Addproduct() {
           <input
             type="text"
             name="name"
-            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${getError('name') ? 'border-red-500' : ''}`}
             value={productData.name}
             onChange={handleProductChange}
             placeholder=""
           />
+          {getError('name') && <p className="text-red-500 text-sm mt-1">{getError('name')}</p>}
         </div>
 
         {/* Brand, Category, Subcategory */}
@@ -307,52 +355,77 @@ function Addproduct() {
               name="brand"
               value={productData?.brand}
               onChange={handleProductChange}
-              className="w-full border rounded-lg px-3 py-2"
+              className={`w-full border rounded-lg px-3 py-2 ${getError('brand') ? 'border-red-500' : ''}`}
             >
               <option>Select Brand</option>
               {brands?.map((brand) => (
                 <option key={brand._id} value={brand._id}>{brand.name}</option>
               ))}
             </select>
+            {getError('brand') && <p className="text-red-500 text-sm mt-1">{getError('brand')}</p>}
           </div>
           <div className="flex-1">
             <label className="block mb-1 font-medium">Category</label>
-            <select className="w-full border rounded-lg px-3 py-2" name="category" value={productData.category} onChange={handleProductChange}>
+            <select 
+              className={`w-full border rounded-lg px-3 py-2 ${getError('category') ? 'border-red-500' : ''}`} 
+              name="category" 
+              value={productData.category} 
+              onChange={handleProductChange}
+            >
               <option>Select Category</option>
               {categories?.map((category) => (
                 <option key={category._id} value={category._id}>{category.name}</option>
               ))}
             </select>
+            {getError('category') && <p className="text-red-500 text-sm mt-1">{getError('category')}</p>}
           </div>
           <div className="flex-1">
             <label className="block mb-1 font-medium">Subcategory</label>
-            <select className="w-full border rounded-lg px-3 py-2" name="subcategory" value={productData.subcategory} onChange={handleProductChange}>
+            <select 
+              className={`w-full border rounded-lg px-3 py-2 ${getError('subcategory') ? 'border-red-500' : ''}`} 
+              name="subcategory" 
+              value={productData.subcategory} 
+              onChange={handleProductChange}
+            >
               <option>Select Subcategory</option>
               {showSubcategory?.map((subcategory) => (
                 <option key={subcategory._id} value={subcategory._id}>{subcategory.name}</option>
               ))}
             </select>
+            {getError('subcategory') && <p className="text-red-500 text-sm mt-1">{getError('subcategory')}</p>}
           </div>
         </div>
         {/* Store, Label */}
         <div className="flex gap-4 mb-4">
           <div className="flex-1">
             <label className="block mb-1 font-medium">Store</label>
-            <select className="w-full border rounded-lg px-3 py-2" name="store" value={productData.store} onChange={handleProductChange}>
+            <select 
+              className={`w-full border rounded-lg px-3 py-2 ${getError('store') ? 'border-red-500' : ''}`} 
+              name="store" 
+              value={productData.store} 
+              onChange={handleProductChange}
+            >
               <option>Select Store</option>
               {stores.map((store) => (
                 <option key={store._id} value={store._id}>{store.store_name}</option>
               ))}
             </select>
+            {getError('store') && <p className="text-red-500 text-sm mt-1">{getError('store')}</p>}
           </div>
           <div className="flex-1">
             <label className="block mb-1 font-medium">Label</label>
-            <select className="w-full border rounded-lg px-3 py-2" name="label" value={productData.label} onChange={handleProductChange}>
+            <select 
+              className={`w-full border rounded-lg px-3 py-2 ${getError('label') ? 'border-red-500' : ''}`} 
+              name="label" 
+              value={productData.label} 
+              onChange={handleProductChange}
+            >
               <option>Select Label</option>
               {labels.map((label) => (
                 <option key={label._id} value={label._id}>{label.name}</option>
               ))}
             </select>
+            {getError('label') && <p className="text-red-500 text-sm mt-1">{getError('label')}</p>}
           </div>
         </div>
         {/* Variant Tabs */}
@@ -371,7 +444,11 @@ function Addproduct() {
                 Variant {idx + 1}
                 {variants.length > 1 && (
                   <span
-                    onClick={e => { e.stopPropagation(); handleRemoveVariant(idx); }}
+                    onClick={e => { 
+                      e.stopPropagation(); 
+                      setVariantToDelete(isEditMode ? variants[idx]._id : idx); 
+                      setShowDeleteModal(true); 
+                    }}
                     className="ml-1 cursor-pointer text-red-500 hover:text-red-700 text-base"
                     title="Remove Variant"
                   >
@@ -402,9 +479,10 @@ function Addproduct() {
                   name="name"
                   value={variants[activeVariant].name}
                   onChange={handleVariantChange}
-                  className="w-full border rounded-lg px-3 py-2"
+                  className={`w-full border rounded-lg px-3 py-2 ${getError('name', true, activeVariant) ? 'border-red-500' : ''}`}
                   placeholder="e.g., 4k resolution"
                 />
+                {getError('name', true, activeVariant) && <p className="text-red-500 text-sm mt-1">{getError('name', true, activeVariant)}</p>}
               </div>
               <div className="flex-1">
                 <label className="block mb-1 font-medium">SKU</label>
@@ -413,9 +491,10 @@ function Addproduct() {
                   name="sku"
                   value={variants[activeVariant].sku}
                   onChange={handleVariantChange}
-                  className="w-full border rounded-lg px-3 py-2"
+                  className={`w-full border rounded-lg px-3 py-2 ${getError('sku', true, activeVariant) ? 'border-red-500' : ''}`}
                   placeholder="e.g., #2586312f9"
                 />
+                {getError('sku', true, activeVariant) && <p className="text-red-500 text-sm mt-1">{getError('sku', true, activeVariant)}</p>}
               </div>
             </div>
             <div className="flex gap-4">
@@ -428,10 +507,11 @@ function Addproduct() {
                     name="mrp"
                     value={variants[activeVariant].mrp}
                     onChange={handleVariantChange}
-                    className="w-full border rounded-lg px-8 py-2"
+                    className={`w-full border rounded-lg px-8 py-2 ${getError('mrp', true, activeVariant) ? 'border-red-500' : ''}`}
                     placeholder="0.00"
                   />
                 </div>
+                {getError('mrp', true, activeVariant) && <p className="text-red-500 text-sm mt-1">{getError('mrp', true, activeVariant)}</p>}
               </div>
               <div className="flex-1">
                 <label className="block mb-1 font-medium">Offer price</label>
@@ -442,10 +522,11 @@ function Addproduct() {
                     name="offerPrice"
                     value={variants[activeVariant].offerPrice}
                     onChange={handleVariantChange}
-                    className="w-full border rounded-lg px-8 py-2"
+                    className={`w-full border rounded-lg px-8 py-2 ${getError('offerPrice', true, activeVariant) ? 'border-red-500' : ''}`}
                     placeholder="0.00"
                   />
                 </div>
+                {getError('offerPrice', true, activeVariant) && <p className="text-red-500 text-sm mt-1">{getError('offerPrice', true, activeVariant)}</p>}
               </div>
               <div className="flex-1">
                 <label className="block mb-1 font-medium">Cost price</label>
@@ -456,10 +537,11 @@ function Addproduct() {
                     name="costPrice"
                     value={variants[activeVariant].costPrice}
                     onChange={handleVariantChange}
-                    className="w-full border rounded-lg px-8 py-2"
+                    className={`w-full border rounded-lg px-8 py-2 ${getError('costPrice', true, activeVariant) ? 'border-red-500' : ''}`}
                     placeholder="0.00"
                   />
                 </div>
+                {getError('costPrice', true, activeVariant) && <p className="text-red-500 text-sm mt-1">{getError('costPrice', true, activeVariant)}</p>}
               </div>
             </div>
           </div>
@@ -471,7 +553,7 @@ function Addproduct() {
                 {[0, 1, 2, 3].map((idx) => (
                   <label
                     key={idx}
-                    className="w-32 h-32 border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 transition"
+                    className={`w-32 h-32 border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 transition ${getError('images', true, activeVariant) ? 'border-red-500' : ''}`}
                   >
                     {variants?.[activeVariant]?.images?.[idx] ? (
                       typeof variants[activeVariant].images[idx] === "string" ? (
@@ -502,6 +584,7 @@ function Addproduct() {
                   </label>
                 ))}
               </div>
+              {getError('images', true, activeVariant) && <p className="text-red-500 text-sm mt-1">{getError('images', true, activeVariant)}</p>}
             </div>
             <div>
               <label className="block mb-1 font-medium">Variant Description</label>
@@ -509,10 +592,11 @@ function Addproduct() {
                 name="description"
                 value={variants[activeVariant].description}
                 onChange={handleVariantChange}
-                className="w-full border rounded-lg px-3 py-2"
+                className={`w-full border rounded-lg px-3 py-2 ${getError('description', true, activeVariant) ? 'border-red-500' : ''}`}
                 rows={3}
                 placeholder="Write your thoughts here..."
               />
+              {getError('description', true, activeVariant) && <p className="text-red-500 text-sm mt-1">{getError('description', true, activeVariant)}</p>}
             </div>
             <div className="flex gap-4 items-end">
               <div className="flex flex-col gap-2">
@@ -535,10 +619,17 @@ function Addproduct() {
                     <span>Out of Stock</span>
                   </label>
                 </div>
+                {getError('stockStatus', true, activeVariant) && <p className="text-red-500 text-sm mt-1">{getError('stockStatus', true, activeVariant)}</p>}
               </div>
               <div className="flex-1">
                 <label className="block mb-1 font-medium">Stock Quantity</label>
-                <input type="number" className="w-full border rounded-lg px-3 py-2" value={variants[activeVariant].stockQuantity} onChange={handleStockQuantity} />
+                <input 
+                  type="number" 
+                  className={`w-full border rounded-lg px-3 py-2 ${getError('stockQuantity', true, activeVariant) ? 'border-red-500' : ''}`} 
+                  value={variants[activeVariant].stockQuantity} 
+                  onChange={handleStockQuantity} 
+                />
+                {getError('stockQuantity', true, activeVariant) && <p className="text-red-500 text-sm mt-1">{getError('stockQuantity', true, activeVariant)}</p>}
               </div>
             </div>
           </div>
@@ -580,6 +671,19 @@ function Addproduct() {
           </div>
         </div>
       </div>
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={() => handleRemoveVariant(
+          typeof variantToDelete === 'number' ? variantToDelete : variants.findIndex(v => v._id === variantToDelete)
+        )}
+        title="Delete Variant"
+        message="Are you sure you want to delete this variant? This action cannot be undone."
+        confirmButtonText={isDeletingVariant ? "Deleting..." : "Delete"}
+        confirmButtonColor="red"
+        isLoading={isDeletingVariant}
+        isDisabled={isDeletingVariant}
+      />
     </div>
   );
 }

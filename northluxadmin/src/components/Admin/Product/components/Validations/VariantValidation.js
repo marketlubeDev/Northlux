@@ -10,18 +10,18 @@ export const validateVariant = (variant) => {
   if (!variant.offerPrice) errors.offerPrice = "Offer price is required";
   if (!variant.grossPrice) errors.grossPrice = "Gross price is required";
   if (
-    variant.stock === undefined ||
-    variant.stock === null ||
-    variant.stock === ""
+    variant.stockQuantity === undefined ||
+    variant.stockQuantity === null ||
+    variant.stockQuantity === ""
   )
-    errors.stock = "Stock is required";
+    errors.stockQuantity = "Stock quantity is required";
   if (!variant.stockStatus) errors.stockStatus = "Stock status is required";
 
   // Numeric validation
   if (isNaN(variant.price)) errors.price = "Price must be a number";
   if (isNaN(variant.offerPrice))
     errors.offerPrice = "Offer price must be a number";
-  if (isNaN(variant.stock)) errors.stock = "Stock must be a number";
+  if (isNaN(variant.stockQuantity)) errors.stockQuantity = "Stock quantity must be a number";
 
   // Price logic
   if (Number(variant.offerPrice) > Number(variant.price)) {
@@ -31,6 +31,7 @@ export const validateVariant = (variant) => {
 
   // Image validation
   if (!variant.images?.some((image) => image)) {
+    
     errors.images = "At least one variant image is required";
   }
 
