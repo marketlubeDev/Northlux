@@ -213,13 +213,19 @@
 
   @include responsive.respond(phone) {
     padding: 0;
-    height: 50vh;
+    height: 30vh;
+    width: 100%;
   }
   @include responsive.respond(smallPhone) {
     padding: 0;
     height: 30vh;
     width: 100%;
     border-radius: 0;
+  }
+
+  @media (max-width: 1024px) and (min-width: 768px) {
+    height: 40vh;
+    width: 100%;
   }
 
   .custom-dots {
