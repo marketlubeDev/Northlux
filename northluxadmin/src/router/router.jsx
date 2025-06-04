@@ -149,6 +149,10 @@ export const router = createBrowserRouter([
         element: <Category role={"store"} />,
       },
       {
+        path: "subcategory",
+        element: <Subcategories role={"store"} />,
+      },
+      {
         path: "brand",
         element: <Brand role={"store"} />,
       },

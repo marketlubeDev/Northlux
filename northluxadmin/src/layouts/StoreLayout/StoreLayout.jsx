@@ -13,6 +13,7 @@ function StoreLayout() {
     { name: "Products", path: "product" },
     { name: "Orders", path: "order" },
     { name: "Categories", path: "category" },
+    { name: "SubCategories", path: "subcategory" },
     { name: "Brands", path: "brand" },
     { name: "Labels", path: "label" },
     { name: "Customers", path: "customer" },
