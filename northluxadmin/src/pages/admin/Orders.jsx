@@ -379,13 +379,13 @@ function Orders({ role }) {
     const handlePaymentStatusChange = async (newStatus) => {
       try {
         const result = await updateOrderStatus(order._id, newStatus, "payment");
-        if (result.success) {
+        if (result?.data?.success) {
           setPaymentStatus(newStatus);
-          toast.success(result.message);
+          toast.success(result?.data?.message);
           // Refresh data after successful status update
           await fetchData();
         } else {
-          toast.error(result.message);
+          toast.error(result?.data?.message);
         }
       } catch (error) {
         toast.error(error?.response?.data?.message || "Failed to update payment status");

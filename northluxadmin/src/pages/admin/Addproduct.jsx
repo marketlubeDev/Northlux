@@ -6,19 +6,20 @@ import { toast } from "react-toastify";
 import LoadingSpinner from "../../components/spinner/LoadingSpinner";
 import { validateProduct } from "../../components/Admin/Product/components/Validations/ProductValidation";
 import ConfirmationModal from "../../components/Admin/ConfirmationModal";
-
+import { useSelector } from "react-redux";
 function Addproduct() {
   const location = useLocation();
   const navigate = useNavigate();
   const productId = location.state?.productId;
 
+  const {store} = useSelector(state => state.store);
   // State for product and variants
   const [productData, setProductData] = useState({
     name: "",
     brand: "",
     category: "",
     subcategory: "",
-    store: "",
+    store: store?._id || "",
     label: "",
     activeStatus: true,
     priority: 0,
@@ -85,7 +86,6 @@ function Addproduct() {
         try {
           const res = await getProductById(productId);
           const prod = res.data;
-          console.log(prod , "prod")
           setProductData({
             name: prod.name || "",
             brand: prod.brand?._id || "",
@@ -106,7 +106,7 @@ function Addproduct() {
               description: v.attributes?.description || "",
               images: v.images || [null, null, null, null],
               stockStatus: v.stockStatus || "",
-              stockQuantity: v.stock || "",
+              stockQuantity: v.stock === 0 ? "0" : v.stock || "",
               _id: v._id,
             }))
           );
@@ -274,7 +274,7 @@ function Addproduct() {
       v.images.forEach((img, imgIdx) => {
         if (img) {
           formData.append(`variants[${variantIndex}][images][${imgIdx}]`, img);
-        }
+        }  
       });
     });
 
@@ -287,7 +287,12 @@ function Addproduct() {
         response = await addProduct(formData);
         toast.success("Product added successfully");
       }
-      navigate("/admin/product");
+
+      if(store && Object.keys(store).length > 0){
+        navigate("/store/product");
+      }else{
+        navigate("/admin/product");
+      }
     } catch (error) {
       toast.error(error?.response?.data?.message || "Error saving product");
     } finally {
@@ -357,7 +362,7 @@ function Addproduct() {
               onChange={handleProductChange}
               className={`w-full border rounded-lg px-3 py-2 ${getError('brand') ? 'border-red-500' : ''}`}
             >
-              <option>Select Brand</option>
+              <option value="" disabled>Select Brand</option>
               {brands?.map((brand) => (
                 <option key={brand._id} value={brand._id}>{brand.name}</option>
               ))}
@@ -372,7 +377,7 @@ function Addproduct() {
               value={productData.category} 
               onChange={handleProductChange}
             >
-              <option>Select Category</option>
+              <option value="" disabled>Select Category</option>
               {categories?.map((category) => (
                 <option key={category._id} value={category._id}>{category.name}</option>
               ))}
@@ -387,7 +392,7 @@ function Addproduct() {
               value={productData.subcategory} 
               onChange={handleProductChange}
             >
-              <option>Select Subcategory</option>
+              <option value="" disabled>Select Subcategory</option>
               {showSubcategory?.map((subcategory) => (
                 <option key={subcategory._id} value={subcategory._id}>{subcategory.name}</option>
               ))}
@@ -404,8 +409,9 @@ function Addproduct() {
               name="store" 
               value={productData.store} 
               onChange={handleProductChange}
+              disabled = {store && Object.keys(store).length > 0}
             >
-              <option>Select Store</option>
+              <option value="" disabled>Select Store</option>
               {stores.map((store) => (
                 <option key={store._id} value={store._id}>{store.store_name}</option>
               ))}
@@ -420,7 +426,7 @@ function Addproduct() {
               value={productData.label} 
               onChange={handleProductChange}
             >
-              <option>Select Label</option>
+              <option value="" disabled>Select Label</option>
               {labels.map((label) => (
                 <option key={label._id} value={label._id}>{label.name}</option>
               ))}
@@ -666,7 +672,7 @@ function Addproduct() {
                   ></path>
                 </svg>
                 <span>Publishing...</span>
-              </div> : "Publish Product"}
+              </div> : isEditMode ? "Update Product" : "Publish Product"}
             </button>
           </div>
         </div>

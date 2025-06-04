@@ -1,6 +1,6 @@
 export const validateProduct = (productData, variants) => {
   const errors = {};
-
+  console.log(productData, "productData>>>");
   // Product level validations
   if (!productData.name?.trim()) errors.name = "Product name is required";
   if (!productData.brand) errors.brand = "Brand is required";

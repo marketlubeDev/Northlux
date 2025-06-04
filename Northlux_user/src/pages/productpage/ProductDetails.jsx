@@ -87,27 +87,27 @@ function ProductDetailsContent() {
           setQuantity(1);
           const orderDetails = data?.data?.order;
           const message =
-            `*ORDER DETAILS*%0a%0a` +
-            `*Order ID:* ${orderDetails?.orderId}%0a%0a` +
-            `*Product Details*%0a` +
-            `• Name: ${orderDetails?.productName}%0a` +
-            `• SKU: ${orderDetails?.sku}%0a` +
-            `• Brand: ${orderDetails?.brandName}%0a` +
+            `*ORDER DETAILS*\n\n` +
+            `*Order ID:* ${orderDetails?.orderId}\n\n` +
+            `*Product Details*\n` +
+            `• Name: ${orderDetails?.productName}\n` +
+            `• SKU: ${orderDetails?.sku}\n` +
+            `• Brand: ${orderDetails?.brandName}\n` +
             `${
               orderDetails?.variantName
-                ? `• Variant: ${orderDetails?.variantName}%0a`
+                ? `• Variant: ${orderDetails?.variantName}\n`
                 : ""
             }` +
-            `• Quantity: ${orderDetails?.quantity}%0a` +
-            `• Price: ₹${orderDetails?.pricePerUnit}%0a` +
-            `• Total: ₹${orderDetails?.totalAmount}%0a%0a` +
-            `*Store Details*%0a` +
-            `• ${orderDetails?.storeName}%0a` +
-            `• Contact: ${orderDetails?.storeNumber}%0a%0a` +
-            `*Product Image*%0a` +
-            `${orderDetails?.productImage}%0a%0a`;
+            `• Quantity: ${orderDetails?.quantity}\n` +
+            `• Price: ₹${orderDetails?.pricePerUnit}\n` +
+            `• Total: ₹${orderDetails?.totalAmount}\n\n` +
+            `*Store Details*\n` +
+            `• ${orderDetails?.storeName}\n` +
+            `• Contact: ${orderDetails?.storeNumber}\n\n` +
+            `*Product Image*\n` +
+            `${orderDetails?.productImage}\n\n`;
 
-          const whatsappUrl = `https://wa.me/+91${orderDetails?.storeNumber}?text=${message}`;
+          const whatsappUrl = `https://wa.me/+91${orderDetails?.storeNumber}?text=${encodeURIComponent(message)}`;
           window.open(whatsappUrl, "_blank");
         },
         onError: (error) => {},
