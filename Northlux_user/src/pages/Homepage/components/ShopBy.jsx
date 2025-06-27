@@ -4,6 +4,43 @@ import LoadingSpinner from "../../../components/LoadingSpinner";
 import { useCategories } from "../../../hooks/queries/categories";
 import { Link, useNavigate } from "react-router-dom";
 
+const ImageWithFallback = ({ src, alt, className }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const handleLoad = () => {
+    setIsLoading(false);
+  };
+
+  const handleError = () => {
+    setIsLoading(false);
+    setError(true);
+  };
+
+  return (
+    <div className={`image-container ${className}`}>
+      {isLoading && (
+        <div className="image-placeholder">
+          <LoadingSpinner />
+        </div>
+      )}
+      <img
+        src={src}
+        alt={alt}
+        className={`${className} ${isLoading ? 'hidden' : ''}`}
+        loading="lazy"
+        onLoad={handleLoad}
+        onError={handleError}
+      />
+      {error && (
+        <div className="image-error">
+          <span>{alt}</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ShopBy = () => {
   const [activeTab, setActiveTab] = useState("categories");
   const [isTabLoading, setIsTabLoading] = useState(false);
@@ -36,7 +73,6 @@ const ShopBy = () => {
   const handleTabChange = (tab) => {
     setIsTabLoading(true);
     setActiveTab(tab);
-    // Simulate a small delay to show loading state
     setTimeout(() => {
       setIsTabLoading(false);
     }, 300);
@@ -76,7 +112,7 @@ const ShopBy = () => {
                 key={index}
                 className="content-item"
               >
-                <img
+                <ImageWithFallback
                   src={brand.image}
                   alt={brand.name}
                   className="content-image"
@@ -99,7 +135,7 @@ const ShopBy = () => {
               className="content-item"
               onClick={() => handleCategoryClick(category)}
             >
-              <img
+              <ImageWithFallback
                 src={category.image}
                 alt={category.name}
                 className="content-image"

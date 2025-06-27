@@ -45,7 +45,7 @@ function Card({ product }) {
       <div className="product-card_content" >
         {/* <span className="category">{category.name}</span> */}
         <h3 className="title">
-          {name.split("").length > 20 ? name.slice(0, 20) + "..." : name}
+          { name}
         </h3>
         <div className="price">
           <span className="current-price">₹{offerPrice}</span>
