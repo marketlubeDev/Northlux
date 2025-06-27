@@ -1,76 +1,99 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState, Suspense, lazy } from "react";
 import Carousel from "../../components/Carousel";
 import ExclusiveSale from "./components/ExclusiveSale";
 import ProductBanner from "../Homepage/components/ProductBanner";
-import ShopByCategory from "./components/ShopByCategory";
 import { useBanners } from "../../hooks/queries/banner";
 import { useParams } from "react-router-dom";
-import { useBrand, useBrands } from "../../hooks/queries/brands";
-import { useState } from "react";
+import { useBrand } from "../../hooks/queries/brands";
+import LoadingSpinner from "../../components/LoadingSpinner";
+
+// Lazy load the ShopByCategory component
+const ShopByCategory = lazy(() => import("./components/ShopByCategory"));
 
 export default function BrandPage() {
-  const { allBanners, isLoading, error } = useBanners();
   const { id } = useParams();
-
-  const { brand, isLoading: brandLoading, error: brandError } = useBrand(id);
-  const [brandData, setBrandData] = useState([
-    {
-      image: brand?.brand?.bannerImage,
-    },
-  ]);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  // Handle loading states
-  // if (isLoading || brandLoading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // Handle error states
-  if (error || brandError) {
-    return <div>Error loading content</div>;
-  }
-
   const [isMobile, setIsMobile] = useState(false);
+  
+  const { 
+    brand, 
+    isLoading: brandLoading, 
+    error: brandError 
+  } = useBrand(id);
+
+  // Memoize the brand data to prevent unnecessary re-renders
+  const brandData = useMemo(() => [{
+    image: isMobile ? brand?.brand?.mobileBannerImage : brand?.brand?.bannerImage
+  }], [brand?.brand?.bannerImage, brand?.brand?.mobileBannerImage, isMobile]);
 
   useEffect(() => {
+    // Debounced resize handler
+    let timeoutId;
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        setIsMobile(window.innerWidth <= 768);
+      }, 150);
     };
 
     handleResize(); // Initial check
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
-  useEffect(() => {
-    if (isMobile) {
-      setBrandData([
-        {
-          image: brand?.brand?.mobileBannerImage,
-        },
-      ]);
-    } else {
-      setBrandData([
-        {
-          image: brand?.brand?.bannerImage,
-        },
-      ]);
-    }
-  }, [isMobile, brand]);
+  // Handle loading state
+  if (brandLoading) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center' 
+      }}>
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  // Handle error state
+  if (brandError) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        flexDirection: 'column',
+        gap: '1rem'
+      }}>
+        <h2>Error loading content</h2>
+        <p>Please try refreshing the page</p>
+      </div>
+    );
+  }
 
   return (
     <div>
-      <Carousel data={brandData} maxHeight={"30rem"} isBrand={true} />
-      <ExclusiveSale id={id} />
-      {/* <ProductBanner
-        banners={allBanners?.filter(
-          (banner) => banner?.bannerFor === "product"
-        )}key={brand?.id}
-      /> */}
-      <ShopByCategory id={id} />
+      <Carousel 
+        data={brandData} 
+        maxHeight={"30rem"} 
+        isBrand={true} 
+      />
+      <Suspense fallback={
+        <div style={{ 
+          minHeight: '400px', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center' 
+        }}>
+          <LoadingSpinner />
+        </div>
+      }>
+        <ShopByCategory id={id} />
+      </Suspense>
     </div>
   );
 }

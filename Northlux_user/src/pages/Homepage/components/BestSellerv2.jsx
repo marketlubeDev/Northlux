@@ -88,7 +88,7 @@ function BestSellerv2() {
                       <span className="discount-tag">{discount(p.offerPrice, p.price)}% off</span>
                     </div>
 
-                    <button type="button" className="buy-now-btn">
+                    <button type="button" className="buy-now-btn" onClick={() => navigate(`/products/${p._id}`)}>
                       Buy Now
                     </button>
                   </div>

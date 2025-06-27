@@ -51,7 +51,7 @@ function Card({ product }) {
           <span className="current-price">₹{offerPrice}</span>
           <span className="original-price">₹{price}</span>
           {stockStatus === "outofstock" && (
-            <span className="out-of-stock">Currently unavailable</span>
+            <span className="out-of-stock">Out of Stock</span>
           )}
         </div>
         {/* <div className="rating">

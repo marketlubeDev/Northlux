@@ -3,8 +3,10 @@ import { useBrands } from "../../../hooks/queries/brands";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 import { useCategories } from "../../../hooks/queries/categories";
 import { Link, useNavigate } from "react-router-dom";
+
 const ShopBy = () => {
   const [activeTab, setActiveTab] = useState("categories");
+  const [isTabLoading, setIsTabLoading] = useState(false);
   const navigate = useNavigate();
   const {
     data: brandsData,
@@ -31,27 +33,41 @@ const ShopBy = () => {
     });
   };
 
+  const handleTabChange = (tab) => {
+    setIsTabLoading(true);
+    setActiveTab(tab);
+    // Simulate a small delay to show loading state
+    setTimeout(() => {
+      setIsTabLoading(false);
+    }, 300);
+  };
+
   return (
     <section className="shop-by">
       <h2>Shop By</h2>
       <div className="tabs">
         <button
           className={`tab-btn ${activeTab === "categories" ? "active" : ""}`}
-          onClick={() => setActiveTab("categories")}
+          onClick={() => handleTabChange("categories")}
         >
           Categories
         </button>
         <button
           className={`tab-btn ${activeTab === "brands" ? "active" : ""}`}
-          onClick={() => setActiveTab("brands")}
+          onClick={() => handleTabChange("brands")}
         >
           Brands
         </button>
       </div>
-      {/* <div className="content"> */}
-      {activeTab === "brands" ? (
-        brandsLoading ? (
+      {isTabLoading ? (
+        <div style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <LoadingSpinner />
+        </div>
+      ) : activeTab === "brands" ? (
+        brandsLoading ? (
+          <div style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <LoadingSpinner />
+          </div>
         ) : (
           <div className="content">
             {brands?.slice(0, 10)?.map((brand, index) => (
@@ -71,6 +87,10 @@ const ShopBy = () => {
             ))}
           </div>
         )
+      ) : categoriesLoading ? (
+        <div style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <LoadingSpinner />
+        </div>
       ) : (
         <div className="content">
           {categories?.map((category, index) => (
@@ -92,7 +112,6 @@ const ShopBy = () => {
           ))}
         </div>
       )}
-      {/* </div> */}
       {activeTab === "brands" && (
         <div className="browse-all">
           <button onClick={() => navigate("/brands")} className="browse-button">

@@ -1,31 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useProducts } from "../../../hooks/queries/products";
 import Card from "../../../components/Card";
 import Pagination from "../../../components/Pagination";
-import { useCategories } from "../../../hooks/queries/categories";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 
 const ShopByCategory = ({ id }) => {
   const [activeTab, setActiveTab] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [products, setProducts] = useState([]);
+  const [isPageLoading, setIsPageLoading] = useState(false);
 
   const { data, isLoading, error } = useProducts({
     brandId: id,
-    categoryId: activeTab,
+    page: currentPage,
+    limit: 12,
   });
-  const { data: categories } = useCategories({brandId: id});
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [data]);
 
+  useEffect(() => {
+    setIsPageLoading(true);
+    if (data) {
+      setTotalPages(data?.data?.totalPages || 1);
+      setProducts(data?.data?.products || []);
+      setIsPageLoading(false);
+    }
+  }, [data]);
+
+  const handlePageChange = (page) => {
+    setIsPageLoading(true);
+    setCurrentPage(page);
+  };
 
   // const categories = ["sholder bags", "t-shirts", "shoes", "bags", "sneakers"];
 
-const allCategories = categories?.envelop?.data || [];
-
-
-
+  if (isLoading && !isPageLoading) return <LoadingSpinner />;
 
   return (
     <section className="shop-by-category">
-      <h2>
+      {/* <h2>
         Shop By <span className="shop-by-category-span">Category</span>
       </h2>
       <div className="tabs">
@@ -38,10 +57,14 @@ const allCategories = categories?.envelop?.data || [];
             {category.name}
           </button>
         ))}
-      </div>
-      { isLoading ? <LoadingSpinner /> : data?.data?.products?.length > 0 ? (
+      </div> */}
+      {isPageLoading ? (
+        <div style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <LoadingSpinner />
+        </div>
+      ) : products?.length > 0 ? (
         <div className="content">
-          {data?.data?.products?.map((product, index) => (
+          {products?.map((product, index) => (
             <Card product={product} key={index} />
           ))}
         </div>
@@ -49,11 +72,15 @@ const allCategories = categories?.envelop?.data || [];
         <div>No products found</div>
       )}
 
-      {/* {data?.data?.products?.length > 0 && (
+      {data?.data?.products?.length > 0 && (
         <div className="pagination">
-          <Pagination />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
         </div>
-      )} */}
+      )}
 
       {/* </div> */}
       {/* <div className="shop-all">
