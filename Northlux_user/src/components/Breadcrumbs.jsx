@@ -9,6 +9,7 @@ export const Breadcrumbs = ({ breadcrumbItems, BreadcrumbLinks }) => {
         <span
           style={{
             // color: index === breadcrumbItems.length - 1 ? "gray" : "black",
+            cursor: "pointer",
           }}
           onClick={() => navigate(BreadcrumbLinks[index])}
           key={index}
