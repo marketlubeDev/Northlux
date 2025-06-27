@@ -284,7 +284,7 @@ export default function Header() {
         {/* <BrandsList
           isOpen={isBrandsListOpen || selectedCategory !== null}
           category={selectedCategory}
-        /> */}
+        /> */}  
       </header>
       <NavBar />
     </>

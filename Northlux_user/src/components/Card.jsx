@@ -1,6 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import { FiHeart } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+
+const ImageWithShimmer = ({ src, alt }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const handleLoad = () => {
+    setIsLoading(false);
+  };
+
+  const handleError = () => {
+    setIsLoading(false);
+    setError(true);
+  };
+
+  return (
+    <div className="card-image-container">
+      {isLoading && (
+        <div className="shimmer-wrapper">
+          <div className="shimmer"></div>
+        </div>
+      )}
+      <img
+        src={src}
+        alt={alt}
+        className={`card-image ${isLoading ? 'hidden' : ''}`}
+        onLoad={handleLoad}
+        onError={handleError}
+        loading="lazy"
+      />
+      {error && (
+        <div className="image-error">
+          <span>{alt}</span>
+        </div>
+      )}
+    </div>
+  );
+};
 
 function Card({ product }) {
   if (!product) return null;
@@ -32,7 +69,7 @@ function Card({ product }) {
             className="product-card_image_outofstock"
           />
         ) : (
-          <img src={mainImage} alt={name} />
+          <ImageWithShimmer src={mainImage} alt={name} />
         )}
         <div className="wishlist-btn-wrapper">
           {/* <button className="wishlist-btn">
@@ -51,7 +88,7 @@ function Card({ product }) {
           <span className="current-price">₹{offerPrice}</span>
           <span className="original-price">₹{price}</span>
           {stockStatus === "outofstock" && (
-            <span className="out-of-stock">Out of Stock</span>
+            <span className="out-of-stock">Sold Out</span>
           )}
         </div>
         {/* <div className="rating">

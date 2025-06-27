@@ -325,7 +325,7 @@ function ProductDetailsContent() {
               )}
               {outOfStock && (
                 <span className="product-out-of-stock">
-                  Out of Stock
+                Sold Out  
                 </span>
               )}
             </div>

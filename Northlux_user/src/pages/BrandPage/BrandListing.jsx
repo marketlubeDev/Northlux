@@ -7,12 +7,48 @@ import Pagination from "../../components/Pagination";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
+const ImageWithShimmer = ({ src, alt }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const handleLoad = () => {
+    setIsLoading(false);
+  };
+
+  const handleError = () => {
+    setIsLoading(false);
+    setError(true);
+  };
+
+  return (
+    <div className="brand-image-container">
+      {isLoading && (
+        <div className="shimmer-wrapper">
+          <div className="shimmer"></div>
+        </div>
+      )}
+      <img
+        src={src}
+        alt={alt}
+        className={isLoading ? 'hidden' : ''}
+        onLoad={handleLoad}
+        onError={handleError}
+        loading="lazy"
+      />
+      {error && (
+        <div className="image-error">
+          <span>{alt}</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const BrandListing = () => {
   const [inputValue, setInputValue] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
- 
   const [limit, setLimit] = useState(18);
   const inputRef = useRef(null);
   const navigate = useNavigate();
@@ -61,8 +97,6 @@ export const BrandListing = () => {
     isError: brandsError,
     totalCount,
   } = useBrands({ search: searchQuery, page: currentPage, limit: limit });
-
-
 
   const totalPages = brandsData?.totalPages;
 
@@ -121,7 +155,7 @@ export const BrandListing = () => {
         ) : (
           brands?.map((brand, index) => (
             <div key={index} className="brand-listing-item">
-              <img src={brand?.image} alt={brand?.name} />
+              <ImageWithShimmer src={brand?.image} alt={brand?.name} />
               <div className="overlay">
                 {/* <h3 className="brand-name">{brand?.name}</h3> */}
                 <button

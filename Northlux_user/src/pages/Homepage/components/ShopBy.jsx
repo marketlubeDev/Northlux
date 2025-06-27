@@ -4,6 +4,15 @@ import LoadingSpinner from "../../../components/LoadingSpinner";
 import { useCategories } from "../../../hooks/queries/categories";
 import { Link, useNavigate } from "react-router-dom";
 
+const CardSkeleton = () => (
+  <div className="content-item skeleton">
+    <div className="skeleton-image"></div>
+    <div className="content-overlay">
+      <div className="skeleton-text"></div>
+    </div>
+  </div>
+);
+
 const ImageWithFallback = ({ src, alt, className }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -20,9 +29,7 @@ const ImageWithFallback = ({ src, alt, className }) => {
   return (
     <div className={`image-container ${className}`}>
       {isLoading && (
-        <div className="image-placeholder">
-          <LoadingSpinner />
-        </div>
+        <div className="skeleton-image"></div>
       )}
       <img
         src={src}
@@ -78,6 +85,12 @@ const ShopBy = () => {
     }, 300);
   };
 
+  const renderSkeletons = (count) => {
+    return Array(count).fill(0).map((_, index) => (
+      <CardSkeleton key={index} />
+    ));
+  };
+
   return (
     <section className="shop-by">
       <h2>Shop By</h2>
@@ -96,13 +109,13 @@ const ShopBy = () => {
         </button>
       </div>
       {isTabLoading ? (
-        <div style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <LoadingSpinner />
+        <div className="content">
+          {renderSkeletons(activeTab === "brands" ? 10 : 6)}
         </div>
       ) : activeTab === "brands" ? (
         brandsLoading ? (
-          <div style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <LoadingSpinner />
+          <div className="content">
+            {renderSkeletons(10)}
           </div>
         ) : (
           <div className="content">
@@ -124,8 +137,8 @@ const ShopBy = () => {
           </div>
         )
       ) : categoriesLoading ? (
-        <div style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <LoadingSpinner />
+        <div className="content">
+          {renderSkeletons(6)}
         </div>
       ) : (
         <div className="content">
