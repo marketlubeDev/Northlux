@@ -10,6 +10,7 @@ import { useGroupLabels } from "../../hooks/queries/labels";
 
 import Sections from "./components/Sections";
 import { useOfferBanner } from "../../hooks/queries/offerBanner";
+import BestSellerv2 from "./components/BestSellerv2";
 
 function Homepage() {
   const { allBanners, isLoading } = useBanners();
@@ -49,7 +50,8 @@ function Homepage() {
         </>
       )}
 
-      <Bestseller />
+      {/* <Bestseller /> */}
+      <BestSellerv2 />
 
       {offerBanner?.length > 0 &&
         groupLabels?.data?.length > 0 &&
