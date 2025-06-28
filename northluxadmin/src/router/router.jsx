@@ -24,6 +24,7 @@ import Inventory from "../pages/admin/Inventory";
 import StoreProtectedRoute from "./StoreProtectedRoute/StoreProtectedRoute";
 import Subcategories from "../pages/admin/Subcategories";
 import { Feedback } from "../pages/admin/Feedback";
+import Enquiry from "../pages/admin/Enquiry";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -122,6 +123,10 @@ export const router = createBrowserRouter([
         path: "feedback",
         element: <Feedback />,
       },
+      {
+        path: "enquiry",
+        element: <Enquiry />,
+      },
     ],
   },
 
@@ -205,6 +210,11 @@ export const router = createBrowserRouter([
       {
         path: "inventory",
         element: <Inventory role={"store"} />,
+      },
+
+      {
+        path: "enquiry",
+        element: <Enquiry role={"store"} />,
       },
     ],
   },

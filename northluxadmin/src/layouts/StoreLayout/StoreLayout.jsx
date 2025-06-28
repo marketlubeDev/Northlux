@@ -11,6 +11,7 @@ function StoreLayout() {
   const menuItems = [
     { name: "Dashboard", path: "/store" },
     { name: "Products", path: "product" },
+    { name: "Enquiry", path: "enquiry" },
     { name: "Orders", path: "order" },
     { name: "Categories", path: "category" },
     { name: "SubCategories", path: "subcategory" },

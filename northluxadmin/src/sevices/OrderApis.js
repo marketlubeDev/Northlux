@@ -36,3 +36,13 @@ export const updateOrder = async (orderId, data) => {
       toast.error(err?.response?.data?.message || "Failed to update Contact details");
     });
 };
+
+
+export const deleteEnquiry = async (enquiryId) => {
+  return axiosInstance
+    .delete(`/order/delete-enquiry/${enquiryId}`)
+    .then((res) => res.data)
+    .catch((err) => {
+      toast.error(err?.response?.data?.message || "Failed to delete enquiry");
+    });
+};

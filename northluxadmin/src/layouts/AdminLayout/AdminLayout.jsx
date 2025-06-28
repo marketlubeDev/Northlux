@@ -13,6 +13,7 @@ function AdminLayout() {
   const menuItems = [
     { name: "Dashboard", path: "/admin" },
     { name: "Products", path: "product" },
+    {name:"Enquiries", path:"enquiry"},
     { name: "Orders", path: "order" },
     { name: "Stores", path: "store" },
     { name: "Categories", path: "category" },

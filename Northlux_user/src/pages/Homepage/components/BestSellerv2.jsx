@@ -56,11 +56,12 @@ function BestSellerv2() {
         <div className="bestseller_cards-wrapper">
           <Swiper
             autoplay={{
-              delay: 1000,
+              delay: 2000,
               disableOnInteraction: false,
+              pauseOnMouseEnter: true
             }}
             loop={true}
-            speed={1000}
+            speed={2000}
             slidesPerView={1}
             onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
             modules={[Autoplay]}

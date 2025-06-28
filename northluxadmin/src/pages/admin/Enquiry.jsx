@@ -7,6 +7,7 @@ import {
   getOrderStats,
   updateOrder,
   updateOrderStatus,
+  deleteEnquiry
 } from "../../sevices/OrderApis";
 import LoadingSpinner from "../../components/spinner/LoadingSpinner";
 import { useEffect, useState, useRef } from "react";
@@ -17,11 +18,12 @@ import { Fragment } from "react";
 import { createPortal } from "react-dom";
 import { useSelector } from "react-redux";
 
-import { FaRegEdit } from "react-icons/fa";
+import { FaRegEdit , FaTrash } from "react-icons/fa";
 import { Modal } from "../../components/shared/Modal";
 import Pagination from "../../components/Admin/Product/components/Pagination/Pagination";
+import ConfirmationModal from "../../components/Admin/ConfirmationModal";
 
-function Orders({ role }) {
+function Enquiry({ role }) {
   const store = useSelector((state) => state.store.store);
   const stores = useSelector((state) => state.adminUtilities.stores);
   const [formUtilites, setFormUtilites] = useState([]);
@@ -35,23 +37,13 @@ function Orders({ role }) {
   const [selectedStore, setSelectedStore] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
     if (role === "store") {
       setSelectedStore(store._id);
     }
   }, [role, store]);
-
-  const orderStatuses =  [
-    "pending",
-    "confirmed",
-    "processed",
-    "shipped",
-    "delivered",
-    "cancelled",
-    "refunded",
-    "onrefund",
-  ];
 
   // Move fetchData outside of useEffect so it can be reused
   const fetchData = async (page = currentPage) => {
@@ -63,7 +55,8 @@ function Orders({ role }) {
 
       // Add page to query params
       queryParams.push(`page=${page}`);
-      queryParams.push(`type=order`);
+      queryParams.push(`type=enquiry`);
+
       if (startDate && endDate) {
         const formattedStartDate = new Date(
           startDate.setHours(0, 0, 0, 0)
@@ -347,25 +340,25 @@ function Orders({ role }) {
     );
   };
 
-  const TableRow = ({ order }) => {
+  const TableRow = ({ order, type, onDelete }) => {
     const [paymentStatus, setPaymentStatus] = useState(
       order.paymentStatus || "pending"
     );
     const [orderStatus, setOrderStatus] = useState(order.status || "pending");
     const [isEditMobileModalOpen, setIsEditMobileModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [updateData, setUpdateData] = useState({
       mobile: order.mobile || null,
       address: order.address || "",
     });
 
-    const paymentOptions = [
-      "pending",
-      "paid",
-      "failed",
-      "refunded",
-      "onrefund",
-    ];
-    const orderOptions = [
+    let paymentOptions = ["pending", "paid", "failed", "refunded", "onrefund"];
+
+    if (type === "enquiry") {
+      paymentOptions = ["pending", "paid", "failed"];
+    }
+
+    let orderOptions = [
       "pending",
       "confirmed",
       "processed",
@@ -375,6 +368,10 @@ function Orders({ role }) {
       "refunded",
       "onrefund",
     ];
+
+    if (type === "enquiry") {
+      orderOptions = ["pending", "confirmed"];
+    }
 
     const handlePaymentStatusChange = async (newStatus) => {
       try {
@@ -388,7 +385,9 @@ function Orders({ role }) {
           toast.error(result?.data?.message);
         }
       } catch (error) {
-        toast.error(error?.response?.data?.message || "Failed to update payment status");
+        toast.error(
+          error?.response?.data?.message || "Failed to update payment status"
+        );
       }
     };
 
@@ -400,9 +399,11 @@ function Orders({ role }) {
           toast.success(result?.data?.message);
           // Refresh data after successful status update
           await fetchData();
-        } 
+        }
       } catch (error) {
-        toast.error(error?.response?.data?.message || "Failed to update order status");
+        toast.error(
+          error?.response?.data?.message || "Failed to update order status"
+        );
       }
     };
 
@@ -431,6 +432,19 @@ function Orders({ role }) {
         }
       } catch (error) {
         console.log(error);
+      }
+    };
+
+    const handleDeleteClick = () => {
+      setIsDeleteModalOpen(true);
+    };
+
+    const handleDeleteConfirm = async () => {
+      try {
+        await onDelete(order._id);
+        setIsDeleteModalOpen(false);
+      } catch (error) {
+        console.error("Error deleting order:", error);
       }
     };
 
@@ -513,12 +527,13 @@ function Orders({ role }) {
             type="order"
           />
           <td className="px-6 py-4">
-            <span
-              className="text-blue-500 cursor-pointer"
-              onClick={handleEditMobile}
+            <div
+              className="text-blue-500 cursor-pointer flex gap-2"
+            
             >
-              <FaRegEdit />
-            </span>
+           <span className="text-blue-500 cursor-pointer" onClick={handleEditMobile}>   <FaRegEdit /></span>
+           <span className="text-red-500 cursor-pointer" onClick={handleDeleteClick}>   <FaTrash /></span>
+            </div>
           </td>
         </tr>
         <>
@@ -572,8 +587,31 @@ function Orders({ role }) {
             </div>
           </Modal>
         </>
+        <ConfirmationModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onConfirm={handleDeleteConfirm}
+          title="Delete Enquiry"
+          message="Are you sure you want to delete this enquiry?"
+          warningMessage="This action cannot be undone."
+          confirmButtonText="Delete"
+          confirmButtonColor="red"
+        />
       </>
     );
+  };
+
+  const handleDeleteEnquiry = async (enquiryId) => {
+    try {
+      setDeleteLoading(true);
+      await deleteEnquiry(enquiryId);
+      toast.success("Enquiry deleted successfully");
+      fetchData(currentPage); // Refresh the list
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to delete enquiry");
+    } finally {
+      setDeleteLoading(false);
+    }
   };
 
   return (
@@ -590,18 +628,7 @@ function Orders({ role }) {
               />
             </div>
             <div className="w-full flex flex-col gap-2">
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              >
-                <option value="">Filter by Status</option>
-                {orderStatuses.map((status) => (
-                  <option key={status} value={status}>
-                    {status}
-                  </option>
-                ))}
-              </select>
+                
               <select
                 value={selectedStore}
                 onChange={(e) => setSelectedStore(e.target.value)}
@@ -617,58 +644,9 @@ function Orders({ role }) {
               </select>
             </div>
           </div>
-
-          <div className="flex gap-2 items-center flex-wrap">
-            {orderStats && (
-              <>
-                <Ordercards
-                  data="Pending Orders"
-                  count={orderStats.statusCounts?.pending || 0}
-                  color="#FFA500"
-                />
-                <Ordercards
-                  data="Confirmed Orders"
-                  count={orderStats.statusCounts?.confirmed || 0}
-                  color="#3B82F6"
-                />
-                <Ordercards
-                  data="Processing Orders"
-                  count={orderStats.statusCounts?.processed || 0}
-                  color="#3B82F6"
-                />
-                <Ordercards
-                  data="Shipped Orders"
-                  count={orderStats.statusCounts?.shipped || 0}
-                  color="#8B5CF6"
-                />
-                <Ordercards
-                  data="Delivered Orders"
-                  count={orderStats.statusCounts?.delivered || 0}
-                  color="#10B981"
-                />
-                <Ordercards
-                  data="On Refund Orders"
-                  count={orderStats.statusCounts?.onrefund || 0}
-                  color="#F59E0B"
-                />
-                <Ordercards
-                  data="Refunded Orders"
-                  count={orderStats.statusCounts?.refunded || 0}
-                  color="#6B7280"
-                />
-                <Ordercards
-                  data="Cancelled Orders"
-                  count={orderStats.statusCounts?.cancelled || 0}
-                  color="#EF4444"
-                />
-              </>
-            )}
-          </div>
         </div>
         <div className="flex justify-end mt-4 mb-2 mr-4">
-          {(selectedCategory ||
-            selectedStatus ||
-            (dateRange[0] && dateRange[1])) && (
+          {(selectedCategory || (dateRange[0] && dateRange[1])) && (
             <button
               onClick={() => {
                 setSelectedCategory("");
@@ -677,7 +655,7 @@ function Orders({ role }) {
               }}
               className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200"
             >
-              <TfiReload className="w-4 h-4" />
+              {/* <TfiReload className="w-4 h-4" /> */}
               <span>Reset Filters</span>
               <span className="ml-1 text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">
                 {[
@@ -736,14 +714,19 @@ function Orders({ role }) {
                     colSpan="10"
                     className="px-6 py-12 text-center text-gray-500 bg-gray-50"
                   >
-                    <LoadingSpinner color="primary" text="Loading orders..." />
+                    <LoadingSpinner color="primary" text="Loading Enquiries..." />
                   </td>
                 </tr>
               </tbody>
             ) : orders && orders.length > 0 ? (
               <tbody>
                 {orders.map((order) => (
-                  <TableRow key={order._id} order={order} />
+                  <TableRow 
+                    key={order._id} 
+                    order={order} 
+                    type={"enquiry"} 
+                    onDelete={handleDeleteEnquiry}
+                  />
                 ))}
               </tbody>
             ) : (
@@ -795,4 +778,4 @@ function Orders({ role }) {
   );
 }
 
-export default Orders;
+export default Enquiry;
