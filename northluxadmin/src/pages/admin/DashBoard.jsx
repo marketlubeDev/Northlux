@@ -53,7 +53,6 @@ function DashBoard() {
           />
         </div>
         <div>
-          <p className="text-lg font-bold">September 2024</p>
           <div className="flex-col flex lg:flex-row items-center  justify-center gap-9 w-full mt-3">
             {cardsData &&
               cardsData.map((card, index) => (

@@ -2561,15 +2561,24 @@ ul {
   display: grid;
   gap: 1rem;
 }
-.footer .newsletter-content-form input {
+.footer .newsletter-content-form input, .footer .newsletter-content-form textarea {
   width: 100%;
   padding: 0.875rem 1rem;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 0.875rem;
+  background: white;
 }
-.footer .newsletter-content-form input::placeholder {
+.footer .newsletter-content-form input::placeholder, .footer .newsletter-content-form textarea::placeholder {
   color: #999;
+}
+.footer .newsletter-content-form input:focus, .footer .newsletter-content-form textarea:focus {
+  outline: none;
+  border-color: #2eb5af;
+}
+.footer .newsletter-content-form textarea {
+  min-height: 100px;
+  resize: vertical;
 }
 .footer .newsletter-content-form button {
   width: fit-content;
@@ -2580,6 +2589,10 @@ ul {
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.875rem;
+  transition: background-color 0.2s ease;
+}
+.footer .newsletter-content-form button:hover {
+  background: rgb(35.6651982379, 140.3348017621, 135.6828193833);
 }
 .footer .footer-divider {
   height: 1px;

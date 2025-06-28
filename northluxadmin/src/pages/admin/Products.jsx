@@ -59,7 +59,11 @@ function Products({ role }) {
   useEffect(() => {
     setSelectedSubcategory("All Subcategories");
     if (selectedCategory) {
-      setShowSubcategory(subcategories?.filter((subcategory) => subcategory?.category === selectedCategory));
+      setShowSubcategory(
+        subcategories?.filter(
+          (subcategory) => subcategory?.category === selectedCategory
+        )
+      );
     } else {
       setShowSubcategory([]);
     }
@@ -294,7 +298,9 @@ function Products({ role }) {
               setCurrentPage(1);
             }}
             className="border border-gray-300 rounded-md px-4 py-2 w-60"
-            disabled={!selectedCategory || selectedCategory === "All Categories"}
+            disabled={
+              !selectedCategory || selectedCategory === "All Categories"
+            }
           >
             <option value="All Subcategories">All Subcategories</option>
             {showSubcategory?.map((subcategory) => (
@@ -302,7 +308,6 @@ function Products({ role }) {
                 {subcategory?.name}
               </option>
             ))}
-            
           </select>
         </div>
         <div className="text-sm text-gray-600 space-y-1">
@@ -440,27 +445,6 @@ function Products({ role }) {
           {/* Pagination */}
           {!isLoading && totalPages > 1 && (
             <div className="sticky bottom-0 flex items-center justify-end p-4 bg-white border-t">
-              {/* <div className="flex items-center gap-4">
-                <p className="text-sm text-gray-700">
-                  Showing page {currentPage} of {totalPages}
-                </p>
-                <div className="flex items-center gap-2">
-                  <label htmlFor="pageSize" className="text-sm text-gray-700">
-                    Items per page:
-                  </label>
-                  <select
-                    id="pageSize"
-                    value={pageSize}
-                    onChange={handlePageSizeChange}
-                    className="border border-gray-300 rounded-md px-2 py-1 text-sm"
-                  >
-                    <option value={5}>5</option>
-                    <option value={10}>10</option>
-                    <option value={20}>20</option>
-                    <option value={50}>50</option>
-                  </select>
-                </div>
-              </div> */}
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}

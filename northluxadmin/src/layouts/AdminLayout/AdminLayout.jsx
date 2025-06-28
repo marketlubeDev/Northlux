@@ -24,6 +24,7 @@ function AdminLayout() {
     { name: "Banners With Links", path: "banner-with-link" },
     { name: "Active Offers", path: "active-offer" },
     { name: "Sales", path: "sales" },
+    { name: "Feedbacks", path: "feedback" },
     { name: "Inventory", path: "inventory" },
   ];
   const navigate = useNavigate();

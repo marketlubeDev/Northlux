@@ -5,32 +5,166 @@ import { useCategories } from "../hooks/queries/categories";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { useSubmitFeedback } from "../hooks/queries/feedback";
+
 
 function Footer() {
+
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const { data: categoriesData } = useCategories();
+  const { mutate: submitFeedback } = useSubmitFeedback();
+
+  const [feedbackForm, setFeedbackForm] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    message: ""
+  });
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePhone = (phone) => {
+    // Allows formats: +91XXXXXXXXXX or XXXXXXXXXX (10 digits)
+    const phoneRegex = /^(?:\+91)?[6-9]\d{9}$/;
+    return phoneRegex.test(phone.replace(/\s+/g, ''));
+  };
+
+  const validateMessage = (message) => {
+    const trimmedMessage = message.trim();
+    if (trimmedMessage.length < 10) {
+      return { isValid: false, message: "Message must be at least 10 characters long" };
+    }
+    if (trimmedMessage.length > 500) {
+      return { isValid: false, message: "Message cannot exceed 500 characters" };
+    }
+    return { isValid: true, message: trimmedMessage };
+  };
+
+  const handleFeedbackSubmit = (e) => {
+    e.preventDefault();
+
+    // Trim all form values
+    const trimmedForm = {
+      name: feedbackForm.name.trim(),
+      phone: feedbackForm.phone.trim(),
+      email: feedbackForm.email.trim(),
+      message: feedbackForm.message.trim()
+    };
+
+    // Check for empty fields
+    if (Object.values(trimmedForm).some(value => value === "")) {
+      toast.error("Please fill all the fields");
+      return;
+    }
+
+    // Validate email
+    if (!validateEmail(trimmedForm.email)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    // Validate phone
+    if (!validatePhone(trimmedForm.phone)) {
+      toast.error("Please enter a valid Indian phone number");
+      return;
+    }
+
+    // Validate message
+    const messageValidation = validateMessage(trimmedForm.message);
+    if (!messageValidation.isValid) {
+      toast.error(messageValidation.message);
+      return;
+    }
+
+    // Submit the trimmed and validated form
+    submitFeedback({
+      ...trimmedForm,
+      message: messageValidation.message // Use the trimmed message
+    }, {
+      onSuccess: () => {
+        toast.success("Feedback submitted successfully");
+        // Reset form
+        setFeedbackForm({
+          name: "",
+          phone: "",
+          email: "",
+          message: ""
+        });
+      },
+      onError: () => {
+        toast.error("Failed to submit feedback");
+      }
+    });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFeedbackForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   useEffect(() => {
     setCategories(categoriesData?.envelop?.data);
   }, [categoriesData]);
+  
   return (
     <footer className="footer">
-      {/* Newsletter Section */}
+      {/* Feedback Section */}
       <div className="newsletter">
         <div className="newsletter-content">
           <div className="newsletter-content-text">
-            <h2>Stay Exclusive</h2>
-            <h3>Early Access & Special Offers!</h3>
+            <h2>We Value Your Feedback</h2>
+            <h3>Help Us Serve You Better!</h3>
             <p>
-              Join our newsletter, stay ahead with the latest trends and <br />
-              exclusive deals—straight to your inbox!
+              Your feedback helps us improve our services and enhance your shopping experience. <br />
+              Share your thoughts with us!
             </p>
           </div>
-          <div className="newsletter-content-form">
-            <input type="text" placeholder="Full name" />
-            <input type="email" placeholder="Email address" />
-            <button type="submit">Subscribe</button>
-          </div>
+          <form className="newsletter-content-form" onSubmit={handleFeedbackSubmit}>
+            <input 
+              type="text" 
+              placeholder="Full name" 
+              name="name"
+              value={feedbackForm.name}
+              onChange={handleInputChange}
+              required
+              maxLength={50}
+            />
+            <input 
+              type="tel" 
+              placeholder="Phone number" 
+              name="phone"
+              value={feedbackForm.phone}
+              onChange={handleInputChange}
+              required
+              maxLength={13}
+            />
+            <input 
+              type="email" 
+              placeholder="Email address" 
+              name="email"
+              value={feedbackForm.email}
+              onChange={handleInputChange}
+              required
+              maxLength={100}
+            />
+            <textarea 
+              placeholder="Your message" 
+              name="message"
+              value={feedbackForm.message}
+              onChange={handleInputChange}
+              required
+              maxLength={500}
+            ></textarea>
+            <button type="submit">Send Feedback</button>
+          </form>
         </div>
       </div>
 
